@@ -6,6 +6,27 @@
 ### Documentation
 
 - Update CHANGELOG.md [skip ci]
+  ([`3e8eaf6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3e8eaf680efe7fe82ea584d00db003a54bc54650))
+
+
+## v0.1.1 (2025-01-01)
+
+### Bug Fixes
+
+- **ci**: Improve semantic release version management
+  ([`c55d026`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c55d0263553ac2b1d11d53bf01bae2f0427d6346))
+
+- Add explicit version checking - Use git tags for version tracking - Implement proper semantic
+  version bumping - Add commit message validation
+
+### Chores
+
+- **release**: 0.1.1-dev.0 [skip ci]
+  ([`707e682`](https://github.com/gsinghjay/fast-api-ci-cd/commit/707e682cb489d685902e5414476361147e604732))
+
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
   ([`69756f2`](https://github.com/gsinghjay/fast-api-ci-cd/commit/69756f292abd59fc95519e1a16fd671208f7ebf3))
 
 - Update CHANGELOG.md [skip ci]
