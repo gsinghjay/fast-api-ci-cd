@@ -201,10 +201,39 @@ graph TD
    - Generates changelog automatically
    - Creates GitHub release
    - Pushes git tag
+   - Supports manual workflow triggers with:
+     - Prerelease versions (alpha, beta, etc.)
+     - Force version bumps (patch, minor, major)
+     - Build metadata
+     - Commit signing with SSH keys
 
 4. **Tag Validation**:
    - Verifies tag authenticity
    - Ensures proper versioning
+
+### Manual Release Workflow
+
+You can trigger manual releases with specific configurations through GitHub Actions:
+
+1. **Navigate** to Actions → CI/CD Pipeline → Run workflow
+2. **Configure** release options:
+   - `prerelease`: Create a prerelease version (true/false)
+   - `prerelease_token`: Token for prerelease (e.g., 'alpha', 'beta')
+   - `force`: Force version bump ('patch', 'minor', 'major')
+   - `build_metadata`: Additional build metadata to append
+
+Example manual release configurations:
+```bash
+# Beta release
+prerelease: true
+prerelease_token: beta
+
+# Force minor version bump
+force: minor
+
+# Release with build metadata
+build_metadata: "20240101"
+```
 
 ### Changelog Generation
 
