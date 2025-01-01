@@ -17,9 +17,9 @@ def generate_qr_code(data: str, size: int = 10) -> str:
         str: Base64 encoded PNG image
     """
     qr = qrcode.QRCode(
-        version=size,
+        version=1,  # Auto-size up to the specified size
         error_correction=qrcode.constants.ERROR_CORRECT_L,
-        box_size=10,
+        box_size=size,  # Use size for box_size instead of version
         border=4,
     )
     qr.add_data(data)
@@ -29,5 +29,5 @@ def generate_qr_code(data: str, size: int = 10) -> str:
     
     # Convert PIL image to base64
     buffered = BytesIO()
-    img.save(buffered, format="PNG")
+    img.save(buffered)  # PNG is the default format
     return base64.b64encode(buffered.getvalue()).decode() 

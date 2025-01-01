@@ -1,6 +1,7 @@
 """
 Main FastAPI application module.
 """
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 import structlog
 from app import __version__
@@ -11,10 +12,22 @@ from app.utils.logging_config import configure_logging
 configure_logging()
 logger = structlog.get_logger()
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Handle startup and shutdown events for the FastAPI application.
+    """
+    # Startup
+    logger.info("application.startup", version=__version__)
+    yield
+    # Shutdown
+    logger.info("application.shutdown")
+
 app = FastAPI(
     title="QR Code Generator",
     description="A robust and scalable QR Code Generator application",
-    version=__version__
+    version=__version__,
+    lifespan=lifespan
 )
 
 # Include routers
@@ -32,9 +45,4 @@ async def health_check():
     return {
         "status": "healthy",
         "version": __version__
-    }
-
-@app.on_event("startup")
-async def startup_event():
-    """Log when the application starts."""
-    logger.info("application.startup", version=__version__) 
+    } 
