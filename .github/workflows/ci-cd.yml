@@ -298,7 +298,7 @@ jobs:
           # Configure Git user for committing
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add your_package/__init__.py  # Update the path accordingly to your version file
+          git add app/__init__.py  # Updated path to match our project structure
           git commit -m "chore(release): bump version to next dev version [skip ci]"  # Commit message with [skip ci] to prevent triggering workflows
           git push origin dev  # Push changes to the dev branch
 
@@ -342,6 +342,12 @@ jobs:
           # Optionally, add deployment steps here (e.g., deploy to production)
 
       - name: Notify Deployment Success
-        uses: some-notification-action@v1  # Replace with your preferred notification action
+        uses: actions/github-script@v6
         with:
-          message: "Deployment to Production Successful!"  # Custom notification message
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: '🚀 Deployment to Production Successful! 🎉'
+            })
