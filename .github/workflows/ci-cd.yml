@@ -227,61 +227,11 @@ jobs:
           poetry install --no-root
           pip install python-semantic-release==9.15.0
 
-      - name: Install and authenticate GitHub CLI
-        run: |
-          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-          && sudo apt update \
-          && sudo apt install gh -y
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_TOKEN }}
-
-      - name: Authenticate GitHub CLI
-        run: echo "${{ secrets.PAT_TOKEN }}" | gh auth login --with-token
-
       - name: Configure Git for Semantic Release
         run: |
-          # Remove any existing credential helper configuration
-          git config --global --unset-all credential.helper || true
-
-          # Configure Git credentials using the token directly in the URL
-          git config --global url."https://x-access-token:${PAT_TOKEN}@github.com/".insteadOf "https://github.com/"
-
-          # Set up Git user identity
+          # Set up Git user identity only
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          # Configure the remote URL with token
-          git remote set-url origin "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-
-          # Debug information (safely masked)
-          echo "=== Git Configuration ==="
-          git config --global --list | grep -v url
-          echo "=== Remote Configuration ==="
-          git remote -v | sed 's/x-access-token:[^@]*@/***@/g'
-        env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-
-      - name: Verify Git Remote and Authentication
-        run: |
-          echo "=== Testing Git Authentication ==="
-          # Test remote connection
-          git ls-remote --exit-code origin HEAD || {
-            echo "Failed to authenticate with remote repository"
-            exit 1
-          }
-          echo "Successfully authenticated with remote repository"
-
-          # Test push access (dry-run)
-          echo "=== Testing Push Access ==="
-          git push --dry-run origin HEAD || {
-            echo "Failed to verify push access"
-            exit 1
-          }
-          echo "Successfully verified push access"
 
       - name: Sync with Remote Repository
         run: |
@@ -352,33 +302,32 @@ jobs:
     name: Tag Validation
     if: startsWith(github.ref, 'refs/tags/v')  # Only run on tag pushes matching 'v*'
     needs: release  # Ensure the 'release' job completes before starting 'tag-validation'
-    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.PAT_TOKEN }}
     steps:
       - name: Check out code
-        uses: actions/checkout@v3  # Checks out the repository code
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Get full history for tags
-          token: ${{ secrets.PAT_TOKEN }}  # Use PAT for authentication
+          token: ${{ secrets.PAT_TOKEN }}
 
       - name: Configure Git
         run: |
-          git config --global url."https://x-access-token:${PAT_TOKEN}@github.com/".insteadOf "https://github.com/"
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Get Tag Details
-        id: tag_details  # Assign an ID to reference outputs in subsequent steps
+        id: tag_details
         run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/}  # Extract the tag name from the ref
-          echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT  # Set the tag_name output
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
 
           # Get tagger information using git for-each-ref
           TAGGER_NAME=$(git for-each-ref refs/tags/$TAG_NAME --format='%(taggername)')
           TAGGER_EMAIL=$(git for-each-ref refs/tags/$TAG_NAME --format='%(taggeremail)')
-          echo "tagger_name=${TAGGER_NAME}" >> $GITHUB_OUTPUT  # Set the tagger_name output
-          echo "tagger_email=${TAGGER_EMAIL}" >> $GITHUB_OUTPUT  # Set the tagger_email output
+          echo "tagger_name=${TAGGER_NAME}" >> $GITHUB_OUTPUT
+          echo "tagger_email=${TAGGER_EMAIL}" >> $GITHUB_OUTPUT
 
       - name: Validate Tagger
         run: |
@@ -395,7 +344,7 @@ jobs:
           fi
 
       - name: Approve Tag
-        run: echo "Tag ${{ steps.tag_details.outputs.tag_name }} is valid and created by GitHub Actions."  # Confirmation message
+        run: echo "Tag ${{ steps.tag_details.outputs.tag_name }} is valid and created by GitHub Actions."
 
   ##########################################################################
   # Jobs end after release

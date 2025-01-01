@@ -35,15 +35,18 @@ version_toml = ["pyproject.toml:tool.poetry.version"]
 version_source = "commit"
 commit_version_number = true
 upload_to_repository = false
-build_command = "pip install build && python -m build"
+build_command = "poetry build"  # Changed to use poetry build for consistency
 changelog_file = "CHANGELOG.md"
 commit_parser = "conventional_commits"
 major_on_zero = false
 tag_format = "v{version}"
-tag_type = "annotated"
+tag_type = "annotated"  # Ensures tags are annotated for validation
 allow_zero_version = true
 commit_author = "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
 commit_message = "chore(release): {version} [skip ci]"
+
+[tool.python_semantic_release.remote]
+token = "env:GH_TOKEN"  # Corrected token reference without space
 
 # Branch configurations
 [tool.semantic_release.branches.main]
@@ -85,6 +88,3 @@ changelog_exclude_commit_patterns = [
 ]
 changelog_render_title = true
 changelog_render_commit_links = true
-
-[tool.semantic_release.remote]
-token = "env: GH_TOKEN"
