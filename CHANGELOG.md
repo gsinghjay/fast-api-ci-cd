@@ -19,21 +19,6 @@
 - Enhance README with semantic-release command details
   ([`3ab6eb3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3ab6eb361490315561a9e167595a27a1476d3533))
 
-- Update CHANGELOG.md [skip ci]
-  ([`334f0f0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/334f0f0988392e915727752b1488287ee937e3ba))
-
-- Update CHANGELOG.md [skip ci]
-  ([`293ad54`](https://github.com/gsinghjay/fast-api-ci-cd/commit/293ad54cb99b57bec730b24fab7a93457d6a901b))
-
-- Update CHANGELOG.md [skip ci]
-  ([`9aa26e9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9aa26e9f1cab790ef46d1e326333b23ba71ca411))
-
-- Update CHANGELOG.md [skip ci]
-  ([`184b292`](https://github.com/gsinghjay/fast-api-ci-cd/commit/184b2920b500b301bd03233d951456c3e218ae19))
-
-- Update CHANGELOG.md [skip ci]
-  ([`af6231a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/af6231ae1f4ade760ad01f720f6654fbe334162d))
-
 - Update README with detailed versioning and CI/CD information
   ([`9106aa9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9106aa9eb79a1270a63904dc1519e11edd8b9e01))
 
@@ -50,11 +35,6 @@
 - **ci**: Correct release notes generation in CI/CD pipeline
   ([`9849cdb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9849cdb421a14894235c70e60beb895cac71165a))
 
-### Documentation
-
-- Update CHANGELOG.md [skip ci]
-  ([`559bf45`](https://github.com/gsinghjay/fast-api-ci-cd/commit/559bf451e22a3f03c93a58ca1768dde118204175))
-
 
 ## v1.0.7 (2025-01-01)
 
@@ -62,11 +42,6 @@
 
 - **ci**: Improve changelog generation using semantic-release
   ([`2540961`](https://github.com/gsinghjay/fast-api-ci-cd/commit/25409613951f1d4e3dfa4452c478151457479c1a))
-
-### Documentation
-
-- Update CHANGELOG.md [skip ci]
-  ([`d33b594`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d33b5941831facf5c874eb089dae7ee1cb596a9e))
 
 
 ## v1.0.6 (2025-01-01)
@@ -79,16 +54,6 @@
 - Add changelog components configuration - Exclude release commits from changelog - Configure
   changelog formatting
 
-### Chores
-
-- **release**: 1.0.6 [skip ci]
-  ([`e8ee582`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e8ee58270e481c4e326e848c4cbf70d38e389ac9))
-
-### Documentation
-
-- Update CHANGELOG.md [skip ci]
-  ([`892c342`](https://github.com/gsinghjay/fast-api-ci-cd/commit/892c34220d30ee94e96ade910a82b27d53e16464))
-
 
 ## v1.0.5 (2025-01-01)
 
@@ -98,16 +63,6 @@
   ([`5a434ca`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5a434ca82fa7a95a9e1eadac4351e69102ddbb0c))
 
 - Add GitHub CLI installation - Create GitHub releases for tags - Add release verification step
-
-### Chores
-
-- **release**: 1.0.5 [skip ci]
-  ([`0f4c74a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0f4c74a0677f7325b2181dd96224a40110924c28))
-
-### Documentation
-
-- Update CHANGELOG.md [skip ci]
-  ([`a6d7a09`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a6d7a097a096fd683c3b34d3630f694ac35d89ae))
 
 
 ## v1.0.4 (2025-01-01)
@@ -120,11 +75,6 @@
 This commit fixes the version number discrepancy between files and git tags, ensuring consistent
   versioning across the project.
 
-### Chores
-
-- **release**: 1.0.4 [skip ci]
-  ([`b8d50a7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b8d50a7fe330e21e00e6acafb2689c268088780d))
-
 ### Code Style
 
 - Apply pre-commit hooks and formatting
@@ -132,14 +82,6 @@ This commit fixes the version number discrepancy between files and git tags, ens
 
 - Format code with black - Fix flake8 violations - Add pre-commit configuration - Update gitignore
   patterns - Fix YAML formatting - Update documentation formatting
-
-### Documentation
-
-- Update CHANGELOG.md [skip ci]
-  ([`addaa9b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/addaa9ba5502fb14c3a91e9e4da042362ae55554))
-
-- Update CHANGELOG.md [skip ci]
-  ([`db0dbde`](https://github.com/gsinghjay/fast-api-ci-cd/commit/db0dbde5c77700cf764bdab678f2767910fd5bbc))
 
 
 ## v1.0.3 (2025-01-01)
@@ -159,19 +101,6 @@ This commit fixes the version number discrepancy between files and git tags, ens
 - Add tag existence check before creation - Skip version update if tag exists - Improve error
   handling for existing tags - Add informative message when skipping release
 
-### Chores
-
-- **release**: 1.0.3 [skip ci]
-  ([`b26ce30`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b26ce3070718d04f95c6af68a9e5a29059db3fdc))
-
-### Documentation
-
-- Update CHANGELOG.md [skip ci]
-  ([`59f2bb2`](https://github.com/gsinghjay/fast-api-ci-cd/commit/59f2bb2d455cf70730859144f8e47bd917fa520a))
-
-- Update CHANGELOG.md [skip ci]
-  ([`d6f8d05`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d6f8d0592c5fca5f41b83aa8a0c1a9677b9242b4))
-
 
 ## v1.0.2 (2025-01-01)
 
@@ -182,25 +111,6 @@ This commit fixes the version number discrepancy between files and git tags, ens
 
 - Add explicit version checking - Use git tags for version tracking - Implement proper semantic
   version bumping - Add commit message validation
-
-### Chores
-
-- **release**: 0.1.1-dev.0 [skip ci]
-  ([`707e682`](https://github.com/gsinghjay/fast-api-ci-cd/commit/707e682cb489d685902e5414476361147e604732))
-
-- **release**: 1.0.2 [skip ci]
-  ([`8215ee4`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8215ee4aa344a48843a9a4b17c72008f1721eb24))
-
-### Documentation
-
-- Update CHANGELOG.md [skip ci]
-  ([`3e8eaf6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3e8eaf680efe7fe82ea584d00db003a54bc54650))
-
-- Update CHANGELOG.md [skip ci]
-  ([`69756f2`](https://github.com/gsinghjay/fast-api-ci-cd/commit/69756f292abd59fc95519e1a16fd671208f7ebf3))
-
-- Update CHANGELOG.md [skip ci]
-  ([`3628a92`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3628a9263a44e96541158e63c93c4867b5d0081f))
 
 ### Refactoring
 
@@ -232,14 +142,6 @@ This commit fixes the version number discrepancy between files and git tags, ens
 
 - Remove update-dev-version job completely - Clean up post-merge-verification job dependencies -
   Remove dev version update logic - Fix invalid PEP 440 version error
-
-### Documentation
-
-- Update CHANGELOG.md [skip ci]
-  ([`be9f5a9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/be9f5a97110464b0369e6d633e5a2e2a5557da95))
-
-- Update CHANGELOG.md [skip ci]
-  ([`e223933`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e223933affd531780688f03c6014e196cf6a6a1f))
 
 ### Refactoring
 
@@ -414,14 +316,8 @@ Related to: Previous commit that removed --branch flag from workflow
 - Add .gitignore file
   ([`ca11881`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ca1188162ac75c5e57b42c081039d4106d1ae0d5))
 
-- Bump version to 0.1.1-dev.0 [skip ci]
-  ([`727dd70`](https://github.com/gsinghjay/fast-api-ci-cd/commit/727dd7047f71762a7a830bddf9dbdd53f2791afe))
-
 - Re-add project files without cache
   ([`46f0bf7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/46f0bf7d5c0ccd7b95983f6dca8acf1347673c42))
-
-- **release**: Bump version and update changelog [skip ci]
-  ([`88aba68`](https://github.com/gsinghjay/fast-api-ci-cd/commit/88aba685be1fbafbf2956694876f3a0ea4f344ae))
 
 ### Code Style
 
@@ -453,14 +349,6 @@ Related to: Previous commit that removed --branch flag from workflow
 
 - Update Python version matrix to 3.9-3.11
   ([`ed276a1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ed276a1e5b2a4c4fcca29162bc3f9af55639c09a))
-
-### Documentation
-
-- Update CHANGELOG.md [skip ci]
-  ([`0423265`](https://github.com/gsinghjay/fast-api-ci-cd/commit/04232653f0f2f0044ebfcd60d4800aa47c3e3a00))
-
-- Update CHANGELOG.md [skip ci]
-  ([`896cf4e`](https://github.com/gsinghjay/fast-api-ci-cd/commit/896cf4e3c5228e7f0422ed0966e27b0afd0cf100))
 
 ### Features
 
