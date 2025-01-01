@@ -236,7 +236,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
+
           # Set up commit signing if keys are provided
           if [ -n "${{ secrets.SSH_PRIVATE_SIGNING_KEY }}" ] && [ -n "${{ secrets.SSH_PUBLIC_SIGNING_KEY }}" ]; then
             mkdir -p ~/.ssh
@@ -258,7 +258,7 @@ jobs:
         run: |
           # Build semantic release command with dynamic options
           RELEASE_CMD="semantic-release version"
-          
+
           # Add prerelease configuration if specified
           if [ "$PRERELEASE" = "true" ]; then
             RELEASE_CMD="$RELEASE_CMD --prerelease"
@@ -266,20 +266,20 @@ jobs:
               RELEASE_CMD="$RELEASE_CMD --prerelease-token $PRERELEASE_TOKEN"
             fi
           fi
-          
+
           # Add force level if specified
           if [ -n "$FORCE_LEVEL" ]; then
             RELEASE_CMD="$RELEASE_CMD --force-level $FORCE_LEVEL"
           fi
-          
+
           # Add build metadata if specified
           if [ -n "$BUILD_METADATA" ]; then
             RELEASE_CMD="$RELEASE_CMD --build-metadata $BUILD_METADATA"
           fi
-          
+
           # Execute the release command
           eval $RELEASE_CMD
-          
+
           # Generate changelog and publish
           semantic-release changelog
           semantic-release publish
