@@ -3,6 +3,17 @@
 
 ## Unreleased
 
+### Code Style
+
+- Apply pre-commit hooks and formatting
+  ([`da67f7c`](https://github.com/gsinghjay/fast-api-ci-cd/commit/da67f7c01e91141e31141231be273c6452398dfa))
+
+- Format code with black - Fix flake8 violations - Add pre-commit configuration - Update gitignore
+  patterns - Fix YAML formatting - Update documentation formatting
+
+
+## v1.0.3 (2025-01-01)
+
 ### Bug Fixes
 
 - **ci**: Improve version management and changelog generation
@@ -17,6 +28,11 @@
 
 - Add tag existence check before creation - Skip version update if tag exists - Improve error
   handling for existing tags - Add informative message when skipping release
+
+### Chores
+
+- **release**: 1.0.3 [skip ci]
+  ([`b26ce30`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b26ce3070718d04f95c6af68a9e5a29059db3fdc))
 
 ### Documentation
 
