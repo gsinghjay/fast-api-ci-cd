@@ -237,12 +237,12 @@ jobs:
 
       - name: Configure Git
         run: |
+          # Configure Git user
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Configure Git credentials
-          git config --global credential.helper store
-          echo "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com" > ~/.git-credentials
+          # Configure Git authentication
+          git config --global url."https://${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
 
           # Set up commit signing if keys are provided
           if [ -n "${{ secrets.SSH_PRIVATE_SIGNING_KEY }}" ] && [ -n "${{ secrets.SSH_PUBLIC_SIGNING_KEY }}" ]; then
@@ -256,15 +256,17 @@ jobs:
 
       - name: Sync with remote
         run: |
-          git fetch --tags --force
-          git branch --set-upstream-to=origin/${{ github.ref_name }} ${{ github.ref_name }}
+          # Ensure we have all tags and history
+          git fetch --prune --unshallow --tags --force
+
+          # Set up tracking and sync
+          git branch --set-upstream-to=origin/${{ github.ref_name }} ${{ github.ref_name }} || true
           git pull --rebase || true
 
       - name: Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GIT_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Build semantic release command with dynamic options
           RELEASE_CMD="semantic-release version"
