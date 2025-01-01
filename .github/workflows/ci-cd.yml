@@ -28,14 +28,10 @@ on:
         type: string
         required: false
       force:
-        description: 'Force version bump (patch, minor, major)'
-        type: choice
-        options:
-          - 'none'
-          - patch
-          - minor
-          - major
+        description: 'Force version bump (patch, minor, major, or none)'
+        type: string
         required: false
+        default: 'none'
       build_metadata:
         description: 'Build metadata to append to version'
         type: string
@@ -50,7 +46,7 @@ permissions:
 # Control concurrency to ensure only the latest run for a branch/tag is active
 concurrency:
   group: ${{ github.ref }}
-  cancel-in-progress: true  # Cancels any in-progress runs for the same ref
+  cancel-in-progress: true
 
 # Define all jobs within the workflow
 jobs:
@@ -199,12 +195,13 @@ jobs:
     if: |
       (github.ref == 'refs/heads/main' && github.event_name == 'push') ||
       (github.ref == 'refs/heads/develop' && github.event_name == 'push') ||
-      (startsWith(github.ref, 'refs/heads/release/') && github.event_name == 'push')
+      (startsWith(github.ref, 'refs/heads/release/') && github.event_name == 'push') ||
+      (startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push')
     needs: test
     runs-on: ubuntu-latest
     env:
       # Add environment variables for semantic release configuration
-      PSR_PRERELEASE: ${{ github.ref == 'refs/heads/develop' && 'true' || startsWith(github.ref, 'refs/heads/release/') && 'true' || github.event.inputs.prerelease || 'false' }}
+      PSR_PRERELEASE: ${{ ((github.ref == 'refs/heads/develop') || (startsWith(github.ref, 'refs/heads/release/'))) && 'true' || github.event.inputs.prerelease || 'false' }}
       PSR_PRERELEASE_TOKEN: ${{ github.ref == 'refs/heads/develop' && 'beta' || startsWith(github.ref, 'refs/heads/release/') && 'rc' || github.event.inputs.prerelease_token || '' }}
       PSR_BUILD_METADATA: ${{ github.event.inputs.build_metadata || '' }}
       PSR_FORCE_LEVEL: ${{ github.event.inputs.force || '' }}
@@ -226,7 +223,7 @@ jobs:
           poetry install --no-root
           pip install python-semantic-release==9.15.0
 
-      - name: Install GitHub CLI
+      - name: Install and authenticate GitHub CLI
         run: |
           type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
           curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
@@ -234,6 +231,7 @@ jobs:
           && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
           && sudo apt update \
           && sudo apt install gh -y
+          gh auth login --with-token <<< "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Configure Git for Semantic Release
         run: |
@@ -255,7 +253,7 @@ jobs:
 
       - name: Release
         id: release
-        uses: python-semantic-release/python-semantic-release@v9.12.0
+        uses: python-semantic-release/python-semantic-release@v9.15.0
         env:
           # Pass token through environment for Git operations
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -266,7 +264,7 @@ jobs:
           git_committer_email: "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Publish to GitHub Release Assets
-        uses: python-semantic-release/publish-action@v9.8.9
+        uses: python-semantic-release/publish-action@v9.15.0
         if: steps.release.outputs.released == 'true'
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}

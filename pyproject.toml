@@ -40,6 +40,7 @@ changelog_file = "CHANGELOG.md"
 commit_parser = "conventional_commits"
 major_on_zero = false
 tag_format = "v{version}"
+tag_type = "annotated"
 allow_zero_version = true
 commit_author = "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
 commit_message = "chore(release): {version} [skip ci]"
