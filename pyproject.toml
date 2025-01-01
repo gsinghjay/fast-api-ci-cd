@@ -29,8 +29,8 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.semantic_release]
-version_variables = ["app/__init__.py:__version__"]
-version_toml = ["pyproject.toml:tool.poetry.version"]
+version_variable = "app/__init__.py:__version__"
+version_toml = "pyproject.toml:tool.poetry.version"
 branch = "dev"
 upload_to_repository = false
 build_command = "poetry build"
@@ -39,7 +39,7 @@ commit_parser = "conventional_commits"
 major_on_zero = false
 tag_format = "v{version}"
 prerelease = true
-prerelease_tag = "alpha"
+prerelease_token = "alpha"
 version_source = "commit"
 commit_version_number = true
 allow_zero_version = true
