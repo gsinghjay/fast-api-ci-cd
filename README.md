@@ -1,6 +1,29 @@
 # FastAPI CI/CD Template
 
+[![CI/CD Pipeline](https://github.com/gsinghjay/fast-api-ci-cd/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/gsinghjay/fast-api-ci-cd/actions/workflows/ci-cd.yml)
+[![Latest Release](https://img.shields.io/github/v/release/gsinghjay/fast-api-ci-cd)](https://github.com/gsinghjay/fast-api-ci-cd/releases)
+[![Python Version](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/downloads/)
+[![Code Coverage](https://img.shields.io/codecov/c/github/gsinghjay/fast-api-ci-cd)](https://codecov.io/gh/gsinghjay/fast-api-ci-cd)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A production-ready FastAPI template with robust CI/CD pipeline, semantic versioning, and best practices.
+
+## 📑 Table of Contents
+
+- [Features](#-features)
+- [Prerequisites](#-prerequisites)
+- [Quick Start](#-quick-start)
+- [Development Guide](#️-development-guide)
+- [Metrics and Monitoring](#-metrics-and-monitoring)
+- [Environment Variables](#-environment-variables)
+- [License](#-license)
+- [Contributing](#-contributing)
+- [Security](#-security)
+- [Docker Support](#-docker-support)
+- [API Documentation](#-api-documentation)
+- [Performance](#-performance)
+- [Testing](#-testing)
+- [Error Handling](#-error-handling)
 
 ## 🌟 Features
 
@@ -244,3 +267,51 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 4. Commit using conventional commits (`git commit -m "feat: add amazing feature"`)
 5. Push to the branch (`git push origin feature/amazing-feature`)
 6. Open a Pull Request
+
+## 🔐 Security
+
+- All endpoints are rate-limited
+- Input validation using Pydantic models
+- CORS middleware configured
+- Structured logging for audit trails
+
+## 🐳 Docker Support
+
+```bash
+# Build the image
+docker build -t qr-code-api .
+
+# Run the container
+docker run -p 8000:8000 qr-code-api
+```
+
+## 📚 API Documentation
+
+Once running, access the interactive API documentation at:
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+
+## ⚡ Performance
+
+- Async endpoint handling
+- Connection pooling
+- Response caching
+- Optimized QR code generation
+
+## 🧪 Testing
+
+```bash
+# Run tests with coverage
+poetry run pytest --cov=app tests/
+
+# Generate coverage report
+poetry run coverage html
+```
+
+## 🚨 Error Handling
+
+The API implements standardized error responses:
+- 400: Bad Request - Invalid input
+- 404: Not Found - Resource doesn't exist
+- 429: Too Many Requests - Rate limit exceeded
+- 500: Internal Server Error - Server-side issues
