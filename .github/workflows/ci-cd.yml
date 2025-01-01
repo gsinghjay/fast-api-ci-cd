@@ -141,7 +141,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Install semantic release
-          pip install python-semantic-release
+          pip install python-semantic-release==9.15.0
           
           # Configure git
           git config --global user.name "github-actions[bot]"
@@ -150,17 +150,8 @@ jobs:
           # Determine current branch
           CURRENT_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           
-          # Generate changelog based on branch
-          if [[ "$CURRENT_BRANCH" == "main" ]]; then
-            # For main branch, generate stable release notes
-            semantic-release version --no-commit --no-tag
-          elif [[ "$CURRENT_BRANCH" == "dev" ]]; then
-            # For dev branch, generate prerelease notes
-            semantic-release version --prerelease --prerelease-token alpha --no-commit --no-tag
-          else
-            # For feature branches, generate feature prerelease notes
-            semantic-release version --prerelease --prerelease-token feature --no-commit --no-tag
-          fi
+          # Generate changelog and version
+          semantic-release version --no-commit --no-tag
           
           # Commit and push if there are changes
           if [[ -n $(git status --porcelain CHANGELOG.md) ]]; then
