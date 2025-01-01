@@ -206,14 +206,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for release creation
         run: |
-          # Configure semantic-release to generate changelog
+          # Run semantic release to generate changelog and publish
+          semantic-release version
           semantic-release changelog
           
-          # Commit the changelog
+          # Commit the changelog if there are changes
           git add CHANGELOG.md
           git commit -m "docs: update CHANGELOG.md [skip ci]" || echo "No changes to CHANGELOG.md"
+          git push origin main
           
-          # Run semantic release to publish and tag
+          # Publish the release
           semantic-release publish
 
   ##########################################################################
@@ -295,7 +297,8 @@ jobs:
 
       - name: Update Version and Changelog
         run: |
-          # Generate changelog for dev branch
+          # Generate changelog and update version for dev branch
+          semantic-release version
           semantic-release changelog
           
           # Update to next dev version
