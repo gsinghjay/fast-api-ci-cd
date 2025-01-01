@@ -336,14 +336,14 @@ name: CI/CD Pipeline
 on:
   # Trigger the workflow on push events to specific branches or tags
   push:
-    branches: 
+    branches:
       - "dev"      # Development branch
       - "main"     # Main/Production branch
     tags:
       - "v*"        # Tags following the pattern 'v*' (e.g., v1.0.0)
   # Trigger the workflow on pull request events targeting specific branches
   pull_request:
-    branches: 
+    branches:
       - "dev"
       - "main"
 
@@ -556,7 +556,7 @@ jobs:
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}  # Extract the tag name from the ref
           echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT  # Set the tag_name output
-          
+
           # Get tagger information using git for-each-ref
           TAGGER_NAME=$(git for-each-ref refs/tags/$TAG_NAME --format='%(taggername)')
           TAGGER_EMAIL=$(git for-each-ref refs/tags/$TAG_NAME --format='%(taggeremail)')
@@ -568,7 +568,7 @@ jobs:
           # Define the expected tagger name/email (GitHub Actions bot)
           EXPECTED_TAGGER_NAME="github-actions[bot]"
           EXPECTED_TAGGER_EMAIL="41898282+github-actions[bot]@users.noreply.github.com"
-          
+
           # Compare the actual tagger name and email with the expected values
           if [ "${{ steps.tag_details.outputs.tagger_name }}" != "$EXPECTED_TAGGER_NAME" ] || [ "${{ steps.tag_details.outputs.tagger_email }}" != "$EXPECTED_TAGGER_EMAIL" ]; then
             echo "Error: Tag ${{ steps.tag_details.outputs.tag_name }} was not created by GitHub Actions."

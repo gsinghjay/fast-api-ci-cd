@@ -53,4 +53,4 @@ changelog_sections = [
 ]
 
 [tool.python_semantic_release.remote]
-token = "env: GH_TOKEN" 
+token = "env: GH_TOKEN"
