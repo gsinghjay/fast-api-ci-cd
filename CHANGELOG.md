@@ -3,6 +3,14 @@
 
 ## Unreleased
 
+### Bug Fixes
+
+- **version**: Align version numbers with git tags
+  ([`67e0852`](https://github.com/gsinghjay/fast-api-ci-cd/commit/67e0852517a7d13d2c3cb5a00ac0501d235f99dc))
+
+This commit fixes the version number discrepancy between files and git tags, ensuring consistent
+  versioning across the project.
+
 ### Code Style
 
 - Apply pre-commit hooks and formatting
@@ -10,6 +18,11 @@
 
 - Format code with black - Fix flake8 violations - Add pre-commit configuration - Update gitignore
   patterns - Fix YAML formatting - Update documentation formatting
+
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`db0dbde`](https://github.com/gsinghjay/fast-api-ci-cd/commit/db0dbde5c77700cf764bdab678f2767910fd5bbc))
 
 
 ## v1.0.3 (2025-01-01)
@@ -45,27 +58,6 @@
 
 ## v1.0.2 (2025-01-01)
 
-### Chores
-
-- **release**: 1.0.2 [skip ci]
-  ([`8215ee4`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8215ee4aa344a48843a9a4b17c72008f1721eb24))
-
-### Documentation
-
-- Update CHANGELOG.md [skip ci]
-  ([`3e8eaf6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3e8eaf680efe7fe82ea584d00db003a54bc54650))
-
-### Refactoring
-
-- **ci**: Remove redundant post-merge verification
-  ([`ac9d317`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ac9d31755196877e7836f8e216beddda31d19ebb))
-
-- Remove post-merge verification job - Simplify workflow dependencies - Reduce CI execution time -
-  Rely on existing test and release jobs for verification
-
-
-## v0.1.1 (2025-01-01)
-
 ### Bug Fixes
 
 - **ci**: Improve semantic release version management
@@ -79,7 +71,13 @@
 - **release**: 0.1.1-dev.0 [skip ci]
   ([`707e682`](https://github.com/gsinghjay/fast-api-ci-cd/commit/707e682cb489d685902e5414476361147e604732))
 
+- **release**: 1.0.2 [skip ci]
+  ([`8215ee4`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8215ee4aa344a48843a9a4b17c72008f1721eb24))
+
 ### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`3e8eaf6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3e8eaf680efe7fe82ea584d00db003a54bc54650))
 
 - Update CHANGELOG.md [skip ci]
   ([`69756f2`](https://github.com/gsinghjay/fast-api-ci-cd/commit/69756f292abd59fc95519e1a16fd671208f7ebf3))
@@ -94,6 +92,12 @@
 
 - Remove GitHub issue comment notification - Simplify post-merge-verification job - Remove
   unnecessary notification dependencies
+
+- **ci**: Remove redundant post-merge verification
+  ([`ac9d317`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ac9d31755196877e7836f8e216beddda31d19ebb))
+
+- Remove post-merge verification job - Simplify workflow dependencies - Reduce CI execution time -
+  Rely on existing test and release jobs for verification
 
 - **ci**: Simplify release process
   ([`84d1be7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/84d1be73b550e1ae30d07338c47c6a4f192161c8))
