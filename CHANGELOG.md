@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## Unreleased
+
+### Documentation
+
+- Update mermaid diagram to show complete release flow
+  ([`ce2ecad`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ce2ecadbd28dd9a7258197026cb64af1c34b58dc))
+
+
 ## v1.2.0 (2025-01-01)
 
 ### Documentation
