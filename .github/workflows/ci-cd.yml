@@ -240,6 +240,9 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+          # Configure Git to use HTTPS with token authentication
+          git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+
           # Set up commit signing if keys are provided
           if [ -n "${{ secrets.SSH_PRIVATE_SIGNING_KEY }}" ] && [ -n "${{ secrets.SSH_PUBLIC_SIGNING_KEY }}" ]; then
             mkdir -p ~/.ssh
