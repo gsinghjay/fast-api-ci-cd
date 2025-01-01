@@ -5,11 +5,24 @@
 
 ### Bug Fixes
 
+- **ci**: Improve changelog generation using semantic-release
+  ([`2540961`](https://github.com/gsinghjay/fast-api-ci-cd/commit/25409613951f1d4e3dfa4452c478151457479c1a))
+
+
+## v1.0.6 (2025-01-01)
+
+### Bug Fixes
+
 - **ci**: Improve changelog generation configuration
   ([`569e547`](https://github.com/gsinghjay/fast-api-ci-cd/commit/569e547ae6ccd4864e2d4f1673b9bbb76b2014c0))
 
 - Add changelog components configuration - Exclude release commits from changelog - Configure
   changelog formatting
+
+### Chores
+
+- **release**: 1.0.6 [skip ci]
+  ([`e8ee582`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e8ee58270e481c4e326e848c4cbf70d38e389ac9))
 
 ### Documentation
 
