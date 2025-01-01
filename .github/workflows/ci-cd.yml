@@ -409,8 +409,11 @@ jobs:
           CURRENT_VERSION=$(poetry version -s)
           echo "Current version: $CURRENT_VERSION"
           
+          # Force dev branch to be recognized
+          git checkout dev
+          
           # Run semantic release with alpha tag
-          semantic-release version
+          semantic-release version --prerelease alpha
           
           # Get the new version
           NEW_VERSION=$(poetry version -s)
