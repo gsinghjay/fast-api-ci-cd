@@ -22,6 +22,9 @@ This commit fixes the version number discrepancy between files and git tags, ens
 ### Documentation
 
 - Update CHANGELOG.md [skip ci]
+  ([`addaa9b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/addaa9ba5502fb14c3a91e9e4da042362ae55554))
+
+- Update CHANGELOG.md [skip ci]
   ([`db0dbde`](https://github.com/gsinghjay/fast-api-ci-cd/commit/db0dbde5c77700cf764bdab678f2767910fd5bbc))
 
 
