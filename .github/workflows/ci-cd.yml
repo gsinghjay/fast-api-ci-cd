@@ -18,8 +18,9 @@ on:
 
 # Define permissions for the entire workflow
 permissions:
-  contents: write   # Grants write access to contents, necessary for deleting tags
-  pull-requests: write  # Grants write access to pull requests for comments
+  contents: write
+  pull-requests: write
+  checks: write
 
 # Control concurrency to ensure only the latest run for a branch/tag is active
 concurrency:
@@ -138,7 +139,7 @@ jobs:
           poetry run coverage xml            # Generate coverage XML for artifact
 
       - name: Update Changelog
-        if: github.event_name == 'pull_request' || github.event_name == 'push'  # Run on all branches
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -149,10 +150,6 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          # Determine current branch
-          CURRENT_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
-          echo "Current branch: $CURRENT_BRANCH"
-          
           # Generate changelog
           semantic-release changelog
           
@@ -160,7 +157,7 @@ jobs:
           if [[ -n $(git status --porcelain CHANGELOG.md) ]]; then
             git add CHANGELOG.md
             git commit -m "docs: update CHANGELOG.md [skip ci]"
-            git push origin "$CURRENT_BRANCH"
+            git push origin HEAD:${{ github.ref }}
           fi
 
       - name: Upload coverage report
@@ -373,63 +370,4 @@ jobs:
               issue_number: context.issue.number,
               body: '🚀 Deployment to Production Successful! 🎉'
             })
-
-  release-dev:
-    name: Release Dev
-    if: github.ref == 'refs/heads/dev' && github.event_name == 'push'  # Only run on pushes to dev
-    needs: test
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Install dependencies
-        run: |
-          pip install poetry==1.8.5
-          poetry install --no-root
-          pip install python-semantic-release==9.15.0
-
-      - name: Configure Git
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-      - name: Release Alpha Version
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Get the current version
-          CURRENT_VERSION=$(poetry version -s)
-          echo "Current version: $CURRENT_VERSION"
-          
-          # Force dev branch to be recognized
-          git checkout dev
-          
-          # Run semantic release (branch is configured in pyproject.toml)
-          semantic-release version
-          
-          # Get the new version
-          NEW_VERSION=$(poetry version -s)
-          echo "New version: $NEW_VERSION"
-          
-          if [ "$CURRENT_VERSION" != "$NEW_VERSION" ]; then
-            # Create and push alpha tag
-            git tag -a "v${NEW_VERSION}" -m "Alpha Release v${NEW_VERSION}"
-            git push origin "v${NEW_VERSION}"
-            
-            # Update changelog
-            semantic-release changelog
-            
-            # Commit changes
-            git add CHANGELOG.md pyproject.toml app/__init__.py
-            git commit -m "chore(release): ${NEW_VERSION} [skip ci]"
-            git push origin dev
-          fi
 
