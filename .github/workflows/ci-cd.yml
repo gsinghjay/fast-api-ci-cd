@@ -215,9 +215,9 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Use semantic-release to handle versioning, changelog, and release
-          semantic-release --ci version
-          semantic-release --ci changelog
-          semantic-release --ci publish
+          semantic-release version
+          semantic-release changelog
+          semantic-release publish
 
       - name: Verify Release
         if: success()
