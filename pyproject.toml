@@ -52,18 +52,17 @@ changelog_sections = [
     "refactor"
 ]
 
+[tool.python_semantic_release.remote]
+token = "GH_TOKEN"
+
 [tool.python_semantic_release.branches]
+main = "main"
+dev = "dev"
+release = "release/*"
+
+[tool.python_semantic_release.branches.dev]
 prerelease_token = "alpha"
 prerelease = true
 
 [tool.python_semantic_release.branches.main]
-match = "main"
-prerelease = false
-
-[tool.python_semantic_release.branches.dev]
-match = "dev"
-prerelease = true
-prerelease_token = "alpha"
-
-[tool.python_semantic_release.remote]
-token = "GH_TOKEN" 
+prerelease = false 
