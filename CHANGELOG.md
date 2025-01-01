@@ -1,12 +1,15 @@
 # CHANGELOG
 
 
-## Unreleased
+## v1.2.0 (2025-01-01)
 
 ### Documentation
 
 - Add manual release workflow documentation
   ([`d4e82a7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d4e82a7f10621ce3bc8a1f7652e2736ca7060af8))
+
+- Update CHANGELOG.md [skip ci]
+  ([`c55ebf7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c55ebf7749670ea71b5b76472a7af378afc73f7a))
 
 - Update CHANGELOG.md [skip ci]
   ([`7bc972b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/7bc972b344f0bdd0ed8c8aa10a3e4a55aa40de82))
