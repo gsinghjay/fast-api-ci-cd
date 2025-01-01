@@ -6,6 +6,9 @@
 ### Documentation
 
 - Update CHANGELOG.md [skip ci]
+  ([`69756f2`](https://github.com/gsinghjay/fast-api-ci-cd/commit/69756f292abd59fc95519e1a16fd671208f7ebf3))
+
+- Update CHANGELOG.md [skip ci]
   ([`3628a92`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3628a9263a44e96541158e63c93c4867b5d0081f))
 
 ### Refactoring
