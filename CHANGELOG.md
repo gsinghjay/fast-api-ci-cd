@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## Unreleased
+
+### Features
+
+- **ci**: Enhance release workflow with semantic options
+  ([`b5ed280`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b5ed280626d96fe56c7a1581eaf7c395dc7a6730))
+
+- **ci**: Enhance release workflow with semantic options and manual triggers
+  ([`0b25b9d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0b25b9d7e93d28d6e8a7c74477fc02b0ec025a5b))
+
+
 ## v1.0.11 (2025-01-01)
 
 ### Bug Fixes
