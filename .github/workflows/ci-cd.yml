@@ -47,7 +47,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"  # Specify Python version
+          python-version: "3.11"  # Use latest stable Python version
 
       - name: Cache Poetry Dependencies
         uses: actions/cache@v3
@@ -71,28 +71,21 @@ jobs:
         run: |
           # Install Python dependencies via Poetry without installing the root package
           pip install poetry
+
+          # Generate poetry.lock if it doesn't exist or if pyproject.toml has changed
+          poetry lock --no-update
+
+          # Install dependencies
           poetry install --no-root
 
-          # Install Node-based Commitlint globally
-          npm install -g @commitlint/cli @commitlint/config-conventional
-
       - name: Lint code with Black
-        run: black --check .  # Check Python code formatting with Black
+        run: poetry run black --check .  # Run black through poetry
 
       - name: Check commit messages with Commitlint
-        run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            # Define the commit range for pull requests
-            COMMIT_RANGE="${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
-          else
-            # Define the commit range for pushes (e.g., last 10 commits)
-            COMMIT_RANGE="HEAD~10..HEAD"
-          fi
-          # Extract the first and last commit SHAs in the range
-          COMMIT_FROM=$(git rev-parse $COMMIT_RANGE | head -n1)
-          COMMIT_TO=$(git rev-parse $COMMIT_RANGE | tail -n1)
-          # Run Commitlint on the specified commit range
-          commitlint --from=$COMMIT_FROM --to=$COMMIT_TO
+        uses: wagoid/commitlint-github-action@v5
+        with:
+          configFile: commitlint.config.js
+          failOnWarnings: true
 
   ##########################################################################
   # 2. Test Job
@@ -103,15 +96,18 @@ jobs:
     needs: lint  # Ensure the 'lint' job completes before starting 'test'
     strategy:
       matrix:
-        python-version: [3.8, 3.9, 3.10]  # Define Python versions for matrix testing
+        python-version: ["3.11"]  # Only test with Python 3.11
     steps:
       - name: Check out code
-        uses: actions/checkout@v3  # Checks out the repository code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Fetch all history for changelog generation
+          ref: ${{ github.head_ref }}  # Checkout the PR branch
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}  # Use the Python version from the matrix
+          python-version: ${{ matrix.python-version }}
 
       - name: Cache Poetry Dependencies
         uses: actions/cache@v3
@@ -126,13 +122,43 @@ jobs:
       - name: Install dependencies
         run: |
           pip install poetry
+          
+          # Generate poetry.lock if it doesn't exist or if pyproject.toml has changed
+          poetry lock --no-update
+          
+          # Install dependencies
           poetry install --no-root  # Install dependencies without the root package
 
       - name: Run tests with coverage
         run: |
-          coverage run -m pytest  # Run tests with coverage
-          coverage report -m      # Generate coverage report
-          coverage xml            # Generate coverage XML for artifact
+          poetry run coverage run -m pytest  # Run tests with coverage
+          poetry run coverage report -m      # Generate coverage report
+          poetry run coverage xml            # Generate coverage XML for artifact
+
+      - name: Update Changelog
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/'))  # Run on PRs and branch pushes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Install semantic release
+          pip install python-semantic-release==9.15.0
+          
+          # Configure git
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          # Determine current branch
+          CURRENT_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+          
+          # Generate changelog and version
+          semantic-release version --no-commit --no-tag
+          
+          # Commit and push if there are changes
+          if [[ -n $(git status --porcelain CHANGELOG.md) ]]; then
+            git add CHANGELOG.md
+            git commit -m "docs: update CHANGELOG.md [skip ci]"
+            git push origin "$CURRENT_BRANCH"
+          fi
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
@@ -160,7 +186,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"  # Specify Python version
+          python-version: "3.11"  # Use latest stable Python version
 
       - name: Cache Poetry Dependencies
         uses: actions/cache@v3
@@ -208,7 +234,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for release creation
         run: |
-          semantic-release publish  # Execute Semantic Release to publish and tag
+          # Run semantic release to generate changelog and publish
+          semantic-release version
+          semantic-release changelog
+          
+          # Commit the changelog if there are changes
+          git add CHANGELOG.md
+          git commit -m "docs: update CHANGELOG.md [skip ci]" || echo "No changes to CHANGELOG.md"
+          git push origin main
+          
+          # Publish the release
+          semantic-release publish
 
   ##########################################################################
   # 4. Tag Validation Job
@@ -264,11 +300,12 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: dev  # Ensure you're checking out the dev branch
+          fetch-depth: 0  # Fetch all history for changelog generation
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"  # Specify Python version
+          python-version: "3.11"  # Use latest stable Python version
 
       - name: Cache Poetry Dependencies
         uses: actions/cache@v3
@@ -286,9 +323,13 @@ jobs:
           poetry install --no-root  # Install dependencies without the root package
           pip install python-semantic-release  # Install Semantic Release for Python
 
-      - name: Update Version to Next Dev Version
+      - name: Update Version and Changelog
         run: |
-          # Configure Semantic Release for dev branch to bump to the next dev version
+          # Generate changelog and update version for dev branch
+          semantic-release version
+          semantic-release changelog
+          
+          # Update to next dev version
           semantic-release version --version-dev
 
       - name: Commit and Push Changes
@@ -298,9 +339,15 @@ jobs:
           # Configure Git user for committing
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add your_package/__init__.py  # Update the path accordingly to your version file
-          git commit -m "chore(release): bump version to next dev version [skip ci]"  # Commit message with [skip ci] to prevent triggering workflows
-          git push origin dev  # Push changes to the dev branch
+          
+          # Add all relevant files
+          git add app/__init__.py poetry.lock CHANGELOG.md
+          
+          # Commit with a message that includes changelog update
+          git commit -m "chore(release): bump version and update changelog for dev [skip ci]"
+          
+          # Push changes to dev branch
+          git push origin dev
 
   ##########################################################################
   # 6. Post-Merge Verification Job
@@ -317,7 +364,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.10"  # Specify Python version
+          python-version: "3.11"  # Use latest stable Python version
 
       - name: Cache Poetry Dependencies
         uses: actions/cache@v3
@@ -332,16 +379,27 @@ jobs:
       - name: Install dependencies
         run: |
           pip install poetry
+          
+          # Generate poetry.lock if it doesn't exist or if pyproject.toml has changed
+          poetry lock --no-update
+          
+          # Install dependencies
           poetry install --no-root  # Install dependencies without the root package
 
       - name: Run critical post-merge checks
         run: |
           # Re-run essential tests to ensure stability after merging
-          coverage run -m pytest
-          coverage report -m
+          poetry run coverage run -m pytest
+          poetry run coverage report -m
           # Optionally, add deployment steps here (e.g., deploy to production)
 
       - name: Notify Deployment Success
-        uses: some-notification-action@v1  # Replace with your preferred notification action
+        uses: actions/github-script@v6
         with:
-          message: "Deployment to Production Successful!"  # Custom notification message
+          script: |
+            github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: '🚀 Deployment to Production Successful! 🎉'
+            })

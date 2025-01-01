@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "app"}]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.9,<3.12"
 fastapi = "^0.109.0"
 uvicorn = "^0.27.0"
 qrcode = "^7.4.2"
@@ -21,15 +21,47 @@ pydantic = "^2.6.0"
 pytest = "^7.4.0"
 black = "^24.1.0"
 coverage = "^7.4.0"
-python-semantic-release = "^8.7.0"
+python-semantic-release = "^9.15.0"
 httpx = "^0.26.0"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.semantic_release]
-version_variable = ["app/__init__.py:__version__"]
-branch = "main"
-upload_to_pypi = false
-build_command = false 
+# New-style config for python-semantic-release 9.x
+[tool.python_semantic_release]
+version_variable = "app/__init__.py:__version__"
+version_toml = ["pyproject.toml:tool.poetry.version"]
+version_source = "commit"
+commit_version_number = true
+upload_to_repository = false
+build_command = "poetry build"
+changelog_file = "CHANGELOG.md"
+commit_parser = "conventional_commits"
+major_on_zero = false
+tag_format = "v{version}"
+allow_zero_version = true
+commit_author = "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+commit_message = "chore(release): {version} [skip ci]"
+changelog_sections = [
+    "feature",
+    "fix",
+    "breaking",
+    "documentation",
+    "performance",
+    "refactor"
+]
+
+[tool.python_semantic_release.branch_config.main]
+prerelease = false
+match = "main"
+
+[tool.python_semantic_release.branch_config.dev]
+prerelease = true
+prerelease_token = "alpha"
+match = "dev"
+
+[tool.python_semantic_release.branch_config.feature]
+prerelease = true
+prerelease_token = "feature"
+match = "feature/*" 
