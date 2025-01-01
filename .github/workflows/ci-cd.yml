@@ -206,7 +206,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for release creation
         run: |
-          semantic-release publish  # Execute Semantic Release to publish and tag
+          # Configure semantic-release to generate changelog
+          semantic-release changelog
+          
+          # Commit the changelog
+          git add CHANGELOG.md
+          git commit -m "docs: update CHANGELOG.md [skip ci]" || echo "No changes to CHANGELOG.md"
+          
+          # Run semantic release to publish and tag
+          semantic-release publish
 
   ##########################################################################
   # 4. Tag Validation Job
@@ -262,6 +270,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: dev  # Ensure you're checking out the dev branch
+          fetch-depth: 0  # Fetch all history for changelog generation
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -284,9 +293,12 @@ jobs:
           poetry install --no-root  # Install dependencies without the root package
           pip install python-semantic-release  # Install Semantic Release for Python
 
-      - name: Update Version to Next Dev Version
+      - name: Update Version and Changelog
         run: |
-          # Configure Semantic Release for dev branch to bump to the next dev version
+          # Generate changelog for dev branch
+          semantic-release changelog
+          
+          # Update to next dev version
           semantic-release version --version-dev
 
       - name: Commit and Push Changes
@@ -296,9 +308,15 @@ jobs:
           # Configure Git user for committing
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add app/__init__.py poetry.lock  # Add both version file and lock file
-          git commit -m "chore(release): bump version to next dev version [skip ci]"  # Commit message with [skip ci] to prevent triggering workflows
-          git push origin dev  # Push changes to the dev branch
+          
+          # Add all relevant files
+          git add app/__init__.py poetry.lock CHANGELOG.md
+          
+          # Commit with a message that includes changelog update
+          git commit -m "chore(release): bump version and update changelog for dev [skip ci]"
+          
+          # Push changes to dev branch
+          git push origin dev
 
   ##########################################################################
   # 6. Post-Merge Verification Job
