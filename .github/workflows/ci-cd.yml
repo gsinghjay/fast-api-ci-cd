@@ -76,20 +76,14 @@ jobs:
           # Install Black directly (in case poetry install fails)
           pip install black
 
-          # Install Commitlint and its conventional config
-          npm install --save-dev @commitlint/cli @commitlint/config-conventional
-
       - name: Lint code with Black
         run: poetry run black --check .  # Run black through poetry
 
       - name: Check commit messages with Commitlint
-        run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
-          else
-            # For direct pushes, check the last commit
-            npx commitlint --from HEAD~1 --to HEAD --verbose
-          fi
+        uses: wagoid/commitlint-github-action@v5
+        with:
+          configFile: commitlint.config.js
+          failOnWarnings: true
 
   ##########################################################################
   # 2. Test Job
