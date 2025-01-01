@@ -15,6 +15,31 @@ on:
   pull_request:
     branches:
       - "**"  # Match all branches
+  # Allow manual workflow dispatch with parameters
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: 'Create a prerelease version'
+        type: boolean
+        required: false
+        default: false
+      prerelease_token:
+        description: 'Token for prerelease version (e.g., alpha, beta)'
+        type: string
+        required: false
+      force:
+        description: 'Force version bump (patch, minor, major)'
+        type: choice
+        options:
+          - 'none'
+          - patch
+          - minor
+          - major
+        required: false
+      build_metadata:
+        description: 'Build metadata to append to version'
+        type: string
+        required: false
 
 # Define permissions for the entire workflow
 permissions:
@@ -174,11 +199,18 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'  # Only run on pushes to main
     needs: test
     runs-on: ubuntu-latest
+    env:
+      # Add environment variables for semantic release configuration
+      PRERELEASE: ${{ github.event.inputs.prerelease || 'false' }}
+      PRERELEASE_TOKEN: ${{ github.event.inputs.prerelease_token || '' }}
+      BUILD_METADATA: ${{ github.event.inputs.build_metadata || '' }}
+      FORCE_LEVEL: ${{ github.event.inputs.force || '' }}
     steps:
       - name: Check out code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Important for correct version calculation
+          token: ${{ secrets.GITHUB_TOKEN }}  # Explicit token for authentication
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -204,6 +236,16 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          
+          # Set up commit signing if keys are provided
+          if [ -n "${{ secrets.SSH_PRIVATE_SIGNING_KEY }}" ] && [ -n "${{ secrets.SSH_PUBLIC_SIGNING_KEY }}" ]; then
+            mkdir -p ~/.ssh
+            echo "${{ secrets.SSH_PRIVATE_SIGNING_KEY }}" > ~/.ssh/id_ed25519
+            echo "${{ secrets.SSH_PUBLIC_SIGNING_KEY }}" > ~/.ssh/id_ed25519.pub
+            chmod 600 ~/.ssh/id_ed25519
+            git config --global commit.gpgsign true
+            git config --global user.signingkey ~/.ssh/id_ed25519
+          fi
 
       - name: Sync with remote
         run: |
@@ -214,8 +256,31 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Use semantic-release to handle versioning, changelog, and release
-          semantic-release version
+          # Build semantic release command with dynamic options
+          RELEASE_CMD="semantic-release version"
+          
+          # Add prerelease configuration if specified
+          if [ "$PRERELEASE" = "true" ]; then
+            RELEASE_CMD="$RELEASE_CMD --prerelease"
+            if [ -n "$PRERELEASE_TOKEN" ]; then
+              RELEASE_CMD="$RELEASE_CMD --prerelease-token $PRERELEASE_TOKEN"
+            fi
+          fi
+          
+          # Add force level if specified
+          if [ -n "$FORCE_LEVEL" ]; then
+            RELEASE_CMD="$RELEASE_CMD --force-level $FORCE_LEVEL"
+          fi
+          
+          # Add build metadata if specified
+          if [ -n "$BUILD_METADATA" ]; then
+            RELEASE_CMD="$RELEASE_CMD --build-metadata $BUILD_METADATA"
+          fi
+          
+          # Execute the release command
+          eval $RELEASE_CMD
+          
+          # Generate changelog and publish
           semantic-release changelog
           semantic-release publish
 
