@@ -412,8 +412,8 @@ jobs:
           # Force dev branch to be recognized
           git checkout dev
           
-          # Run semantic release with explicit branch
-          semantic-release version --branch dev
+          # Run semantic release (branch is configured in pyproject.toml)
+          semantic-release version
           
           # Get the new version
           NEW_VERSION=$(poetry version -s)
