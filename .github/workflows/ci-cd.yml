@@ -7,14 +7,39 @@ name: CI/CD Pipeline
 on:
   # Trigger the workflow on push events to any branch
   push:
-    branches: 
+    branches:
       - "**"  # Match all branches
     tags:
       - "v*"  # Tags following the pattern 'v*' (e.g., v1.0.0)
   # Trigger the workflow on pull request events targeting any branch
   pull_request:
-    branches: 
+    branches:
       - "**"  # Match all branches
+  # Allow manual workflow dispatch with parameters
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        description: 'Create a prerelease version'
+        type: boolean
+        required: false
+        default: false
+      prerelease_token:
+        description: 'Token for prerelease version (e.g., alpha, beta)'
+        type: string
+        required: false
+      force:
+        description: 'Force version bump (patch, minor, major)'
+        type: choice
+        options:
+          - 'none'
+          - patch
+          - minor
+          - major
+        required: false
+      build_metadata:
+        description: 'Build metadata to append to version'
+        type: string
+        required: false
 
 # Define permissions for the entire workflow
 permissions:
@@ -71,13 +96,13 @@ jobs:
         run: |
           # Install specific version of Poetry
           pip install poetry==1.8.5
-          
+
           # Generate poetry.lock if it doesn't exist or if pyproject.toml has changed
           poetry lock --no-update
-          
+
           # Install dependencies
           poetry install --no-root
-          
+
           # Install semantic release separately to avoid conflicts
           pip install python-semantic-release==9.15.0
 
@@ -125,10 +150,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install poetry
-          
+
           # Generate poetry.lock if it doesn't exist or if pyproject.toml has changed
           poetry lock --no-update
-          
+
           # Install dependencies
           poetry install --no-root  # Install dependencies without the root package
 
@@ -145,14 +170,14 @@ jobs:
         run: |
           # Install semantic release
           pip install python-semantic-release==9.15.0
-          
+
           # Configure git
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
+
           # Generate changelog
           semantic-release changelog
-          
+
           # Commit and push if there are changes
           if [[ -n $(git status --porcelain CHANGELOG.md) ]]; then
             git add CHANGELOG.md
@@ -171,14 +196,24 @@ jobs:
   ##########################################################################
   release:
     name: Release
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'  # Only run on pushes to main
+    if: |
+      (github.ref == 'refs/heads/main' && github.event_name == 'push') ||
+      (github.ref == 'refs/heads/develop' && github.event_name == 'push') ||
+      (startsWith(github.ref, 'refs/heads/release/') && github.event_name == 'push')
     needs: test
     runs-on: ubuntu-latest
+    env:
+      # Add environment variables for semantic release configuration
+      PRERELEASE: ${{ github.ref == 'refs/heads/develop' && 'true' || startsWith(github.ref, 'refs/heads/release/') && 'true' || github.event.inputs.prerelease || 'false' }}
+      PRERELEASE_TOKEN: ${{ github.ref == 'refs/heads/develop' && 'beta' || startsWith(github.ref, 'refs/heads/release/') && 'rc' || github.event.inputs.prerelease_token || '' }}
+      BUILD_METADATA: ${{ github.event.inputs.build_metadata || '' }}
+      FORCE_LEVEL: ${{ github.event.inputs.force || '' }}
     steps:
       - name: Check out code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Important for correct version calculation
+          token: ${{ secrets.GITHUB_TOKEN }}  # Explicit token for authentication
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -191,44 +226,83 @@ jobs:
           poetry install --no-root
           pip install python-semantic-release==9.15.0
 
+      - name: Install GitHub CLI
+        run: |
+          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && sudo apt update \
+          && sudo apt install gh -y
+
       - name: Configure Git
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+          # Set up commit signing if keys are provided
+          if [ -n "${{ secrets.SSH_PRIVATE_SIGNING_KEY }}" ] && [ -n "${{ secrets.SSH_PUBLIC_SIGNING_KEY }}" ]; then
+            mkdir -p ~/.ssh
+            echo "${{ secrets.SSH_PRIVATE_SIGNING_KEY }}" > ~/.ssh/id_ed25519
+            echo "${{ secrets.SSH_PUBLIC_SIGNING_KEY }}" > ~/.ssh/id_ed25519.pub
+            chmod 600 ~/.ssh/id_ed25519
+            git config --global commit.gpgsign true
+            git config --global user.signingkey ~/.ssh/id_ed25519
+          fi
+
+      - name: Sync with remote
+        run: |
+          git pull origin main --rebase
+          git fetch --tags
+
       - name: Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Ensure we're up to date with remote
-          git pull origin main --rebase
-          
-          # Get the current version
-          CURRENT_VERSION=$(poetry version -s)
-          echo "Current version: $CURRENT_VERSION"
-          
-          # Run semantic release
-          semantic-release version
-          
-          # Get the new version
-          NEW_VERSION=$(poetry version -s)
-          echo "New version: $NEW_VERSION"
-          
-          if [ "$CURRENT_VERSION" != "$NEW_VERSION" ]; then
-            # Create and push tag
-            git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
-            
-            # Update changelog
-            semantic-release changelog
-            
-            # Commit changes
-            git add CHANGELOG.md pyproject.toml app/__init__.py
-            git commit -m "chore(release): ${NEW_VERSION} [skip ci]"
-            
-            # Push both the commits and the tag
-            git push origin main --force
-            git push origin "v${NEW_VERSION}"
+          # Build semantic release command with dynamic options
+          RELEASE_CMD="semantic-release version"
+
+          # Add prerelease configuration if specified
+          if [ "$PRERELEASE" = "true" ]; then
+            RELEASE_CMD="$RELEASE_CMD --prerelease"
+            if [ -n "$PRERELEASE_TOKEN" ]; then
+              RELEASE_CMD="$RELEASE_CMD --prerelease-token $PRERELEASE_TOKEN"
+            fi
           fi
+
+          # Add force level if specified
+          if [ -n "$FORCE_LEVEL" ]; then
+            RELEASE_CMD="$RELEASE_CMD --force-level $FORCE_LEVEL"
+          fi
+
+          # Add build metadata if specified
+          if [ -n "$BUILD_METADATA" ]; then
+            RELEASE_CMD="$RELEASE_CMD --build-metadata $BUILD_METADATA"
+          fi
+
+          # Execute the release command
+          eval $RELEASE_CMD
+
+          # Generate changelog and publish
+          semantic-release changelog
+          semantic-release publish
+
+      - name: Verify Release
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get the latest version from git tags
+          VERSION=$(git describe --tags --abbrev=0)
+          VERSION=${VERSION#v}  # Remove 'v' prefix
+
+          # Check if release exists
+          if ! gh release view "v${VERSION}" &>/dev/null; then
+            echo "Release v${VERSION} was not created successfully"
+            exit 1
+          fi
+
+          echo "Release v${VERSION} verified successfully"
 
   ##########################################################################
   # 4. Tag Validation Job
@@ -247,7 +321,7 @@ jobs:
         run: |
           TAG_NAME=${GITHUB_REF#refs/tags/}  # Extract the tag name from the ref
           echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT  # Set the tag_name output
-          
+
           # Get tagger information using git for-each-ref
           TAGGER_NAME=$(git for-each-ref refs/tags/$TAG_NAME --format='%(taggername)')
           TAGGER_EMAIL=$(git for-each-ref refs/tags/$TAG_NAME --format='%(taggeremail)')
@@ -259,7 +333,7 @@ jobs:
           # Define the expected tagger name/email (GitHub Actions bot)
           EXPECTED_TAGGER_NAME="github-actions[bot]"
           EXPECTED_TAGGER_EMAIL="41898282+github-actions[bot]@users.noreply.github.com"
-          
+
           # Compare the actual tagger name and email with the expected values
           if [ "${{ steps.tag_details.outputs.tagger_name }}" != "$EXPECTED_TAGGER_NAME" ] || [ "${{ steps.tag_details.outputs.tagger_email }}" != "$EXPECTED_TAGGER_EMAIL" ]; then
             echo "Error: Tag ${{ steps.tag_details.outputs.tag_name }} was not created by GitHub Actions."
@@ -272,51 +346,5 @@ jobs:
         run: echo "Tag ${{ steps.tag_details.outputs.tag_name }} is valid and created by GitHub Actions."  # Confirmation message
 
   ##########################################################################
-  # 6. Post-Merge Verification Job
+  # Jobs end after release
   ##########################################################################
-  post-merge-verification:
-    name: Post-Merge Verification
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'  # Only run on pushes to main
-    needs: [lint, test, release]  # Removed update-dev-version from needs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Cache Poetry Dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/pypoetry
-            ~/.cache/pip
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-poetry-
-
-      - name: Install dependencies
-        run: |
-          pip install poetry
-          poetry lock --no-update
-          poetry install --no-root
-
-      - name: Run critical post-merge checks
-        run: |
-          poetry run coverage run -m pytest
-          poetry run coverage report -m
-
-      - name: Notify Deployment Success
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: '🚀 Deployment to Production Successful! 🎉'
-            })
-

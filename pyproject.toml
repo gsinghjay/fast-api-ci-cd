@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "qr-code-generator"
-version = "0.1.1-dev.0"
+version = "1.0.6"
 description = "A robust and scalable QR Code Generator application built with FastAPI"
 authors = ["Your Name <your.email@example.com>"]
 readme = "README.md"
@@ -51,6 +51,23 @@ changelog_sections = [
     "performance",
     "refactor"
 ]
+changelog_components = [
+    "semantic_release.changelog.changelog_headers",
+    "semantic_release.changelog.compare_url",
+    "semantic_release.changelog.commit_list"
+]
+changelog_include_prereleases = false
+changelog_exclude_commit_patterns = [
+    "^chore\\(release\\):",
+    "^docs\\(changelog\\):",
+    "\\[skip ci\\]",
+    "\\[ci skip\\]",
+    "\\[no changelog\\]",
+    "^author: github-actions\\[bot\\]",
+    "41898282\\+github-actions\\[bot\\]@users\\.noreply\\.github\\.com"
+]
+changelog_render_title = true
+changelog_render_commit_links = true
 
 [tool.python_semantic_release.remote]
-token = "env: GH_TOKEN" 
+token = "env: GH_TOKEN"
