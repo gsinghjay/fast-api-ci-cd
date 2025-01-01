@@ -153,8 +153,11 @@ jobs:
           CURRENT_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           echo "Current branch: $CURRENT_BRANCH"
           
-          # Generate version and changelog
-          semantic-release version --no-commit --no-tag --no-push
+          # Generate version and changelog (dry run)
+          semantic-release version --print
+          
+          # Create/update changelog
+          semantic-release changelog --force
           
           # Commit and push if there are changes
           if [[ -n $(git status --porcelain CHANGELOG.md) ]]; then
@@ -333,6 +336,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
           # Generate version and changelog
+          semantic-release changelog --force
           semantic-release version
           
           # Regenerate poetry.lock if needed
