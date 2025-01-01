@@ -288,17 +288,26 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
+          echo "=== Verifying Release ==="
           # Get the latest version from git tags
           VERSION=$(git describe --tags --abbrev=0)
           VERSION=${VERSION#v}  # Remove 'v' prefix
+          echo "Latest version tag: v${VERSION}"
 
           # Check if release exists
           if ! gh release view "v${VERSION}" &>/dev/null; then
-            echo "Release v${VERSION} was not created successfully"
+            echo "Error: Release v${VERSION} was not created successfully"
             exit 1
           fi
 
-          echo "Release v${VERSION} verified successfully"
+          # Get release type
+          if [[ "${VERSION}" == *"-beta."* ]]; then
+            echo "Successfully verified beta release v${VERSION}"
+          elif [[ "${VERSION}" == *"-rc."* ]]; then
+            echo "Successfully verified release candidate v${VERSION}"
+          else
+            echo "Successfully verified stable release v${VERSION}"
+          fi
 
   ##########################################################################
   # 4. Tag Validation Job
