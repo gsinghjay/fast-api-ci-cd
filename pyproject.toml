@@ -1,0 +1,33 @@
+[tool.poetry]
+name = "qr-code-generator"
+version = "0.1.0"
+description = "A robust and scalable QR Code Generator application built with FastAPI"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+packages = [{include = "app"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fastapi = "^0.100.0"
+uvicorn = "^0.23.0"
+qrcode = "^7.4.2"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+python-multipart = "^0.0.6"
+structlog = "^23.1.0"
+prometheus-client = "^0.17.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
+black = "^23.7.0"
+coverage = "^7.2.7"
+python-semantic-release = "^8.0.4"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.semantic_release]
+version_variable = ["app/__init__.py:__version__"]
+branch = "main"
+upload_to_pypi = false
+build_command = false 
