@@ -5,10 +5,26 @@
 
 ### Bug Fixes
 
+- **ci**: Improve changelog generation configuration
+  ([`569e547`](https://github.com/gsinghjay/fast-api-ci-cd/commit/569e547ae6ccd4864e2d4f1673b9bbb76b2014c0))
+
+- Add changelog components configuration - Exclude release commits from changelog - Configure
+  changelog formatting
+
+
+## v1.0.5 (2025-01-01)
+
+### Bug Fixes
+
 - **ci**: Add GitHub release creation to CI/CD pipeline
   ([`5a434ca`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5a434ca82fa7a95a9e1eadac4351e69102ddbb0c))
 
 - Add GitHub CLI installation - Create GitHub releases for tags - Add release verification step
+
+### Chores
+
+- **release**: 1.0.5 [skip ci]
+  ([`0f4c74a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0f4c74a0677f7325b2181dd96224a40110924c28))
 
 ### Documentation
 
