@@ -52,6 +52,9 @@ changelog_sections = [
     "refactor"
 ]
 
+[tool.python_semantic_release.branches]
+allow_release_from_branches = ["main", "dev", "feature/*", "ci/*"]
+
 [tool.python_semantic_release.branch_config.main]
 prerelease = false
 match = "main"
@@ -64,4 +67,4 @@ match = "dev"
 [tool.python_semantic_release.branch_config.feature]
 prerelease = true
 prerelease_token = "feature"
-match = "feature/*" 
+match = "(feature|ci)/*" 
