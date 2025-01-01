@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## Unreleased
+
+### Refactoring
+
+- **ci**: Remove dev version updates and notifications
+  ([`6c528ce`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6c528ce86c26118e4f6895c3cdfb2b57388130b4))
+
+- Remove update-dev-version job - Remove notification step from post-merge-verification - Update job
+  dependencies to reflect removed jobs - Simplify post-merge verification process
+
+
 ## v1.0.0 (2025-01-01)
 
 ### Bug Fixes
@@ -164,6 +175,9 @@ Related to: Previous commit that removed --branch flag from workflow
 
 - Add .gitignore file
   ([`ca11881`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ca1188162ac75c5e57b42c081039d4106d1ae0d5))
+
+- Bump version to 0.1.1-dev.0 [skip ci]
+  ([`727dd70`](https://github.com/gsinghjay/fast-api-ci-cd/commit/727dd7047f71762a7a830bddf9dbdd53f2791afe))
 
 - Re-add project files without cache
   ([`46f0bf7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/46f0bf7d5c0ccd7b95983f6dca8acf1347673c42))
