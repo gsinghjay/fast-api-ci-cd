@@ -205,14 +205,19 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+      - name: Sync with remote
+        run: |
+          git pull origin main --rebase
+          git fetch --tags
+
       - name: Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Use semantic-release to handle versioning, changelog, and release
-          semantic-release version
-          semantic-release changelog
-          semantic-release publish
+          semantic-release --ci version
+          semantic-release --ci changelog
+          semantic-release --ci publish
 
       - name: Verify Release
         if: success()
