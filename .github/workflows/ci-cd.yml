@@ -240,10 +240,9 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Configure Git to use HTTPS with token authentication
-          git remote remove origin
-          git remote add origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
-          git fetch origin
+          # Configure Git credentials
+          git config --global credential.helper store
+          echo "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com" > ~/.git-credentials
 
           # Set up commit signing if keys are provided
           if [ -n "${{ secrets.SSH_PRIVATE_SIGNING_KEY }}" ] && [ -n "${{ secrets.SSH_PUBLIC_SIGNING_KEY }}" ]; then
@@ -257,13 +256,15 @@ jobs:
 
       - name: Sync with remote
         run: |
-          git pull origin ${{ github.ref_name }} --rebase || true
-          git fetch --tags
+          git fetch --tags --force
+          git branch --set-upstream-to=origin/${{ github.ref_name }} ${{ github.ref_name }}
+          git pull --rebase || true
 
       - name: Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Add explicit GITHUB_TOKEN for semantic-release
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GIT_CREDENTIALS: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Build semantic release command with dynamic options
           RELEASE_CMD="semantic-release version"
