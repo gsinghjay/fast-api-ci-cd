@@ -3,6 +3,11 @@
 
 ## Unreleased
 
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`3e8eaf6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3e8eaf680efe7fe82ea584d00db003a54bc54650))
+
 
 ## v0.1.1 (2025-01-01)
 
