@@ -71,14 +71,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # Install Python dependencies via Poetry without installing the root package
-          pip install poetry
-
+          # Install specific version of Poetry
+          pip install poetry==1.8.5
+          
           # Generate poetry.lock if it doesn't exist or if pyproject.toml has changed
           poetry lock --no-update
-
+          
           # Install dependencies
           poetry install --no-root
+          
+          # Install semantic release separately to avoid conflicts
+          pip install python-semantic-release==9.15.0
 
       - name: Lint code with Black
         run: poetry run black --check .  # Run black through poetry
