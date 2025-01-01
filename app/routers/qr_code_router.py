@@ -13,10 +13,15 @@ async def create_qr_code(request: QRCodeRequest):
     Generate a QR code from the provided data.
     
     Args:
-        request: QR code generation request containing data and size
+        request: QR code generation request containing data, size, and colors
         
     Returns:
         dict: Contains the base64 encoded QR code image
     """
-    qr_code = generate_qr_code(request.data, request.size)
+    qr_code = generate_qr_code(
+        request.data,
+        request.size,
+        request.fill_color,
+        request.back_color
+    )
     return {"qr_code": qr_code} 
