@@ -153,8 +153,8 @@ jobs:
           CURRENT_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           echo "Current branch: $CURRENT_BRANCH"
           
-          # Generate changelog without version bump
-          semantic-release version --no-commit --no-tag --no-push
+          # Generate changelog
+          semantic-release changelog --unreleased
           
           # Commit and push if there are changes
           if [[ -n $(git status --porcelain CHANGELOG.md) ]]; then
@@ -312,9 +312,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install poetry
-          poetry install --no-root  # Install dependencies without the root package
-          pip install python-semantic-release==9.15.0  # Install specific version
+          # Install specific version of Poetry
+          pip install poetry==1.8.5
+          
+          # Generate poetry.lock if it doesn't exist or if pyproject.toml has changed
+          poetry lock --no-update
+          
+          # Install dependencies
+          poetry install --no-root
+          
+          # Install semantic release separately to avoid conflicts
+          pip install python-semantic-release==9.15.0
 
       - name: Update Version and Changelog
         env:
@@ -327,8 +335,11 @@ jobs:
           # Generate changelog and update version
           semantic-release version
           
+          # Regenerate poetry.lock if needed
+          poetry lock --no-update
+          
           # Commit and push changes
-          git add app/__init__.py pyproject.toml CHANGELOG.md
+          git add app/__init__.py pyproject.toml CHANGELOG.md poetry.lock
           git commit -m "chore(release): bump version and update changelog [skip ci]" || echo "No changes to commit"
           git push origin ${{ github.ref_name }}
 
