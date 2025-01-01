@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## Unreleased
+## v1.0.9 (2025-01-01)
 
 ### Bug Fixes
 
@@ -18,6 +18,9 @@
 
 - Enhance README with semantic-release command details
   ([`3ab6eb3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3ab6eb361490315561a9e167595a27a1476d3533))
+
+- Update CHANGELOG.md [skip ci]
+  ([`334f0f0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/334f0f0988392e915727752b1488287ee937e3ba))
 
 - Update CHANGELOG.md [skip ci]
   ([`293ad54`](https://github.com/gsinghjay/fast-api-ci-cd/commit/293ad54cb99b57bec730b24fab7a93457d6a901b))
