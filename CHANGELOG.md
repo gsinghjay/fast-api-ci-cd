@@ -5,6 +5,12 @@
 
 ### Documentation
 
+- Add branch protection rules and naming conventions
+  ([`851e65b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/851e65b1ab265321f13fa727aff77e9d43997d64))
+
+- Update CHANGELOG.md [skip ci]
+  ([`ff10ee8`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ff10ee80d64129025b50e18286368f96d7a2a262))
+
 - Update mermaid diagram to show complete release flow
   ([`ce2ecad`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ce2ecadbd28dd9a7258197026cb64af1c34b58dc))
 
