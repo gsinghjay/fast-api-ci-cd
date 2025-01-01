@@ -191,6 +191,15 @@ jobs:
           poetry install --no-root
           pip install python-semantic-release==9.15.0
 
+      - name: Install GitHub CLI
+        run: |
+          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
+          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+          && sudo apt update \
+          && sudo apt install gh -y
+
       - name: Configure Git
         run: |
           git config --global user.name "github-actions[bot]"
@@ -235,12 +244,21 @@ jobs:
               # Generate new changelog
               semantic-release changelog
 
+              # Extract changes since last version for release notes
+              RELEASE_NOTES=$(git log "v${CURRENT_VERSION}..HEAD" --pretty=format:"- %s%n%b")
+
               # Commit and push changes
               git add CHANGELOG.md pyproject.toml app/__init__.py
               git commit -m "chore(release): ${NEW_VERSION} [skip ci]"
               git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
               git push origin main --force
               git push origin "v${NEW_VERSION}"
+
+              # Create GitHub Release
+              gh release create "v${NEW_VERSION}" \
+                --title "Release v${NEW_VERSION}" \
+                --notes "${RELEASE_NOTES}" \
+                --generate-notes
 
               echo "Successfully released version ${NEW_VERSION}"
             else
@@ -249,6 +267,22 @@ jobs:
           else
             echo "No changes warranting a new release"
           fi
+
+      - name: Verify Release
+        if: success()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get the latest version
+          LATEST_VERSION=$(git describe --tags --abbrev=0)
+
+          # Check if release exists
+          if ! gh release view "${LATEST_VERSION}" &>/dev/null; then
+            echo "Release ${LATEST_VERSION} was not created successfully"
+            exit 1
+          fi
+
+          echo "Release ${LATEST_VERSION} verified successfully"
 
   ##########################################################################
   # 4. Tag Validation Job
