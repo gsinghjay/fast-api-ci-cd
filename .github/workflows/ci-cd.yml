@@ -76,8 +76,8 @@ jobs:
           # Install Black directly (in case poetry install fails)
           pip install black
 
-          # Install Node-based Commitlint globally
-          npm install -g @commitlint/cli @commitlint/config-conventional
+          # Install Commitlint and its conventional config
+          npm install --save-dev @commitlint/cli @commitlint/config-conventional
 
       - name: Lint code with Black
         run: poetry run black --check .  # Run black through poetry
@@ -85,17 +85,11 @@ jobs:
       - name: Check commit messages with Commitlint
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            # Define the commit range for pull requests
-            COMMIT_RANGE="${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }}"
+            npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
           else
-            # Define the commit range for pushes (e.g., last 10 commits)
-            COMMIT_RANGE="HEAD~10..HEAD"
+            # For direct pushes, check the last commit
+            npx commitlint --from HEAD~1 --to HEAD --verbose
           fi
-          # Extract the first and last commit SHAs in the range
-          COMMIT_FROM=$(git rev-parse $COMMIT_RANGE | head -n1)
-          COMMIT_TO=$(git rev-parse $COMMIT_RANGE | tail -n1)
-          # Run Commitlint on the specified commit range
-          commitlint --from=$COMMIT_FROM --to=$COMMIT_TO
 
   ##########################################################################
   # 2. Test Job
