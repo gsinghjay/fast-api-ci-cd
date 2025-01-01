@@ -174,80 +174,59 @@ jobs:
   ##########################################################################
   release:
     name: Release
-    if: startsWith(github.ref, 'refs/tags/v')  # Only run on tag pushes matching 'v*'
-    needs: test  # Ensure the 'test' job completes before starting 'release'
-    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'  # Only run on pushes to main
+    needs: test
+    runs-on: ubuntu-latest
     steps:
       - name: Check out code
-        uses: actions/checkout@v3  # Checks out the repository code
-
-      - name: Set up Node (for Commitlint)
-        uses: actions/setup-node@v3
+        uses: actions/checkout@v3
         with:
-          node-version: 18  # Specify Node.js version
+          fetch-depth: 0  # Important for correct version calculation
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"  # Use latest stable Python version
-
-      - name: Cache Poetry Dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/pypoetry  # Poetry cache directory
-            ~/.cache/pip        # pip cache directory
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}  # Unique cache key
-          restore-keys: |
-            ${{ runner.os }}-poetry-  # Fallback keys
-
-      - name: Cache npm Dependencies
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm  # npm cache directory
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}  # Unique cache key
-          restore-keys: |
-            ${{ runner.os }}-npm-  # Fallback keys
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
-          pip install poetry
-          poetry install --no-root  # Install Python dependencies without the root package
-          pip install python-semantic-release  # Install Semantic Release for Python
-          npm install -g @commitlint/cli @commitlint/config-conventional  # Install Commitlint globally
+          pip install poetry==1.8.5
+          poetry install --no-root
+          pip install python-semantic-release==9.15.0
 
-      - name: Verify Tag is on main Branch
+      - name: Configure Git
         run: |
-          # Fetch all branches to ensure origin/main is up to date
-          git fetch origin main
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Get the commit SHA that the tag points to
-          TAG_COMMIT_SHA=$(git rev-parse $GITHUB_REF)
-
-          # Get the latest commit SHA on main
-          MAIN_COMMIT_SHA=$(git rev-parse origin/main)
-
-          # Compare the tag commit SHA with the latest commit on main
-          if [ "$TAG_COMMIT_SHA" != "$MAIN_COMMIT_SHA" ]; then
-            echo "Error: Tag $GITHUB_REF is not pointing to the latest commit on main."
-            exit 1  # Exit with error if the tag is not on the latest main commit
-          fi
-
-      - name: Run Semantic Release
+      - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for release creation
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Run semantic release to generate changelog and publish
+          # Get the current version
+          CURRENT_VERSION=$(poetry version -s)
+          echo "Current version: $CURRENT_VERSION"
+          
+          # Run semantic release
           semantic-release version
-          semantic-release changelog
           
-          # Commit the changelog if there are changes
-          git add CHANGELOG.md
-          git commit -m "docs: update CHANGELOG.md [skip ci]" || echo "No changes to CHANGELOG.md"
-          git push origin main
+          # Get the new version
+          NEW_VERSION=$(poetry version -s)
+          echo "New version: $NEW_VERSION"
           
-          # Publish the release
-          semantic-release publish
+          if [ "$CURRENT_VERSION" != "$NEW_VERSION" ]; then
+            # Create and push tag
+            git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
+            git push origin "v${NEW_VERSION}"
+            
+            # Update changelog
+            semantic-release changelog
+            
+            # Commit changes
+            git add CHANGELOG.md pyproject.toml app/__init__.py
+            git commit -m "chore(release): ${NEW_VERSION} [skip ci]"
+            git push origin main
+          fi
 
   ##########################################################################
   # 4. Tag Validation Job
@@ -295,56 +274,50 @@ jobs:
   ##########################################################################
   update-dev-version:
     name: Update dev Branch Version
-    if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.ref == 'refs/heads/dev' && github.event_name == 'push')  # Run on pushes to main or dev
-    needs: test  # Changed from 'release' to 'test' since release only runs on tags
-    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: release
+    runs-on: ubuntu-latest
     steps:
-      - name: Check out branch
+      - name: Check out dev branch
         uses: actions/checkout@v3
         with:
-          ref: ${{ github.ref_name }}  # Checkout the current branch
-          fetch-depth: 0  # Fetch all history for changelog generation
+          ref: dev
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"  # Use latest stable Python version
+          python-version: "3.11"
 
       - name: Install dependencies
         run: |
-          # Install specific version of Poetry
           pip install poetry==1.8.5
-          
-          # Generate poetry.lock if it doesn't exist or if pyproject.toml has changed
-          poetry lock --no-update
-          
-          # Install dependencies
           poetry install --no-root
-          
-          # Install semantic release separately to avoid conflicts
           pip install python-semantic-release==9.15.0
 
-      - name: Update Version and Changelog
+      - name: Update dev version
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Configure git
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          # Generate changelog and version
-          semantic-release changelog
-          semantic-release version
+          # Get current main version
+          git fetch origin main
+          MAIN_VERSION=$(git show origin/main:pyproject.toml | grep "version = " | cut -d'"' -f2)
           
-          # Regenerate poetry.lock if needed
-          poetry lock --no-update
+          # Calculate next dev version
+          NEXT_VERSION=$(echo $MAIN_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
+          DEV_VERSION="${NEXT_VERSION}-dev.0"
           
-          # Commit and push changes if any
-          if [[ -n $(git status --porcelain) ]]; then
-            git add app/__init__.py pyproject.toml CHANGELOG.md poetry.lock
-            git commit -m "chore(release): bump version and update changelog [skip ci]"
-            git push origin ${{ github.ref_name }}
-          fi
+          # Update version in files
+          poetry version $DEV_VERSION
+          sed -i "s/__version__ = .*/__version__ = \"${DEV_VERSION}\"/" app/__init__.py
+          
+          # Commit and push changes
+          git add pyproject.toml app/__init__.py
+          git commit -m "chore: bump version to ${DEV_VERSION} [skip ci]"
+          git push origin dev
 
   ##########################################################################
   # 6. Post-Merge Verification Job
@@ -400,3 +373,60 @@ jobs:
               issue_number: context.issue.number,
               body: '🚀 Deployment to Production Successful! 🎉'
             })
+
+  release-dev:
+    name: Release Dev
+    if: github.ref == 'refs/heads/dev' && github.event_name == 'push'  # Only run on pushes to dev
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install poetry==1.8.5
+          poetry install --no-root
+          pip install python-semantic-release==9.15.0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Release Alpha Version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Get the current version
+          CURRENT_VERSION=$(poetry version -s)
+          echo "Current version: $CURRENT_VERSION"
+          
+          # Run semantic release with alpha tag
+          semantic-release version
+          
+          # Get the new version
+          NEW_VERSION=$(poetry version -s)
+          echo "New version: $NEW_VERSION"
+          
+          if [ "$CURRENT_VERSION" != "$NEW_VERSION" ]; then
+            # Create and push alpha tag
+            git tag -a "v${NEW_VERSION}" -m "Alpha Release v${NEW_VERSION}"
+            git push origin "v${NEW_VERSION}"
+            
+            # Update changelog
+            semantic-release changelog
+            
+            # Commit changes
+            git add CHANGELOG.md pyproject.toml app/__init__.py
+            git commit -m "chore(release): ${NEW_VERSION} [skip ci]"
+            git push origin dev
+          fi
+

@@ -30,7 +30,7 @@ build-backend = "poetry.core.masonry.api"
 
 # New-style config for python-semantic-release 9.x
 [tool.python_semantic_release]
-version_variable = "app/__init__.py:__version__"
+version_variable = ["app/__init__.py:__version__"]
 version_toml = ["pyproject.toml:tool.poetry.version"]
 version_source = "commit"
 commit_version_number = true
@@ -53,18 +53,17 @@ changelog_sections = [
 ]
 
 [tool.python_semantic_release.branches]
-allow_release_from_branches = ["main", "dev", "feature/*", "ci/*"]
+prerelease_token = "alpha"
+prerelease = true
 
-[tool.python_semantic_release.branch_config.main]
-prerelease = false
+[tool.python_semantic_release.branches.main]
 match = "main"
+prerelease = false
 
-[tool.python_semantic_release.branch_config.dev]
+[tool.python_semantic_release.branches.dev]
+match = "dev"
 prerelease = true
 prerelease_token = "alpha"
-match = "dev"
 
-[tool.python_semantic_release.branch_config.feature]
-prerelease = true
-prerelease_token = "feature"
-match = "(feature|ci)/*" 
+[tool.python_semantic_release.remote]
+token = "GH_TOKEN" 
