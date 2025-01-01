@@ -5,11 +5,26 @@
 
 ### Bug Fixes
 
+- **ci**: Add GitHub release creation to CI/CD pipeline
+  ([`5a434ca`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5a434ca82fa7a95a9e1eadac4351e69102ddbb0c))
+
+- Add GitHub CLI installation - Create GitHub releases for tags - Add release verification step
+
+
+## v1.0.4 (2025-01-01)
+
+### Bug Fixes
+
 - **version**: Align version numbers with git tags
   ([`67e0852`](https://github.com/gsinghjay/fast-api-ci-cd/commit/67e0852517a7d13d2c3cb5a00ac0501d235f99dc))
 
 This commit fixes the version number discrepancy between files and git tags, ensuring consistent
   versioning across the project.
+
+### Chores
+
+- **release**: 1.0.4 [skip ci]
+  ([`b8d50a7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b8d50a7fe330e21e00e6acafb2689c268088780d))
 
 ### Code Style
 
