@@ -60,7 +60,9 @@ changelog_include_prereleases = false
 changelog_exclude_commit_patterns = [
     "^chore\\(release\\):",
     "^docs\\(changelog\\):",
-    ".*\\[skip ci\\].*"
+    "\\[skip ci\\]",
+    "\\[ci skip\\]",
+    "\\[no changelog\\]"
 ]
 changelog_render_title = true
 changelog_render_commit_links = true
