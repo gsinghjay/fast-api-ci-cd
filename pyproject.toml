@@ -44,26 +44,28 @@ tag_type = "annotated"  # Ensures tags are annotated for validation
 allow_zero_version = true
 commit_author = "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
 commit_message = "chore(release): {version} [skip ci]"
+branch = "main"  # Default branch for releases
 
 [tool.python_semantic_release.remote]
 token = "env:GH_TOKEN"  # Corrected token reference without space
 
-# Branch configurations
-[tool.semantic_release.branches.main]
-match = "main"
+[tool.python_semantic_release.branches.main]
+match = ["main", "master"]
 prerelease = false
+prerelease_token = ""
 
-[tool.semantic_release.branches.develop]
-match = "develop"
+[tool.python_semantic_release.branches.develop]
+match = ["develop", "dev"]
 prerelease = true
 prerelease_token = "beta"
 
-[tool.semantic_release.branches.release]
-match = "release/.*"
+[tool.python_semantic_release.branches.release]
+match = ["release/*", "releases/*"]
 prerelease = true
 prerelease_token = "rc"
 
-changelog_sections = [
+[tool.python_semantic_release.changelog]
+sections = [
     "feature",
     "fix",
     "breaking",
@@ -71,13 +73,13 @@ changelog_sections = [
     "performance",
     "refactor"
 ]
-changelog_components = [
+components = [
     "semantic_release.changelog.changelog_headers",
     "semantic_release.changelog.compare_url",
     "semantic_release.changelog.commit_list"
 ]
-changelog_include_prereleases = false
-changelog_exclude_commit_patterns = [
+include_prereleases = false
+exclude_commit_patterns = [
     "^chore\\(release\\):",
     "^docs\\(changelog\\):",
     "\\[skip ci\\]",
@@ -86,5 +88,5 @@ changelog_exclude_commit_patterns = [
     "^author: github-actions\\[bot\\]",
     "41898282\\+github-actions\\[bot\\]@users\\.noreply\\.github\\.com"
 ]
-changelog_render_title = true
-changelog_render_commit_links = true
+render_title = true
+render_commit_links = true

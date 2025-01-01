@@ -215,6 +215,7 @@ jobs:
         with:
           fetch-depth: 0  # Important for correct version calculation
           token: ${{ secrets.PAT_TOKEN }}  # Use PAT instead of GITHUB_TOKEN
+          ref: ${{ github.ref }}  # Explicitly checkout the triggering ref
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -229,9 +230,13 @@ jobs:
 
       - name: Configure Git for Semantic Release
         run: |
-          # Set up Git user identity only
+          # Set up Git user identity
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Ensure we're on the correct branch
+          git checkout "${GITHUB_REF#refs/heads/}" || git checkout -b "${GITHUB_REF#refs/heads/}"
+          git status
 
       - name: Sync with Remote Repository
         run: |
@@ -244,7 +249,7 @@ jobs:
           echo "Successfully fetched from remote"
 
           # Set up tracking branch
-          if ! git branch --set-upstream-to=origin/${{ github.ref_name }} ${{ github.ref_name }}; then
+          if ! git branch --set-upstream-to=origin/${GITHUB_REF#refs/heads/} ${GITHUB_REF#refs/heads/}; then
             echo "Warning: Could not set upstream branch (this is normal for new branches)"
           fi
 
