@@ -1,17 +1,249 @@
-# Changelog
+# CHANGELOG
 
-All notable changes to this project will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## v1.0.0 (2025-01-01)
 
-## [Unreleased]
+### Bug Fixes
 
-### Added
-- Initial project setup with FastAPI
-- QR code generation endpoint
-- Health check endpoint
-- Structured logging with structlog
-- CI/CD pipeline with GitHub Actions
-- Automated testing with pytest and coverage
-- Automated versioning with semantic-release 
+- Configure semantic-release for changelog generation
+  ([`58bfc6b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/58bfc6bcaa10ec80cadc7d082565211acc8ff1c3))
+
+- Ensure black is installed before running lint checks
+  ([`4476fff`](https://github.com/gsinghjay/fast-api-ci-cd/commit/4476fff05f9692005723662940d58fbabaa01f24))
+
+- Improve changelog generation and branch handling
+  ([`c7f0bc6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c7f0bc6f91ab2d02ade56797f6d4c72cd98d8935))
+
+- Improve changelog generation with force flag and version print
+  ([`4cb19ad`](https://github.com/gsinghjay/fast-api-ci-cd/commit/4cb19ad7c146fa46fa5c7239c76ab5df02492307))
+
+- Improve semantic-release configuration and workflow
+  ([`1df8745`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1df874501667516c4b5eb4afa0b3d6277f5a2973))
+
+- Remove unsupported flags from semantic-release commands
+  ([`590b51b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/590b51b9315dc1f5e4a5dd6a23b20a908d5c6444))
+
+- Update branch patterns in semantic-release config
+  ([`fcd7f79`](https://github.com/gsinghjay/fast-api-ci-cd/commit/fcd7f79464968680fb2c97327e5d030b9fda967e))
+
+- Update changelog generation to work on all branches
+  ([`cc22720`](https://github.com/gsinghjay/fast-api-ci-cd/commit/cc227202bab703223f8f218f06f32fafeab48694))
+
+- Update dependencies and replace deprecated on_event with lifespan
+  ([`38d748b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/38d748b1c206b34d3cfd2a397d3315814e6e8a82))
+
+- Update GitHub Actions workflow with correct action references
+  ([`b81d444`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b81d444289d28d8dbbf74a2e8daee01cc9bb8695))
+
+- Update poetry lock handling in CI/CD pipeline
+  ([`f4de1b4`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f4de1b4345566a36addd634eae2868718b950ab8))
+
+- Update semantic-release build command configuration
+  ([`1cd7266`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1cd7266690bf4bbf8dedb7c5772763f5ed4b6f79))
+
+- Update semantic-release commands to match v9.15.0 documentation
+  ([`41b8fe1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/41b8fe1af632998b6ac01d3ac09aad6606bd246a))
+
+- Update semantic-release configuration for version 9.x
+  ([`ee23aba`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ee23ababd942ddfe685d03e2211191999c25467d))
+
+- Update semantic-release configuration format
+  ([`f332024`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f3320242aba7757250ef43fe52ee7bed12333056))
+
+- Update semantic-release flags for version 9.x
+  ([`2f7d7c3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2f7d7c3bd89812e6ff161d86fee8291bf798eba4))
+
+- Update semantic-release version variable configuration
+  ([`64b26e6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/64b26e68f4228c237119f6ce3bcb71ff20e90853))
+
+- Update to python-semantic-release 9.x configuration format
+  ([`316856b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/316856b4c52f52add7bae3dcb655721953a6c15e))
+
+- Update version_toml format in semantic-release config
+  ([`0c456ed`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0c456edbab9365a53ac0a3fe12a3d2cdbcd947cc))
+
+- Update workflow to handle dev branch merges
+  ([`1e269d0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1e269d0102d98c4079e9154c475f13204c30ed18))
+
+- Use string format for Python versions in matrix
+  ([`9a402a3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9a402a37712d1540b9c0c1c32ed143040f6d23d6))
+
+- **ci**: Correct semantic-release command syntax
+  ([`d94883b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d94883b507f1914edf2111be6b82be5b33fc0aea))
+
+- Remove incorrect --prerelease flag - Rely on branch configuration for alpha releases - Simplify
+  release command to use configuration
+
+This fixes the "unexpected extra argument" error in the dev release workflow.
+
+- **ci**: Correct semantic-release configuration for alpha releases
+  ([`9caebc7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9caebc78728868c93d7fa22774ce0894cf0f9d96))
+
+- Update semantic-release branch configuration in pyproject.toml - Add explicit branch handling for
+  dev and main - Add --prerelease alpha flag to dev branch releases - Fix branch recognition issue
+  in release workflow - Add explicit git checkout for dev branch
+
+This fixes the issue where no releases were being generated on the dev branch and ensures proper
+  alpha versioning.
+
+- **ci**: Correct semantic-release version command in dev workflow
+  ([`15b6ef9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/15b6ef976a1c6fff0b42f241cf39f516cd31ee28))
+
+- Remove unsupported --branch flag from semantic-release command - Rely on pyproject.toml branch
+  configuration instead - Maintain backward compatibility with semantic-release 9.x
+
+- **ci**: Improve semantic-release workflow and permissions
+  ([`3723090`](https://github.com/gsinghjay/fast-api-ci-cd/commit/372309076ca902404431964b9d9cebe0fb7dece0))
+
+- Update semantic-release configuration in pyproject.toml - Enhance release job with proper version
+  handling - Add dev branch version management - Add proper git tagging and changelog updates -
+  Document required repository permissions
+
+BREAKING CHANGE: This updates the semantic-release configuration and requires specific GitHub
+  repository permissions to be set.
+
+- **ci**: Remove explicit branch flag from semantic-release
+  ([`58a8169`](https://github.com/gsinghjay/fast-api-ci-cd/commit/58a8169013e0f00c70553496f27bbe28b17c7c53))
+
+- Remove redundant --branch flag as it's not needed with pyproject.toml config - Simplify
+  semantic-release command for better maintainability - Ensure compatibility with semantic-release
+  configuration in pyproject.toml
+
+BREAKING CHANGE: Removes explicit branch flag from semantic-release command. Branch configuration is
+  now exclusively managed through pyproject.toml.
+
+- **ci**: Resolve dev branch release configuration
+  ([`bacdbb1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/bacdbb172850b0ea62052558614d09e87ec0e2f3))
+
+- Add default branch setting in pyproject.toml - Simplify semantic-release branch configuration -
+  Add explicit --branch flag to release command - Remove redundant branch configurations
+
+This fixes the "branch 'dev' isn't in any release groups" error and enables proper alpha releases on
+  the dev branch.
+
+- **ci**: Resolve duplicate branch configuration in pyproject.toml
+  ([`4691097`](https://github.com/gsinghjay/fast-api-ci-cd/commit/4691097706204849781d84c73b8e005f588ba4e0))
+
+- Remove duplicate branch configuration entries - Keep single unified branch configuration under
+  [tool.python_semantic_release.branches] - Fix "Cannot declare branches.dev twice" error - Ensure
+  semantic-release can properly identify release groups
+
+Fixes error: Cannot declare ('tool', 'python_semantic_release', 'branches', 'dev') twice
+
+- **ci**: Resolve release step git sync issues
+  ([`eea5188`](https://github.com/gsinghjay/fast-api-ci-cd/commit/eea5188da46653ab6922e861e3ad932d6440b582))
+
+- Add git pull with rebase to sync with remote - Combine git pushes to reduce race conditions - Add
+  force flag to ensure version updates succeed - Improve release step error handling
+
+- **ci**: Resolve semantic-release configuration conflicts
+  ([`125ec19`](https://github.com/gsinghjay/fast-api-ci-cd/commit/125ec1925fcaa1115e730c588c1cc4a5fbca1b17))
+
+- Remove duplicate branch configurations - Add branch_patterns section for better branch matching -
+  Fix configuration structure to prevent value overwriting - Clarify branch release patterns for
+  main and dev
+
+This fixes the "Cannot overwrite a value" error in the CI pipeline.
+
+- **ci**: Simplify changelog update step after removing branch protection
+  ([`4d33e06`](https://github.com/gsinghjay/fast-api-ci-cd/commit/4d33e06c78d41004a86634daece3dc62ab4fe3ff))
+
+- Remove complex PR creation logic since branch protection is disabled - Use direct push to current
+  branch for changelog updates - Maintain basic git configuration for bot commits
+
+- **ci**: Update semantic-release branch configuration format
+  ([`9b03616`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9b03616b7369c101176081218a0ce4d004fc219d))
+
+- Update branch configuration format in pyproject.toml to match semantic-release 9.x expectations -
+  Simplify branch configuration by using direct format instead of nested sections - Fix "branch not
+  in release groups" error by using correct configuration structure
+
+Related to: Previous commit that removed --branch flag from workflow
+
+### Chores
+
+- Add .gitignore file
+  ([`ca11881`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ca1188162ac75c5e57b42c081039d4106d1ae0d5))
+
+- Re-add project files without cache
+  ([`46f0bf7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/46f0bf7d5c0ccd7b95983f6dca8acf1347673c42))
+
+- **release**: Bump version and update changelog [skip ci]
+  ([`88aba68`](https://github.com/gsinghjay/fast-api-ci-cd/commit/88aba685be1fbafbf2956694876f3a0ea4f344ae))
+
+### Code Style
+
+- Format code with black
+  ([`4c0449a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/4c0449a9b4313c625575a3c5ce262cce6ec6ea80))
+
+### Continuous Integration
+
+- Enable CI/CD pipeline for all branches
+  ([`3083dd1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3083dd1bd72ff48000e155884a6bdf5dd568753a))
+
+- Fix commitlint configuration and workflow
+  ([`befcdf3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/befcdf3db1752523e6f8cf46e32638f9c10aea8f))
+
+- Handle poetry.lock file in CI/CD pipeline
+  ([`105f017`](https://github.com/gsinghjay/fast-api-ci-cd/commit/105f0176e6760828503b618431a528fe87a7f5fa))
+
+- Remove Python 3.9 from test matrix
+  ([`320239c`](https://github.com/gsinghjay/fast-api-ci-cd/commit/320239c9e3061f8cb061b611326f22acf291c19a))
+
+- Standardize poetry installation and lock file handling
+  ([`e802d7e`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e802d7edc5cc431fa47eac2f17efc49c5ef6627c))
+
+- Switch to wagoid/commitlint-github-action for commit linting
+  ([`928b238`](https://github.com/gsinghjay/fast-api-ci-cd/commit/928b2385d98278ad01f49a9e96751a8162316b0f))
+
+- Update all Python versions to 3.11
+  ([`cd70ae6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/cd70ae67f60c9f36fbd7e6e7a383bd159302475b))
+
+- Update Python version matrix to 3.9-3.11
+  ([`ed276a1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ed276a1e5b2a4c4fcca29162bc3f9af55639c09a))
+
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`0423265`](https://github.com/gsinghjay/fast-api-ci-cd/commit/04232653f0f2f0044ebfcd60d4800aa47c3e3a00))
+
+- Update CHANGELOG.md [skip ci]
+  ([`896cf4e`](https://github.com/gsinghjay/fast-api-ci-cd/commit/896cf4e3c5228e7f0422ed0966e27b0afd0cf100))
+
+### Features
+
+- Add changelog generation to CI/CD pipeline
+  ([`93241cb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/93241cb66dcbaf28d2e5bfd29e956eb4cc8ea520))
+
+- Add custom color support for QR codes
+  ([`3d10cd8`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3d10cd8be9fe78d429219a33e92921dc71b53b0c))
+
+- Add QR code generation functionality
+  ([`9fbb062`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9fbb0627c04420588903c548c0b649ce5e7e416f))
+
+- Add structured logging configuration
+  ([`a6fff8e`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a6fff8e7a9ded98d0d73b0b205d2eb3f42179e3c))
+
+- Enable changelog updates in feature branches
+  ([`3f98945`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3f98945546615681e5826d19586a0ce65846d800))
+
+- Initial project setup with basic FastAPI application
+  ([`9b48962`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9b489623ca64b390e10124ae5d6efb0cb1ad4ad3))
+
+- **ci**: Add alpha release support for dev branch
+  ([`1675520`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1675520d37064c770fdb8dd383e7f014a5e66063))
+
+- Add semantic-release branch configuration for alpha releases - Add dedicated release workflow for
+  dev branch - Configure prerelease tokens and version format - Maintain separate version tracks for
+  dev and main branches
+
+This enables automatic alpha releases when merging to dev branch, while maintaining standard
+  releases on main.
+
+### Refactoring
+
+- **ci**: Simplify release process and changelog generation
+  ([`73cee3f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/73cee3f3a5ae0135457783b1d6e827578edb00bc))
+
+- Remove alpha release configuration - Simplify semantic-release config - Update changelog only on
+  main branch - Remove unnecessary release-dev job
