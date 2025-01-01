@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## Unreleased
+## v1.0.10 (2025-01-01)
 
 ### Bug Fixes
 
@@ -12,6 +12,9 @@
 
 - Remove [skip ci] annotations from changelog
   ([`7d0e78d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/7d0e78dda4346c407c897ab97c46ef56424b4910))
+
+- Update CHANGELOG.md [skip ci]
+  ([`7c6ae65`](https://github.com/gsinghjay/fast-api-ci-cd/commit/7c6ae65b8b02bc1f4f63556076ef28126cc675f1))
 
 - **readme**: Add comprehensive table of contents and badges
   ([`1d8d53d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1d8d53d911b7de7895ecba8a086a4fc076e4add4))
