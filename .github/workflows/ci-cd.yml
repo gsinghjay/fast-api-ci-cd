@@ -239,18 +239,21 @@ jobs:
       - name: Configure Git for Semantic Release
         run: |
           # Configure Git credentials using token
-          git config --global credential.helper store
-          echo "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com" > ~/.git-credentials
+          git config --global --unset-all credential.helper
+          git config --global --add credential.helper store
+          echo "https://oauth2:${{ secrets.GITHUB_TOKEN }}@github.com" > ~/.git-credentials
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # Ensure the remote URL is using HTTPS
-          git remote set-url origin "https://github.com/${{ github.repository }}.git"
+          # Ensure the remote URL is using HTTPS with token
+          git remote set-url origin "https://oauth2:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git"
+          # Debug information
+          git config --global --list
+          git remote -v
 
       - name: Sync with remote
         run: |
           # Fetch all history and tags
           git fetch --prune --tags --force origin
-
           # Set up tracking and sync
           git branch --set-upstream-to=origin/${{ github.ref_name }} ${{ github.ref_name }} || true
           git pull --rebase || true
@@ -265,6 +268,9 @@ jobs:
           # Additional environment variables for debugging
           PYTHONVERBOSE: 1
           GIT_PYTHON_TRACE: 1
+          # Add Git debug
+          GIT_TRACE: 1
+          GIT_CURL_VERBOSE: 1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           git_committer_name: "github-actions[bot]"
