@@ -51,6 +51,16 @@ changelog_sections = [
     "performance",
     "refactor"
 ]
+changelog_components = [
+    "semantic_release.changelog.changelog_headers",
+    "semantic_release.changelog.compare_url",
+]
+changelog_include_prereleases = false
+changelog_exclude_commit_patterns = [
+    "^chore\\(release\\):",
+    "^docs\\(changelog\\):",
+    ".*\\[skip ci\\].*"
+]
 
 [tool.python_semantic_release.remote]
 token = "env: GH_TOKEN"
