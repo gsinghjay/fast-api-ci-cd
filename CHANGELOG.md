@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## Unreleased
+
+### Documentation
+
+- Update README with detailed versioning and CI/CD information
+  ([`9106aa9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9106aa9eb79a1270a63904dc1519e11edd8b9e01))
+
+### Refactoring
+
+- **ci**: Simplify release process using semantic-release commands
+  ([`8225d08`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8225d087dd8437ee685d00cfc5a69ec3b11ede23))
+
+
 ## v1.0.8 (2025-01-01)
 
 ### Bug Fixes
