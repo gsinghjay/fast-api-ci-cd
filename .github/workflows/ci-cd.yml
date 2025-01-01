@@ -203,15 +203,27 @@ jobs:
           # Ensure we're up to date with remote
           git pull origin main --rebase
           
-          # Get current version from the last tag
+          # Get current version and clean it
           CURRENT_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.1.0")
           CURRENT_VERSION=${CURRENT_VERSION#v}
           echo "Current version: $CURRENT_VERSION"
           
-          # Run semantic release to determine if new version is needed
-          if semantic-release version --print; then
-            # Get the new version that would be created
-            NEW_VERSION=$(semantic-release version --print)
+          # Check for changes that warrant a new release
+          CHANGES=$(git log "v${CURRENT_VERSION}..HEAD" --pretty=format:"%s" | grep -E "^(feat|fix|perf|refactor)(\(.+\))?:")
+          
+          if [ -n "$CHANGES" ]; then
+            # Determine new version based on conventional commits
+            if echo "$CHANGES" | grep -q "^feat!:\|BREAKING CHANGE:"; then
+              # Major change
+              NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. '{print $1+1".0.0"}')
+            elif echo "$CHANGES" | grep -q "^feat:"; then
+              # Minor change
+              NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. '{print $1"."$2+1".0"}')
+            else
+              # Patch change
+              NEW_VERSION=$(echo "$CURRENT_VERSION" | awk -F. '{print $1"."$2"."$3+1}')
+            fi
+            
             echo "New version will be: $NEW_VERSION"
             
             # Check if tag already exists
@@ -220,7 +232,7 @@ jobs:
               poetry version $NEW_VERSION
               sed -i "s/__version__ = .*/__version__ = \"${NEW_VERSION}\"/" app/__init__.py
               
-              # Update changelog
+              # Generate new changelog
               semantic-release changelog
               
               # Commit and push changes
@@ -229,11 +241,13 @@ jobs:
               git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
               git push origin main --force
               git push origin "v${NEW_VERSION}"
+              
+              echo "Successfully released version ${NEW_VERSION}"
             else
               echo "Tag v${NEW_VERSION} already exists, skipping release"
             fi
           else
-            echo "No new release needed based on commits"
+            echo "No changes warranting a new release"
           fi
 
   ##########################################################################
