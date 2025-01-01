@@ -37,7 +37,6 @@ commit_version_number = true
 upload_to_repository = false
 build_command = "poetry build"
 changelog_file = "CHANGELOG.md"
-branch = "main"
 commit_parser = "conventional_commits"
 major_on_zero = false
 tag_format = "v{version}"
@@ -52,6 +51,19 @@ changelog_sections = [
     "performance",
     "refactor"
 ]
+
+[tool.python_semantic_release.branches]
+prerelease_token = "alpha"
+prerelease = true
+
+[tool.python_semantic_release.branches.main]
+match = "main"
+prerelease = false
+
+[tool.python_semantic_release.branches.dev]
+match = "dev"
+prerelease = true
+prerelease_token = "alpha"
 
 [tool.python_semantic_release.remote]
 token = "GH_TOKEN" 
