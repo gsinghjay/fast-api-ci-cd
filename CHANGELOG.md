@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## Unreleased
+## v1.0.0 (2025-01-01)
 
 ### Bug Fixes
 
@@ -203,6 +203,9 @@ Related to: Previous commit that removed --branch flag from workflow
   ([`ed276a1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ed276a1e5b2a4c4fcca29162bc3f9af55639c09a))
 
 ### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`0423265`](https://github.com/gsinghjay/fast-api-ci-cd/commit/04232653f0f2f0044ebfcd60d4800aa47c3e3a00))
 
 - Update CHANGELOG.md [skip ci]
   ([`896cf4e`](https://github.com/gsinghjay/fast-api-ci-cd/commit/896cf4e3c5228e7f0422ed0966e27b0afd0cf100))
