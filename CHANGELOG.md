@@ -10,6 +10,11 @@
 
 - Add GitHub CLI installation - Create GitHub releases for tags - Add release verification step
 
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`a6d7a09`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a6d7a097a096fd683c3b34d3630f694ac35d89ae))
+
 
 ## v1.0.4 (2025-01-01)
 
