@@ -272,98 +272,42 @@ jobs:
         run: echo "Tag ${{ steps.tag_details.outputs.tag_name }} is valid and created by GitHub Actions."  # Confirmation message
 
   ##########################################################################
-  # 5. Update dev Branch Version
+  # 6. Post-Merge Verification Job
   ##########################################################################
-  update-dev-version:
-    name: Update dev Branch Version
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    needs: release
+  post-merge-verification:
+    name: Post-Merge Verification
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'  # Only run on pushes to main
+    needs: [lint, test, release]  # Removed update-dev-version from needs
     runs-on: ubuntu-latest
     steps:
-      - name: Check out dev branch
+      - name: Check out code
         uses: actions/checkout@v3
-        with:
-          ref: dev
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
-        run: |
-          pip install poetry==1.8.5
-          poetry install --no-root
-          pip install python-semantic-release==9.15.0
-
-      - name: Update dev version
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          
-          # Get current main version
-          git fetch origin main
-          MAIN_VERSION=$(git show origin/main:pyproject.toml | grep "version = " | cut -d'"' -f2)
-          
-          # Calculate next dev version
-          NEXT_VERSION=$(echo $MAIN_VERSION | awk -F. '{$NF = $NF + 1;} 1' | sed 's/ /./g')
-          DEV_VERSION="${NEXT_VERSION}-dev.0"
-          
-          # Update version in files
-          poetry version $DEV_VERSION
-          sed -i "s/__version__ = .*/__version__ = \"${DEV_VERSION}\"/" app/__init__.py
-          
-          # Commit and push changes
-          git add pyproject.toml app/__init__.py
-          git commit -m "chore: bump version to ${DEV_VERSION} [skip ci]"
-          git push origin dev
-
-  ##########################################################################
-  # 6. Post-Merge Verification Job
-  ##########################################################################
-  post-merge-verification:
-    name: Post-Merge Verification
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'  # Only run on pushes to main
-    needs: [lint, test, release, update-dev-version]  # Ensure all prior jobs complete successfully
-    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3  # Checks out the repository code
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"  # Use latest stable Python version
-
       - name: Cache Poetry Dependencies
         uses: actions/cache@v3
         with:
           path: |
-            ~/.cache/pypoetry  # Poetry cache directory
-            ~/.cache/pip        # pip cache directory
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}  # Unique cache key
+            ~/.cache/pypoetry
+            ~/.cache/pip
+          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
-            ${{ runner.os }}-poetry-  # Fallback keys
+            ${{ runner.os }}-poetry-
 
       - name: Install dependencies
         run: |
           pip install poetry
-          
-          # Generate poetry.lock if it doesn't exist or if pyproject.toml has changed
           poetry lock --no-update
-          
-          # Install dependencies
-          poetry install --no-root  # Install dependencies without the root package
+          poetry install --no-root
 
       - name: Run critical post-merge checks
         run: |
-          # Re-run essential tests to ensure stability after merging
           poetry run coverage run -m pytest
           poetry run coverage report -m
-          # Optionally, add deployment steps here (e.g., deploy to production)
 
       - name: Notify Deployment Success
         uses: actions/github-script@v6
