@@ -235,24 +235,15 @@ jobs:
           && sudo apt update \
           && sudo apt install gh -y
 
-      - name: Configure Git
+      - name: Configure Git for Semantic Release
         run: |
+          # Configure Git credentials
+          git config --global credential.helper store
+          echo "https://${{ secrets.GITHUB_TOKEN }}@github.com" > ~/.git-credentials
+
           # Configure Git user
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          # Configure Git authentication
-          git remote set-url origin https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-
-          # Set up commit signing if keys are provided
-          if [ -n "${{ secrets.SSH_PRIVATE_SIGNING_KEY }}" ] && [ -n "${{ secrets.SSH_PUBLIC_SIGNING_KEY }}" ]; then
-            mkdir -p ~/.ssh
-            echo "${{ secrets.SSH_PRIVATE_SIGNING_KEY }}" > ~/.ssh/id_ed25519
-            echo "${{ secrets.SSH_PUBLIC_SIGNING_KEY }}" > ~/.ssh/id_ed25519.pub
-            chmod 600 ~/.ssh/id_ed25519
-            git config --global commit.gpgsign true
-            git config --global user.signingkey ~/.ssh/id_ed25519
-          fi
 
       - name: Sync with remote
         run: |
@@ -266,6 +257,10 @@ jobs:
       - name: Release
         id: release
         uses: python-semantic-release/python-semantic-release@v9.12.0
+        env:
+          # Pass token through environment for Git operations
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           git_committer_name: "github-actions[bot]"
