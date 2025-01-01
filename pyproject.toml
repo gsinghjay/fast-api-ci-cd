@@ -40,4 +40,6 @@ major_on_zero = false
 tag_format = "v{version}"
 prerelease = true
 prerelease_tag = "alpha"
-version_source = "commit" 
+version_source = "commit"
+commit_version_number = true
+allow_zero_version = true 
