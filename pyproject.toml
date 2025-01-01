@@ -43,6 +43,22 @@ tag_format = "v{version}"
 allow_zero_version = true
 commit_author = "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
 commit_message = "chore(release): {version} [skip ci]"
+
+# Branch configurations
+[tool.semantic_release.branches.main]
+match = "main"
+prerelease = false
+
+[tool.semantic_release.branches.develop]
+match = "develop"
+prerelease = true
+prerelease_token = "beta"
+
+[tool.semantic_release.branches.release]
+match = "release/.*"
+prerelease = true
+prerelease_token = "rc"
+
 changelog_sections = [
     "feature",
     "fix",
@@ -69,5 +85,5 @@ changelog_exclude_commit_patterns = [
 changelog_render_title = true
 changelog_render_commit_links = true
 
-[tool.python_semantic_release.remote]
+[tool.semantic_release.remote]
 token = "env: GH_TOKEN"
