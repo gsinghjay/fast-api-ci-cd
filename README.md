@@ -177,13 +177,30 @@ graph TD
     A[Push/PR] --> B{Lint}
     B -->|Success| C{Test}
     B -->|Failure| Z[Failed]
-    C -->|Success| D{Branch = main?}
+    C -->|Success| D{Branch?}
     C -->|Failure| Z
-    D -->|Yes| E[Release]
-    D -->|No| Y[End]
-    E --> F[Tag Validation]
-    F -->|Valid| G[Success]
-    F -->|Invalid| H[Delete Tag]
+
+    %% Branch-specific releases
+    D -->|main| E[Regular Release]
+    D -->|develop| F[Beta Release]
+    D -->|release/*| G[RC Release]
+    D -->|other| H[No Release]
+
+    %% Release processes
+    E --> I[Tag Validation]
+    F --> I
+    G --> I
+
+    %% Final states
+    I -->|Valid| J[Success]
+    I -->|Invalid| K[Delete Tag]
+
+    %% Manual workflow
+    L[Manual Trigger] -->|with params| M{Release Type}
+    M -->|prerelease=true| N[Pre-release]
+    M -->|prerelease=false| O[Regular Release]
+    N --> I
+    O --> I
 ```
 
 1. **Lint Stage**:
