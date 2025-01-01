@@ -62,7 +62,9 @@ changelog_exclude_commit_patterns = [
     "^docs\\(changelog\\):",
     "\\[skip ci\\]",
     "\\[ci skip\\]",
-    "\\[no changelog\\]"
+    "\\[no changelog\\]",
+    "^author: github-actions\\[bot\\]",
+    "41898282\\+github-actions\\[bot\\]@users\\.noreply\\.github\\.com"
 ]
 changelog_render_title = true
 changelog_render_commit_links = true
