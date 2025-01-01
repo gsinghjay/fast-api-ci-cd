@@ -73,11 +73,14 @@ jobs:
           pip install poetry
           poetry install --no-root
 
+          # Install Black directly (in case poetry install fails)
+          pip install black
+
           # Install Node-based Commitlint globally
           npm install -g @commitlint/cli @commitlint/config-conventional
 
       - name: Lint code with Black
-        run: black --check .  # Check Python code formatting with Black
+        run: poetry run black --check .  # Run black through poetry
 
       - name: Check commit messages with Commitlint
         run: |
