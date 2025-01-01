@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## Unreleased
+## v1.0.11 (2025-01-01)
 
 ### Bug Fixes
 
@@ -10,6 +10,11 @@
 
 - Add exclusion patterns for github-actions[bot] commits - Filter out automated changelog updates -
   Maintain clean changelog without bot entries
+
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`2ebfbde`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2ebfbde66aca1abb537c6ebeb7370c7fa9ef0222))
 
 
 ## v1.0.10 (2025-01-01)
