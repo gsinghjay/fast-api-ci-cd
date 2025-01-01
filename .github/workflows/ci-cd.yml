@@ -412,8 +412,8 @@ jobs:
           # Force dev branch to be recognized
           git checkout dev
           
-          # Run semantic release with alpha tag
-          semantic-release version --prerelease alpha
+          # Run semantic release
+          semantic-release version
           
           # Get the new version
           NEW_VERSION=$(poetry version -s)
