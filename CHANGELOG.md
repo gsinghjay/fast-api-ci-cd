@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## Unreleased
+
+### Bug Fixes
+
+- **changelog**: Exclude github-actions bot commits from changelog
+  ([`52010b0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/52010b08635c1e6b034015acf1660b2e48087813))
+
+- Add exclusion patterns for github-actions[bot] commits - Filter out automated changelog updates -
+  Maintain clean changelog without bot entries
+
+
 ## v1.0.10 (2025-01-01)
 
 ### Bug Fixes
