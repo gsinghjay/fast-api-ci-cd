@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "qr-code-generator"
-version = "1.0.5"
+version = "1.0.6"
 description = "A robust and scalable QR Code Generator application built with FastAPI"
 authors = ["Your Name <your.email@example.com>"]
 readme = "README.md"

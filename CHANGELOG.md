@@ -11,6 +11,11 @@
 - Add changelog components configuration - Exclude release commits from changelog - Configure
   changelog formatting
 
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`892c342`](https://github.com/gsinghjay/fast-api-ci-cd/commit/892c34220d30ee94e96ade910a82b27d53e16464))
+
 
 ## v1.0.5 (2025-01-01)
 
