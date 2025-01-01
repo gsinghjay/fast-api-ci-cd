@@ -277,40 +277,5 @@ jobs:
         run: echo "Tag ${{ steps.tag_details.outputs.tag_name }} is valid and created by GitHub Actions."  # Confirmation message
 
   ##########################################################################
-  # 6. Post-Merge Verification Job
+  # Jobs end after release
   ##########################################################################
-  post-merge-verification:
-    name: Post-Merge Verification
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'  # Only run on pushes to main
-    needs: [lint, test, release]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Cache Poetry Dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/pypoetry
-            ~/.cache/pip
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-poetry-
-
-      - name: Install dependencies
-        run: |
-          pip install poetry
-          poetry lock --no-update
-          poetry install --no-root
-
-      - name: Run critical post-merge checks
-        run: |
-          poetry run coverage run -m pytest
-          poetry run coverage report -m
-
