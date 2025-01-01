@@ -3,6 +3,14 @@
 
 ## Unreleased
 
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`69756f2`](https://github.com/gsinghjay/fast-api-ci-cd/commit/69756f292abd59fc95519e1a16fd671208f7ebf3))
+
+- Update CHANGELOG.md [skip ci]
+  ([`3628a92`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3628a9263a44e96541158e63c93c4867b5d0081f))
+
 ### Refactoring
 
 - **ci**: Remove deployment notification step
@@ -10,6 +18,12 @@
 
 - Remove GitHub issue comment notification - Simplify post-merge-verification job - Remove
   unnecessary notification dependencies
+
+- **ci**: Simplify release process
+  ([`84d1be7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/84d1be73b550e1ae30d07338c47c6a4f192161c8))
+
+- Remove dev version handling - Simplify version management - Remove unnecessary version checks -
+  Streamline release process to main branch only
 
 
 ## v1.0.1 (2025-01-01)
