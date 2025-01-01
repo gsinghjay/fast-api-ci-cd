@@ -30,13 +30,14 @@ build-backend = "poetry.core.masonry.api"
 
 # New-style config for python-semantic-release 9.x
 [tool.python_semantic_release]
-version_variable = "app/__init__.py:__version__"
+version_variable = ["app/__init__.py:__version__"]
 version_toml = ["pyproject.toml:tool.poetry.version"]
 version_source = "commit"
 commit_version_number = true
 upload_to_repository = false
 build_command = "poetry build"
 changelog_file = "CHANGELOG.md"
+branch = "main"
 commit_parser = "conventional_commits"
 major_on_zero = false
 tag_format = "v{version}"
@@ -52,19 +53,5 @@ changelog_sections = [
     "refactor"
 ]
 
-[tool.python_semantic_release.branches]
-allow_release_from_branches = ["main", "dev", "feature/*", "ci/*"]
-
-[tool.python_semantic_release.branch_config.main]
-prerelease = false
-match = "main"
-
-[tool.python_semantic_release.branch_config.dev]
-prerelease = true
-prerelease_token = "alpha"
-match = "dev"
-
-[tool.python_semantic_release.branch_config.feature]
-prerelease = true
-prerelease_token = "feature"
-match = "(feature|ci)/*" 
+[tool.python_semantic_release.remote]
+token = "GH_TOKEN" 
