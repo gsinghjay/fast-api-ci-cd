@@ -10,6 +10,7 @@ on:
     branches: 
       - "dev"      # Development branch
       - "main"     # Main/Production branch
+      - "feature/**"  # Feature branches
     tags:
       - "v*"        # Tags following the pattern 'v*' (e.g., v1.0.0)
   # Trigger the workflow on pull request events targeting specific branches
@@ -21,6 +22,7 @@ on:
 # Define permissions for the entire workflow
 permissions:
   contents: write   # Grants write access to contents, necessary for deleting tags
+  pull-requests: write  # Grants write access to pull requests for comments
 
 # Control concurrency to ensure only the latest run for a branch/tag is active
 concurrency:
@@ -136,7 +138,7 @@ jobs:
           poetry run coverage xml            # Generate coverage XML for artifact
 
       - name: Update Changelog
-        if: github.event_name == 'pull_request' || (github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/'))  # Run on PRs and branch pushes
+        if: github.event_name == 'pull_request' || (github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/feature/')))
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -149,6 +151,7 @@ jobs:
           
           # Determine current branch
           CURRENT_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
+          echo "Current branch: $CURRENT_BRANCH"
           
           # Generate changelog and version
           semantic-release version --no-commit --no-tag
@@ -288,18 +291,18 @@ jobs:
         run: echo "Tag ${{ steps.tag_details.outputs.tag_name }} is valid and created by GitHub Actions."  # Confirmation message
 
   ##########################################################################
-  # 5. Update dev Branch to Next Dev Version
+  # 5. Update dev Branch Version
   ##########################################################################
   update-dev-version:
     name: Update dev Branch Version
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'  # Only run on pushes to main
-    needs: release  # Ensure the 'release' job completes before starting 'update-dev-version'
+    if: (github.ref == 'refs/heads/main' && github.event_name == 'push') || (github.ref == 'refs/heads/dev' && github.event_name == 'push')  # Run on pushes to main or dev
+    needs: test  # Changed from 'release' to 'test' since release only runs on tags
     runs-on: ubuntu-latest  # Use the latest Ubuntu runner
     steps:
-      - name: Check out dev branch
+      - name: Check out branch
         uses: actions/checkout@v3
         with:
-          ref: dev  # Ensure you're checking out the dev branch
+          ref: ${{ github.ref_name }}  # Checkout the current branch
           fetch-depth: 0  # Fetch all history for changelog generation
 
       - name: Set up Python
@@ -307,47 +310,27 @@ jobs:
         with:
           python-version: "3.11"  # Use latest stable Python version
 
-      - name: Cache Poetry Dependencies
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/pypoetry  # Poetry cache directory
-            ~/.cache/pip        # pip cache directory
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}  # Unique cache key
-          restore-keys: |
-            ${{ runner.os }}-poetry-  # Fallback keys
-
       - name: Install dependencies
         run: |
           pip install poetry
           poetry install --no-root  # Install dependencies without the root package
-          pip install python-semantic-release  # Install Semantic Release for Python
+          pip install python-semantic-release==9.15.0  # Install specific version
 
       - name: Update Version and Changelog
-        run: |
-          # Generate changelog and update version for dev branch
-          semantic-release version
-          semantic-release changelog
-          
-          # Update to next dev version
-          semantic-release version --version-dev
-
-      - name: Commit and Push Changes
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for pushing changes
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Configure Git user for committing
+          # Configure git
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          # Add all relevant files
-          git add app/__init__.py poetry.lock CHANGELOG.md
+          # Generate changelog and update version
+          semantic-release version
           
-          # Commit with a message that includes changelog update
-          git commit -m "chore(release): bump version and update changelog for dev [skip ci]"
-          
-          # Push changes to dev branch
-          git push origin dev
+          # Commit and push changes
+          git add app/__init__.py pyproject.toml CHANGELOG.md
+          git commit -m "chore(release): bump version and update changelog [skip ci]" || echo "No changes to commit"
+          git push origin ${{ github.ref_name }}
 
   ##########################################################################
   # 6. Post-Merge Verification Job
