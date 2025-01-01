@@ -5,6 +5,9 @@
 
 ### Bug Fixes
 
+- **ci**: Add git sync step and use CI mode for semantic-release
+  ([`431296c`](https://github.com/gsinghjay/fast-api-ci-cd/commit/431296c47455bf4adaa96aea85cdee4f1d673786))
+
 - **ci**: Correct version retrieval in release verification
   ([`e85e60d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e85e60d879cbcd00d133e2ebed33ed356048d6ea))
 
@@ -12,6 +15,9 @@
 
 - Enhance README with semantic-release command details
   ([`3ab6eb3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3ab6eb361490315561a9e167595a27a1476d3533))
+
+- Update CHANGELOG.md [skip ci]
+  ([`9aa26e9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9aa26e9f1cab790ef46d1e326333b23ba71ca411))
 
 - Update CHANGELOG.md [skip ci]
   ([`184b292`](https://github.com/gsinghjay/fast-api-ci-cd/commit/184b2920b500b301bd03233d951456c3e218ae19))
