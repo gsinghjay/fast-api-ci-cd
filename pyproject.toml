@@ -29,16 +29,13 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.semantic_release]
-version_variable = [
-    "app/__init__.py:__version__",
-    "pyproject.toml:version"
-]
+version_toml = ["pyproject.toml:tool.poetry.version"]
+version_pattern = ["app/__init__.py:__version__ = '{version}'"]
 branch = "main"
 upload_to_pypi = false
 build_command = "poetry build"
 changelog_file = "CHANGELOG.md"
-changelog_components = "semantic_release.changelog.changelog"
-commit_parser = "semantic_release.history.angular_parser"
+commit_parser = "angular"
 major_on_zero = false
 tag_format = "v{version}"
 prerelease = true
