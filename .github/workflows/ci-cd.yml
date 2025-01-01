@@ -203,10 +203,6 @@ jobs:
           # Ensure we're up to date with remote
           git pull origin main --rebase
           
-          # Get the current version
-          CURRENT_VERSION=$(poetry version -s)
-          echo "Current version: $CURRENT_VERSION"
-          
           # Run semantic release
           semantic-release version
           
@@ -214,18 +210,14 @@ jobs:
           NEW_VERSION=$(poetry version -s)
           echo "New version: $NEW_VERSION"
           
-          if [ "$CURRENT_VERSION" != "$NEW_VERSION" ]; then
-            # Create and push tag
-            git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
-            
-            # Update changelog
-            semantic-release changelog
-            
-            # Commit changes
+          # Update changelog and create tag
+          semantic-release changelog
+          
+          # Commit and push changes if any
+          if [[ -n $(git status --porcelain) ]]; then
             git add CHANGELOG.md pyproject.toml app/__init__.py
             git commit -m "chore(release): ${NEW_VERSION} [skip ci]"
-            
-            # Push both the commits and the tag
+            git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
             git push origin main --force
             git push origin "v${NEW_VERSION}"
           fi
