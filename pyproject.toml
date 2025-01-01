@@ -56,13 +56,18 @@ changelog_sections = [
 token = "GH_TOKEN"
 
 [tool.python_semantic_release.branches]
-main = "main"
-dev = "dev"
-release = "release/*"
+# Define which branches to release from
+allow_release_from_branches = ["main", "dev"]
 
-[tool.python_semantic_release.branches.dev]
-prerelease_token = "alpha"
-prerelease = true
+[tool.python_semantic_release.branch_patterns]
+main = "^main$"
+dev = "^dev$"
 
 [tool.python_semantic_release.branches.main]
-prerelease = false 
+match = "main"
+prerelease = false
+
+[tool.python_semantic_release.branches.dev]
+match = "dev"
+prerelease = true
+prerelease_token = "alpha" 
