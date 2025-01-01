@@ -8,6 +8,14 @@
 - Add manual release workflow documentation
   ([`d4e82a7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d4e82a7f10621ce3bc8a1f7652e2736ca7060af8))
 
+- Update CHANGELOG.md [skip ci]
+  ([`7bc972b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/7bc972b344f0bdd0ed8c8aa10a3e4a55aa40de82))
+
+### Features
+
+- **ci**: Add automated pre-release patterns for different branches
+  ([`7fae1bc`](https://github.com/gsinghjay/fast-api-ci-cd/commit/7fae1bc47cac96731d3e877c80c1e297d94e16a8))
+
 
 ## v1.1.0 (2025-01-01)
 
