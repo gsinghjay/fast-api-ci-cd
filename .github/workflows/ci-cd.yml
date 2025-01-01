@@ -204,10 +204,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       # Add environment variables for semantic release configuration
-      PRERELEASE: ${{ github.ref == 'refs/heads/develop' && 'true' || startsWith(github.ref, 'refs/heads/release/') && 'true' || github.event.inputs.prerelease || 'false' }}
-      PRERELEASE_TOKEN: ${{ github.ref == 'refs/heads/develop' && 'beta' || startsWith(github.ref, 'refs/heads/release/') && 'rc' || github.event.inputs.prerelease_token || '' }}
-      BUILD_METADATA: ${{ github.event.inputs.build_metadata || '' }}
-      FORCE_LEVEL: ${{ github.event.inputs.force || '' }}
+      PSR_PRERELEASE: ${{ github.ref == 'refs/heads/develop' && 'true' || startsWith(github.ref, 'refs/heads/release/') && 'true' || github.event.inputs.prerelease || 'false' }}
+      PSR_PRERELEASE_TOKEN: ${{ github.ref == 'refs/heads/develop' && 'beta' || startsWith(github.ref, 'refs/heads/release/') && 'rc' || github.event.inputs.prerelease_token || '' }}
+      PSR_BUILD_METADATA: ${{ github.event.inputs.build_metadata || '' }}
+      PSR_FORCE_LEVEL: ${{ github.event.inputs.force || '' }}
     steps:
       - name: Check out code
         uses: actions/checkout@v3
@@ -264,37 +264,19 @@ jobs:
           git pull --rebase || true
 
       - name: Release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Build semantic release command with dynamic options
-          RELEASE_CMD="semantic-release version"
+        id: release
+        uses: python-semantic-release/python-semantic-release@v9.12.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          git_committer_name: "github-actions[bot]"
+          git_committer_email: "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Add prerelease configuration if specified
-          if [ "$PRERELEASE" = "true" ]; then
-            RELEASE_CMD="$RELEASE_CMD --prerelease"
-            if [ -n "$PRERELEASE_TOKEN" ]; then
-              RELEASE_CMD="$RELEASE_CMD --prerelease-token $PRERELEASE_TOKEN"
-            fi
-          fi
-
-          # Add force level if specified
-          if [ -n "$FORCE_LEVEL" ]; then
-            RELEASE_CMD="$RELEASE_CMD --force-level $FORCE_LEVEL"
-          fi
-
-          # Add build metadata if specified
-          if [ -n "$BUILD_METADATA" ]; then
-            RELEASE_CMD="$RELEASE_CMD --build-metadata $BUILD_METADATA"
-          fi
-
-          # Execute the release command
-          eval $RELEASE_CMD
-
-          # Generate changelog and publish
-          semantic-release changelog
-          semantic-release publish
+      - name: Publish to GitHub Release Assets
+        uses: python-semantic-release/publish-action@v9.8.9
+        if: steps.release.outputs.released == 'true'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.release.outputs.tag }}
 
       - name: Verify Release
         if: success()
