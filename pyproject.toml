@@ -55,6 +55,10 @@ changelog_sections = [
 [tool.python_semantic_release.remote]
 token = "env: GH_TOKEN"
 
+[tool.python_semantic_release.branches]
+dev = { match = "dev", prerelease = true, prerelease_token = "alpha" }
+main = { match = "main", prerelease = false }
+
 [tool.python_semantic_release.branches.dev]
 match = "^dev$"
 prerelease = true
