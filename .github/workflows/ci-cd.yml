@@ -71,10 +71,12 @@ jobs:
         run: |
           # Install Python dependencies via Poetry without installing the root package
           pip install poetry
-          poetry install --no-root
 
-          # Install Black directly (in case poetry install fails)
-          pip install black
+          # Generate poetry.lock if it doesn't exist or if pyproject.toml has changed
+          poetry lock --no-update
+
+          # Install dependencies
+          poetry install --no-root
 
       - name: Lint code with Black
         run: poetry run black --check .  # Run black through poetry
@@ -117,13 +119,18 @@ jobs:
       - name: Install dependencies
         run: |
           pip install poetry
+          
+          # Generate poetry.lock if it doesn't exist or if pyproject.toml has changed
+          poetry lock --no-update
+          
+          # Install dependencies
           poetry install --no-root  # Install dependencies without the root package
 
       - name: Run tests with coverage
         run: |
-          coverage run -m pytest  # Run tests with coverage
-          coverage report -m      # Generate coverage report
-          coverage xml            # Generate coverage XML for artifact
+          poetry run coverage run -m pytest  # Run tests with coverage
+          poetry run coverage report -m      # Generate coverage report
+          poetry run coverage xml            # Generate coverage XML for artifact
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v3
@@ -289,7 +296,7 @@ jobs:
           # Configure Git user for committing
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add app/__init__.py  # Updated path to match our project structure
+          git add app/__init__.py poetry.lock  # Add both version file and lock file
           git commit -m "chore(release): bump version to next dev version [skip ci]"  # Commit message with [skip ci] to prevent triggering workflows
           git push origin dev  # Push changes to the dev branch
 
@@ -323,13 +330,18 @@ jobs:
       - name: Install dependencies
         run: |
           pip install poetry
+          
+          # Generate poetry.lock if it doesn't exist or if pyproject.toml has changed
+          poetry lock --no-update
+          
+          # Install dependencies
           poetry install --no-root  # Install dependencies without the root package
 
       - name: Run critical post-merge checks
         run: |
           # Re-run essential tests to ensure stability after merging
-          coverage run -m pytest
-          coverage report -m
+          poetry run coverage run -m pytest
+          poetry run coverage report -m
           # Optionally, add deployment steps here (e.g., deploy to production)
 
       - name: Notify Deployment Success
