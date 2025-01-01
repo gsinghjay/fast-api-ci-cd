@@ -277,7 +277,7 @@ jobs:
   post-merge-verification:
     name: Post-Merge Verification
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'  # Only run on pushes to main
-    needs: [lint, test, release]  # Removed update-dev-version from needs
+    needs: [lint, test, release]
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
@@ -308,15 +308,4 @@ jobs:
         run: |
           poetry run coverage run -m pytest
           poetry run coverage report -m
-
-      - name: Notify Deployment Success
-        uses: actions/github-script@v6
-        with:
-          script: |
-            github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-              body: '🚀 Deployment to Production Successful! 🎉'
-            })
 
