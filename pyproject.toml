@@ -41,6 +41,7 @@ commit_parser = "conventional_commits"
 major_on_zero = false
 tag_format = "v{version}"
 allow_zero_version = true
+branch = "dev"
 commit_author = "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
 commit_message = "chore(release): {version} [skip ci]"
 changelog_sections = [
@@ -55,19 +56,11 @@ changelog_sections = [
 [tool.python_semantic_release.remote]
 token = "GH_TOKEN"
 
-[tool.python_semantic_release.branches]
-# Define which branches to release from
-allow_release_from_branches = ["main", "dev"]
-
-[tool.python_semantic_release.branch_patterns]
-main = "^main$"
-dev = "^dev$"
-
-[tool.python_semantic_release.branches.main]
-match = "main"
-prerelease = false
-
 [tool.python_semantic_release.branches.dev]
 match = "dev"
 prerelease = true
-prerelease_token = "alpha" 
+prerelease_token = "alpha"
+
+[tool.python_semantic_release.branches.main]
+match = "main"
+prerelease = false 
