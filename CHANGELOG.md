@@ -130,6 +130,12 @@ This fixes the "branch 'dev' isn't in any release groups" error and enables prop
 
 Fixes error: Cannot declare ('tool', 'python_semantic_release', 'branches', 'dev') twice
 
+- **ci**: Resolve release step git sync issues
+  ([`eea5188`](https://github.com/gsinghjay/fast-api-ci-cd/commit/eea5188da46653ab6922e861e3ad932d6440b582))
+
+- Add git pull with rebase to sync with remote - Combine git pushes to reduce race conditions - Add
+  force flag to ensure version updates succeed - Improve release step error handling
+
 - **ci**: Resolve semantic-release configuration conflicts
   ([`125ec19`](https://github.com/gsinghjay/fast-api-ci-cd/commit/125ec1925fcaa1115e730c588c1cc4a5fbca1b17))
 
@@ -195,6 +201,11 @@ Related to: Previous commit that removed --branch flag from workflow
 
 - Update Python version matrix to 3.9-3.11
   ([`ed276a1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ed276a1e5b2a4c4fcca29162bc3f9af55639c09a))
+
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`896cf4e`](https://github.com/gsinghjay/fast-api-ci-cd/commit/896cf4e3c5228e7f0422ed0966e27b0afd0cf100))
 
 ### Features
 
