@@ -153,8 +153,8 @@ jobs:
           CURRENT_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           echo "Current branch: $CURRENT_BRANCH"
           
-          # Generate changelog
-          semantic-release changelog
+          # Generate changelog without version bump
+          semantic-release version --no-commit --no-tag --no-push
           
           # Commit and push if there are changes
           if [[ -n $(git status --porcelain CHANGELOG.md) ]]; then
