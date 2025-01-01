@@ -29,17 +29,31 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.semantic_release]
+version_variables = ["app/__init__.py:__version__"]
 version_toml = ["pyproject.toml:tool.poetry.version"]
-version_pattern = ["app/__init__.py:__version__ = '{version}'"]
-branch = "main"
-upload_to_pypi = false
+branch = "dev"
+upload_to_repository = false
 build_command = "poetry build"
 changelog_file = "CHANGELOG.md"
-commit_parser = "angular"
+commit_parser = "conventional_commits"
 major_on_zero = false
 tag_format = "v{version}"
 prerelease = true
 prerelease_tag = "alpha"
 version_source = "commit"
 commit_version_number = true
-allow_zero_version = true 
+allow_zero_version = true
+changelog_sections = [
+    "feature",
+    "fix",
+    "breaking",
+    "documentation",
+    "performance",
+    "refactor"
+]
+commit_author = "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+commit_message = "chore(release): {version} [skip ci]"
+
+[tool.semantic_release.branches.main]
+prerelease = false
+match = "main" 
