@@ -39,9 +39,12 @@ on:
 
 # Define permissions for the entire workflow
 permissions:
-  contents: write
-  pull-requests: write
-  checks: write
+  contents: write      # Required for creating releases and pushing tags
+  pull-requests: write # Required for creating pull requests
+  checks: write       # Required for status checks
+  issues: write       # Required for creating issues
+  statuses: write     # Required for commit statuses
+  discussions: write  # Required for discussions (if used)
 
 # Control concurrency to ensure only the latest run for a branch/tag is active
 concurrency:
@@ -236,9 +239,12 @@ jobs:
       - name: Configure Git for Semantic Release
         run: |
           # Configure Git credentials using token
-          git config --global url."https://${{ secrets.GITHUB_TOKEN }}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+          git config --global credential.helper store
+          echo "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com" > ~/.git-credentials
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Ensure the remote URL is using HTTPS
+          git remote set-url origin "https://github.com/${{ github.repository }}.git"
 
       - name: Sync with remote
         run: |
@@ -256,6 +262,9 @@ jobs:
           # Pass token through environment for Git operations
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Additional environment variables for debugging
+          PYTHONVERBOSE: 1
+          GIT_PYTHON_TRACE: 1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           git_committer_name: "github-actions[bot]"
