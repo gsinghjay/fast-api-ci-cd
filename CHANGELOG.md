@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## Unreleased
+
+### Refactoring
+
+- **ci**: Remove deployment notification step
+  ([`b135f70`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b135f70ff0a437796a3f0913c2940d4875a67447))
+
+- Remove GitHub issue comment notification - Simplify post-merge-verification job - Remove
+  unnecessary notification dependencies
+
+
 ## v1.0.1 (2025-01-01)
 
 ### Bug Fixes
