@@ -3,10 +3,26 @@
 
 ## Unreleased
 
+
+## v1.0.2 (2025-01-01)
+
+### Chores
+
+- **release**: 1.0.2 [skip ci]
+  ([`8215ee4`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8215ee4aa344a48843a9a4b17c72008f1721eb24))
+
 ### Documentation
 
 - Update CHANGELOG.md [skip ci]
   ([`3e8eaf6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3e8eaf680efe7fe82ea584d00db003a54bc54650))
+
+### Refactoring
+
+- **ci**: Remove redundant post-merge verification
+  ([`ac9d317`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ac9d31755196877e7836f8e216beddda31d19ebb))
+
+- Remove post-merge verification job - Simplify workflow dependencies - Reduce CI execution time -
+  Rely on existing test and release jobs for verification
 
 
 ## v0.1.1 (2025-01-01)
