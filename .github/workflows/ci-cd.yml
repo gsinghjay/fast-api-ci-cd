@@ -256,8 +256,8 @@ jobs:
 
       - name: Sync with remote
         run: |
-          # Ensure we have all tags and history
-          git fetch --prune --unshallow --tags --force
+          # Fetch all history and tags
+          git fetch --prune --tags --force origin
 
           # Set up tracking and sync
           git branch --set-upstream-to=origin/${{ github.ref_name }} ${{ github.ref_name }} || true
