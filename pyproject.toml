@@ -54,6 +54,7 @@ changelog_sections = [
 changelog_components = [
     "semantic_release.changelog.changelog_headers",
     "semantic_release.changelog.compare_url",
+    "semantic_release.changelog.commit_list"
 ]
 changelog_include_prereleases = false
 changelog_exclude_commit_patterns = [
@@ -61,6 +62,8 @@ changelog_exclude_commit_patterns = [
     "^docs\\(changelog\\):",
     ".*\\[skip ci\\].*"
 ]
+changelog_render_title = true
+changelog_render_commit_links = true
 
 [tool.python_semantic_release.remote]
 token = "env: GH_TOKEN"
