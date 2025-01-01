@@ -153,13 +153,13 @@ jobs:
           # Generate changelog based on branch
           if [[ "$CURRENT_BRANCH" == "main" ]]; then
             # For main branch, generate stable release notes
-            semantic-release version --prerelease false --no-commit --no-tag
+            semantic-release version --no-commit --no-tag
           elif [[ "$CURRENT_BRANCH" == "dev" ]]; then
-            # For dev branch, generate alpha prerelease notes
-            semantic-release version --prerelease --prerelease-tag alpha --no-commit --no-tag
+            # For dev branch, generate prerelease notes
+            semantic-release version --prerelease --prerelease-token alpha --no-commit --no-tag
           else
             # For feature branches, generate feature prerelease notes
-            semantic-release version --prerelease --prerelease-tag feature --no-commit --no-tag
+            semantic-release version --prerelease --prerelease-token feature --no-commit --no-tag
           fi
           
           # Commit and push if there are changes
