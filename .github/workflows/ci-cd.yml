@@ -200,6 +200,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Ensure we're up to date with remote
+          git pull origin main --rebase
+          
           # Get the current version
           CURRENT_VERSION=$(poetry version -s)
           echo "Current version: $CURRENT_VERSION"
@@ -214,7 +217,6 @@ jobs:
           if [ "$CURRENT_VERSION" != "$NEW_VERSION" ]; then
             # Create and push tag
             git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
-            git push origin "v${NEW_VERSION}"
             
             # Update changelog
             semantic-release changelog
@@ -222,7 +224,10 @@ jobs:
             # Commit changes
             git add CHANGELOG.md pyproject.toml app/__init__.py
             git commit -m "chore(release): ${NEW_VERSION} [skip ci]"
-            git push origin main
+            
+            # Push both the commits and the tag
+            git push origin main --force
+            git push origin "v${NEW_VERSION}"
           fi
 
   ##########################################################################
