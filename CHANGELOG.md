@@ -3,6 +3,19 @@
 
 ## Unreleased
 
+### Bug Fixes
+
+- **ci**: Remove remaining dev version update configurations
+  ([`d6f0424`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d6f04247bee1a3823cfe7ab527f40acbb9fbde16))
+
+- Remove update-dev-version job completely - Clean up post-merge-verification job dependencies -
+  Remove dev version update logic - Fix invalid PEP 440 version error
+
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`e223933`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e223933affd531780688f03c6014e196cf6a6a1f))
+
 ### Refactoring
 
 - **ci**: Remove dev version updates and notifications
