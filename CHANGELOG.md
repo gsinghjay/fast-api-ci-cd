@@ -5,6 +5,12 @@
 
 ### Documentation
 
+- Enhance README with semantic-release command details
+  ([`3ab6eb3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3ab6eb361490315561a9e167595a27a1476d3533))
+
+- Update CHANGELOG.md [skip ci]
+  ([`af6231a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/af6231ae1f4ade760ad01f720f6654fbe334162d))
+
 - Update README with detailed versioning and CI/CD information
   ([`9106aa9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9106aa9eb79a1270a63904dc1519e11edd8b9e01))
 
