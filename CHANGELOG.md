@@ -11,10 +11,16 @@
 - **ci**: Correct version retrieval in release verification
   ([`e85e60d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e85e60d879cbcd00d133e2ebed33ed356048d6ea))
 
+- **ci**: Remove invalid --ci flag from semantic-release commands
+  ([`9636c0f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9636c0fdd9de821e6d42e59d2a78aaaa3ef369a7))
+
 ### Documentation
 
 - Enhance README with semantic-release command details
   ([`3ab6eb3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3ab6eb361490315561a9e167595a27a1476d3533))
+
+- Update CHANGELOG.md [skip ci]
+  ([`293ad54`](https://github.com/gsinghjay/fast-api-ci-cd/commit/293ad54cb99b57bec730b24fab7a93457d6a901b))
 
 - Update CHANGELOG.md [skip ci]
   ([`9aa26e9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9aa26e9f1cab790ef46d1e326333b23ba71ca411))
