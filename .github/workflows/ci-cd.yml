@@ -165,12 +165,13 @@ jobs:
       - name: Update Changelog
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           # Install semantic release
           pip install python-semantic-release==9.15.0
 
-          # Configure git
+          # Configure git with token
+          git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
@@ -242,14 +243,27 @@ jobs:
 
       - name: Configure Git for Semantic Release
         run: |
-          git config --global --unset-all credential.helper
-          git config --global credential.helper store
-          echo "https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com" > ~/.git-credentials
+          # Remove any existing credential helper configuration
+          git config --global --unset-all credential.helper || true
+
+          # Configure Git credentials using the token directly in the URL
+          git config --global url."https://x-access-token:${PAT_TOKEN}@github.com/".insteadOf "https://github.com/"
+
+          # Set up Git user identity
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin "https://x-access-token:${{ secrets.PAT_TOKEN }}@github.com/${{ github.repository }}.git"
-          git config --global --list
-          git remote -v
+
+          # Configure the remote URL with token
+          git remote set-url origin "https://x-access-token:${PAT_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          # Debug information (safely masked)
+          echo "=== Git Configuration ==="
+          git config --global --list | grep -v url
+          echo "=== Remote Configuration ==="
+          git remote -v | sed 's/x-access-token:[^@]*@/***@/g'
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
 
       - name: Debug Git Credentials
         run: |
@@ -286,13 +300,13 @@ jobs:
         uses: python-semantic-release/publish-action@v9.15.0
         if: steps.release.outputs.released == 'true'
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.PAT_TOKEN }}
           tag: ${{ steps.release.outputs.tag }}
 
       - name: Verify Release
         if: success()
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           # Get the latest version from git tags
           VERSION=$(git describe --tags --abbrev=0)
@@ -317,6 +331,17 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3  # Checks out the repository code
+        with:
+          fetch-depth: 0  # Get full history for tags
+          token: ${{ secrets.PAT_TOKEN }}  # Use PAT for authentication
+
+      - name: Configure Git
+        run: |
+          git config --global url."https://x-access-token:${PAT_TOKEN}@github.com/".insteadOf "https://github.com/"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        env:
+          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
 
       - name: Get Tag Details
         id: tag_details  # Assign an ID to reference outputs in subsequent steps
