@@ -265,22 +265,47 @@ jobs:
           PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
 
-      - name: Debug Git Credentials
+      - name: Verify Git Remote and Authentication
         run: |
-          echo "Displaying Git Credentials (masked):"
-          sed 's#://.*@#://***@#' ~/.git-credentials
+          echo "=== Testing Git Authentication ==="
+          # Test remote connection
+          git ls-remote --exit-code origin HEAD || {
+            echo "Failed to authenticate with remote repository"
+            exit 1
+          }
+          echo "Successfully authenticated with remote repository"
 
-      - name: Verify Git Remote
-        run: git remote get-url origin
+          # Test push access (dry-run)
+          echo "=== Testing Push Access ==="
+          git push --dry-run origin HEAD || {
+            echo "Failed to verify push access"
+            exit 1
+          }
+          echo "Successfully verified push access"
 
-      - name: Test Git Push Authentication
-        run: git push --dry-run
-
-      - name: Sync with remote
+      - name: Sync with Remote Repository
         run: |
-          git fetch --prune --tags --force origin
-          git branch --set-upstream-to=origin/${{ github.ref_name }} ${{ github.ref_name }} || true
-          git pull --rebase || true
+          echo "=== Syncing with Remote Repository ==="
+          # Fetch all history and tags
+          git fetch --prune --tags --force origin || {
+            echo "Failed to fetch from remote"
+            exit 1
+          }
+          echo "Successfully fetched from remote"
+
+          # Set up tracking branch
+          if ! git branch --set-upstream-to=origin/${{ github.ref_name }} ${{ github.ref_name }}; then
+            echo "Warning: Could not set upstream branch (this is normal for new branches)"
+          fi
+
+          # Attempt to sync with remote
+          if ! git pull --rebase --autostash; then
+            echo "Warning: Could not sync with remote (this is normal for new branches or if local is ahead)"
+            # Reset any failed rebase
+            git rebase --abort || true
+          else
+            echo "Successfully synced with remote"
+          fi
 
       - name: Release
         id: release
