@@ -103,6 +103,55 @@ fast-api-ci-cd/
 └── README.md              # This file
 ```
 
+### Branch Protection Rules
+
+To enforce our release workflow, set up these branch protection rules in GitHub (Settings → Branches → Add rule):
+
+1. **`main` Branch Protection**:
+   ```yaml
+   Branch name pattern: main
+   Rules:
+     - ✓ Require a pull request before merging
+     - ✓ Require status checks to pass before merging
+         - Required checks: lint, test
+     - ✓ Require conversation resolution before merging
+     - ✓ Require linear history
+     - ✓ Include administrators
+     - ✓ Allow force pushes (only for CI/CD)
+     - ✓ Require signed commits
+   ```
+
+2. **`develop` Branch Protection**:
+   ```yaml
+   Branch name pattern: develop
+   Rules:
+     - ✓ Require a pull request before merging
+     - ✓ Require status checks to pass before merging
+         - Required checks: lint, test
+     - ✓ Require conversation resolution before merging
+     - ✓ Allow force pushes (only for CI/CD)
+     - ✓ Require signed commits
+   ```
+
+3. **`release/*` Branch Protection**:
+   ```yaml
+   Branch name pattern: release/*
+   Rules:
+     - ✓ Require a pull request before merging
+     - ✓ Require status checks to pass before merging
+         - Required checks: lint, test
+     - ✓ Require conversation resolution before merging
+     - ✓ Restrict who can push to matching branches
+         - Allow: Maintainers, Release managers
+     - ✓ Require signed commits
+   ```
+
+4. **Branch Naming Conventions**:
+   - Feature branches: `feature/*`
+   - Bug fix branches: `fix/*`
+   - Release branches: `release/*`
+   - Hotfix branches: `hotfix/*`
+
 ### Versioning System
 
 This project uses semantic versioning (SemVer) with automated version management through python-semantic-release:
