@@ -5,19 +5,16 @@ name: CI/CD Pipeline
 
 # Define the events that trigger the workflow
 on:
-  # Trigger the workflow on push events to specific branches or tags
+  # Trigger the workflow on push events to any branch
   push:
     branches: 
-      - "dev"      # Development branch
-      - "main"     # Main/Production branch
-      - "feature/**"  # Feature branches
+      - "**"  # Match all branches
     tags:
-      - "v*"        # Tags following the pattern 'v*' (e.g., v1.0.0)
-  # Trigger the workflow on pull request events targeting specific branches
+      - "v*"  # Tags following the pattern 'v*' (e.g., v1.0.0)
+  # Trigger the workflow on pull request events targeting any branch
   pull_request:
     branches: 
-      - "dev"
-      - "main"
+      - "**"  # Match all branches
 
 # Define permissions for the entire workflow
 permissions:
@@ -71,14 +68,17 @@ jobs:
 
       - name: Install dependencies
         run: |
-          # Install Python dependencies via Poetry without installing the root package
-          pip install poetry
-
+          # Install specific version of Poetry
+          pip install poetry==1.8.5
+          
           # Generate poetry.lock if it doesn't exist or if pyproject.toml has changed
           poetry lock --no-update
-
+          
           # Install dependencies
           poetry install --no-root
+          
+          # Install semantic release separately to avoid conflicts
+          pip install python-semantic-release==9.15.0
 
       - name: Lint code with Black
         run: poetry run black --check .  # Run black through poetry
@@ -138,7 +138,7 @@ jobs:
           poetry run coverage xml            # Generate coverage XML for artifact
 
       - name: Update Changelog
-        if: github.event_name == 'pull_request' || (github.event_name == 'push' && (github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/heads/feature/')))
+        if: github.event_name == 'pull_request' || github.event_name == 'push'  # Run on all branches
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -153,8 +153,8 @@ jobs:
           CURRENT_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           echo "Current branch: $CURRENT_BRANCH"
           
-          # Generate changelog and version
-          semantic-release version --no-commit --no-tag
+          # Generate changelog without version bump
+          semantic-release version --no-commit --no-tag --no-push
           
           # Commit and push if there are changes
           if [[ -n $(git status --porcelain CHANGELOG.md) ]]; then
