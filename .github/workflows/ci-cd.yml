@@ -237,9 +237,8 @@ jobs:
 
       - name: Configure Git for Semantic Release
         run: |
-          # Configure Git credentials
-          git config --global credential.helper store
-          echo "https://${{ secrets.GITHUB_TOKEN }}@github.com" > ~/.git-credentials
+          # Configure Git credentials using token
+          git config --global url."https://${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
 
           # Configure Git user
           git config --global user.name "github-actions[bot]"
