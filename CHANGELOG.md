@@ -3,6 +3,26 @@
 
 ## Unreleased
 
+### Bug Fixes
+
+- **ci**: Improve version management and changelog generation
+  ([`b91516a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b91516af52d89def93abf2940996139c95566e22))
+
+- Add proper version increment logic based on commit types - Fix duplicate changelog entries -
+  Implement semantic version bumping based on conventional commits - Add comprehensive change
+  detection - Improve release decision logic
+
+- **ci**: Prevent duplicate tag creation in release step
+  ([`8584c27`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8584c275d5a25ecb4c9ee784b9fc3fcf99985f20))
+
+- Add tag existence check before creation - Skip version update if tag exists - Improve error
+  handling for existing tags - Add informative message when skipping release
+
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`d6f8d05`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d6f8d0592c5fca5f41b83aa8a0c1a9677b9242b4))
+
 
 ## v1.0.2 (2025-01-01)
 
