@@ -242,7 +242,7 @@ jobs:
               semantic-release changelog
 
               # Extract changes for release notes
-              RELEASE_NOTES=$(semantic-release changelog --unreleased-only)
+              RELEASE_NOTES=$(git log "v${CURRENT_VERSION}..HEAD" --pretty=format:"- %s%n%b")
 
               # Create GitHub Release
               gh release create "v${NEW_VERSION}" \
