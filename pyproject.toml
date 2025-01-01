@@ -30,7 +30,7 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.semantic_release]
 version_variable = "app/__init__.py:__version__"
-version_toml = "pyproject.toml:tool.poetry.version"
+version_toml = ["pyproject.toml:tool.poetry.version"]
 branch = "dev"
 upload_to_repository = false
 build_command = "poetry build"
