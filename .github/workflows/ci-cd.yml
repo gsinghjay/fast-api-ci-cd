@@ -219,8 +219,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Get the latest version from semantic-release
-          VERSION=$(semantic-release print-version --current)
+          # Get the latest version from git tags
+          VERSION=$(git describe --tags --abbrev=0)
+          VERSION=${VERSION#v}  # Remove 'v' prefix
 
           # Check if release exists
           if ! gh release view "v${VERSION}" &>/dev/null; then
