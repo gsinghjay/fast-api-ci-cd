@@ -203,23 +203,36 @@ jobs:
           # Ensure we're up to date with remote
           git pull origin main --rebase
           
-          # Run semantic release
-          semantic-release version
+          # Get current version from the last tag
+          CURRENT_VERSION=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.1.0")
+          CURRENT_VERSION=${CURRENT_VERSION#v}
+          echo "Current version: $CURRENT_VERSION"
           
-          # Get the new version
-          NEW_VERSION=$(poetry version -s)
-          echo "New version: $NEW_VERSION"
+          # Set the current version in files
+          poetry version $CURRENT_VERSION
+          sed -i "s/__version__ = .*/__version__ = \"${CURRENT_VERSION}\"/" app/__init__.py
           
-          # Update changelog and create tag
-          semantic-release changelog
-          
-          # Commit and push changes if any
-          if [[ -n $(git status --porcelain) ]]; then
+          # Run semantic release to determine if new version is needed
+          if semantic-release version --print; then
+            # Get the new version that would be created
+            NEW_VERSION=$(semantic-release version --print)
+            echo "New version will be: $NEW_VERSION"
+            
+            # Update version in files
+            poetry version $NEW_VERSION
+            sed -i "s/__version__ = .*/__version__ = \"${NEW_VERSION}\"/" app/__init__.py
+            
+            # Update changelog
+            semantic-release changelog
+            
+            # Commit and push changes
             git add CHANGELOG.md pyproject.toml app/__init__.py
             git commit -m "chore(release): ${NEW_VERSION} [skip ci]"
             git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
             git push origin main --force
             git push origin "v${NEW_VERSION}"
+          else
+            echo "No new release needed based on commits"
           fi
 
   ##########################################################################
