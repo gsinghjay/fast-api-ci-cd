@@ -153,8 +153,8 @@ jobs:
           CURRENT_BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           echo "Current branch: $CURRENT_BRANCH"
           
-          # Generate changelog
-          semantic-release changelog --unreleased
+          # Generate version and changelog
+          semantic-release version --no-commit --no-tag --no-push
           
           # Commit and push if there are changes
           if [[ -n $(git status --porcelain CHANGELOG.md) ]]; then
@@ -332,16 +332,18 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           
-          # Generate changelog and update version
+          # Generate version and changelog
           semantic-release version
           
           # Regenerate poetry.lock if needed
           poetry lock --no-update
           
-          # Commit and push changes
-          git add app/__init__.py pyproject.toml CHANGELOG.md poetry.lock
-          git commit -m "chore(release): bump version and update changelog [skip ci]" || echo "No changes to commit"
-          git push origin ${{ github.ref_name }}
+          # Commit and push changes if any
+          if [[ -n $(git status --porcelain) ]]; then
+            git add app/__init__.py pyproject.toml CHANGELOG.md poetry.lock
+            git commit -m "chore(release): bump version and update changelog [skip ci]"
+            git push origin ${{ github.ref_name }}
+          fi
 
   ##########################################################################
   # 6. Post-Merge Verification Job
