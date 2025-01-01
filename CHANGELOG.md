@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## Unreleased
+
+### Bug Fixes
+
+- **ci**: Correct release notes generation in CI/CD pipeline
+  ([`9849cdb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9849cdb421a14894235c70e60beb895cac71165a))
+
+
 ## v1.0.7 (2025-01-01)
 
 ### Bug Fixes
