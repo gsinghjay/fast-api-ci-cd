@@ -1,12 +1,17 @@
 # CHANGELOG
 
 
-## Unreleased
+## v1.0.7 (2025-01-01)
 
 ### Bug Fixes
 
 - **ci**: Improve changelog generation using semantic-release
   ([`2540961`](https://github.com/gsinghjay/fast-api-ci-cd/commit/25409613951f1d4e3dfa4452c478151457479c1a))
+
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`d33b594`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d33b5941831facf5c874eb089dae7ee1cb596a9e))
 
 
 ## v1.0.6 (2025-01-01)
