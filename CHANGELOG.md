@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## Unreleased
+## v1.0.1 (2025-01-01)
 
 ### Bug Fixes
 
@@ -12,6 +12,9 @@
   Remove dev version update logic - Fix invalid PEP 440 version error
 
 ### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`be9f5a9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/be9f5a97110464b0369e6d633e5a2e2a5557da95))
 
 - Update CHANGELOG.md [skip ci]
   ([`e223933`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e223933affd531780688f03c6014e196cf6a6a1f))
