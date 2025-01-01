@@ -222,18 +222,38 @@ You can trigger manual releases with specific configurations through GitHub Acti
    - `force`: Force version bump ('patch', 'minor', 'major')
    - `build_metadata`: Additional build metadata to append
 
-Example manual release configurations:
-```bash
-# Beta release
-prerelease: true
-prerelease_token: beta
+### Pre-release Patterns
 
-# Force minor version bump
-force: minor
+The pipeline supports both manual and automated pre-releases:
 
-# Release with build metadata
-build_metadata: "20240101"
-```
+1. **Automated Pre-releases**:
+   - `develop` branch → `beta` releases (e.g., v1.2.3-beta.1)
+   - `release/*` branches → `rc` releases (e.g., v1.2.3-rc.1)
+   - Feature branches → Manual alpha releases
+
+2. **Manual Pre-releases**:
+   You can create custom pre-releases using workflow dispatch:
+   ```bash
+   # Beta release
+   prerelease: true
+   prerelease_token: beta
+
+   # Release candidate
+   prerelease: true
+   prerelease_token: rc
+
+   # Alpha release with build metadata
+   prerelease: true
+   prerelease_token: alpha
+   build_metadata: "20240101"
+   ```
+
+3. **Version Patterns**:
+   - Regular releases: `v1.2.3`
+   - Beta releases: `v1.2.3-beta.1`
+   - Release candidates: `v1.2.3-rc.1`
+   - Alpha releases: `v1.2.3-alpha.1`
+   - With metadata: `v1.2.3-beta.1+20240101`
 
 ### Changelog Generation
 

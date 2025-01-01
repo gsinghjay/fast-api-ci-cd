@@ -196,13 +196,16 @@ jobs:
   ##########################################################################
   release:
     name: Release
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'  # Only run on pushes to main
+    if: |
+      (github.ref == 'refs/heads/main' && github.event_name == 'push') ||
+      (github.ref == 'refs/heads/develop' && github.event_name == 'push') ||
+      (startsWith(github.ref, 'refs/heads/release/') && github.event_name == 'push')
     needs: test
     runs-on: ubuntu-latest
     env:
       # Add environment variables for semantic release configuration
-      PRERELEASE: ${{ github.event.inputs.prerelease || 'false' }}
-      PRERELEASE_TOKEN: ${{ github.event.inputs.prerelease_token || '' }}
+      PRERELEASE: ${{ github.ref == 'refs/heads/develop' && 'true' || startsWith(github.ref, 'refs/heads/release/') && 'true' || github.event.inputs.prerelease || 'false' }}
+      PRERELEASE_TOKEN: ${{ github.ref == 'refs/heads/develop' && 'beta' || startsWith(github.ref, 'refs/heads/release/') && 'rc' || github.event.inputs.prerelease_token || '' }}
       BUILD_METADATA: ${{ github.event.inputs.build_metadata || '' }}
       FORCE_LEVEL: ${{ github.event.inputs.force || '' }}
     steps:
