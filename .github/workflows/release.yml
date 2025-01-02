@@ -30,10 +30,23 @@ permissions:
   id-token: write
 
 jobs:
+  # Call the lint workflow first
+  lint:
+    name: Lint Check
+    uses: ./.github/workflows/lint.yml
+
+  # Call the test workflow next
+  test:
+    name: Run Tests
+    needs: [lint]  # Run tests after lint passes
+    uses: ./.github/workflows/test.yml
+
+  # Finally run the release job
   release:
     name: Create Release
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    needs: [lint, test]  # Only run release after both lint and test pass
     concurrency: release
 
     steps:
