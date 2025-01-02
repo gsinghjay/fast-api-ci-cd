@@ -34,12 +34,18 @@ jobs:
   lint:
     name: Lint Check
     uses: ./.github/workflows/lint.yml
+    permissions:
+      contents: read
+      pull-requests: read
 
   # Call the test workflow next
   test:
     name: Run Tests
-    needs: [lint]  # Run tests after lint passes
+    needs: [lint]
     uses: ./.github/workflows/test.yml
+    permissions:
+      contents: read
+      checks: write
 
   # Finally run the release job
   release:
