@@ -98,12 +98,12 @@ jobs:
       - name: Validate Version Files
         run: |
           source .venv/bin/activate
-          poetry run semantic-release version --noop
-          poetry run semantic-release check-build
+          .venv/bin/semantic-release version --noop
+          .venv/bin/semantic-release check-build
 
       - name: Verify Release
         if: success()
         run: |
           source .venv/bin/activate
-          poetry run semantic-release version --print
+          .venv/bin/semantic-release version --print
           git describe --tags --abbrev=0
