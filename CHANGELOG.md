@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## v1.6.3 (2025-01-02)
+## Unreleased
 
 ### Bug Fixes
 
@@ -24,6 +24,9 @@
 
 - Add git committer details to semantic-release step - Ensure consistent git configuration - Fix tag
   validation issues
+
+- **ci**: Improve tag validation by using git log for tagger info
+  ([`56eb267`](https://github.com/gsinghjay/fast-api-ci-cd/commit/56eb2677fbfba463ac292654af3582dd24a439ac))
 
 - **ci**: Improve tag validation logic and debugging
   ([`5bc40ca`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5bc40ca33c7107f93ca22c51369557a78c29a1f0))
