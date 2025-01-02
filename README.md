@@ -384,6 +384,17 @@ We follow the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) principle
 - Keep entries consistent and well-organized
 - Link to issues, PRs, and other relevant information
 
+### Automatic Updates
+
+The changelog is automatically updated:
+- On merges to the main branch
+- Even when changes don't trigger a version bump
+- For all types of changes (features, fixes, docs, etc.)
+- With links to commits and PRs
+- In the "Unreleased" section until a new version is released
+
+Development branches (feature/*, fix/*, develop) don't trigger changelog updates. Changes are collected and added to CHANGELOG.md when merged to main.
+
 ### Example Entry
 
 ```markdown
