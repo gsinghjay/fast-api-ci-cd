@@ -388,3 +388,42 @@ You can customize the QR code appearance:
 - `background_color`: The color of the QR code background (default: "#FFFFFF" - white)
 - `box_size`: Size of each QR code box in pixels (default: 10, range: 1-100)
 - `border`: Size of the QR code border in boxes (default: 4, range: 0-20)
+
+### Workflow Debugging Commands
+
+```bash
+# List recent workflow runs
+gh run list --limit 5
+
+# Watch a specific workflow run
+gh run watch
+
+# View details of the latest workflow run
+gh run view
+
+# View a specific workflow run by ID
+gh run view <run-id>
+
+# View workflow job logs
+gh run view --log --job <job-id>
+
+# List failed workflow runs
+gh run list --status failed
+
+# Download workflow artifacts
+gh run download <run-id>
+
+# Track workflow progress
+gh run list --limit 1 --watch
+
+# View workflow run details in browser
+gh run view --web
+```
+
+These commands help you:
+- Monitor workflow progress in real-time
+- Debug failed workflows
+- View detailed logs
+- Track version creation
+- Verify workflow triggers
+- Download artifacts for inspection
