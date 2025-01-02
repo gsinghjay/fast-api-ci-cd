@@ -1,8 +1,18 @@
 # CHANGELOG
 
-All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## v4.1.0 (2025-01-02)
+
+### Continuous Integration
+
+- Add poetry dependency caching to workflows
+  ([`e779053`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e77905390bd221583665785b010f9cc069469563))
+
+### Features
+
+- Add test feature for release workflow
+  ([`d7191ad`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d7191add229ede36d5e97c889ab4f3e356db2b1f))
+
 
 ## v4.0.0 (2025-01-02)
 
