@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## Unreleased
+## v1.6.3 (2025-01-02)
 
 ### Bug Fixes
 
@@ -26,6 +26,9 @@
   validation issues
 
 ### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`2546b4a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2546b4a72bbb37d00b5e384dc82b6ed68d9d2715))
 
 - Update CHANGELOG.md [skip ci]
   ([`ed9486f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ed9486f9469cccdae1ba8bb9d73865b38f0604c2))
