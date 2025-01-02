@@ -1,0 +1,57 @@
+name: Setup Python Environment
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        required: false
+        type: string
+        default: "3.11"
+        description: "Python version to use"
+    outputs:
+      poetry-venv:
+        description: "Path to Poetry's virtual environment"
+        value: ${{ jobs.setup.outputs.venv-path }}
+
+jobs:
+  setup:
+    name: Setup Python
+    runs-on: ubuntu-latest
+    outputs:
+      venv-path: ${{ steps.poetry-venv.outputs.path }}
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ inputs.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ inputs.python-version }}
+          cache: "pip"
+
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.cache/pypoetry
+            .venv
+          key: ${{ runner.os }}-python-${{ inputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-python-${{ inputs.python-version }}-
+            ${{ runner.os }}-python-
+
+      - name: Install Poetry
+        run: |
+          pip install poetry==1.8.5
+          poetry config virtualenvs.in-project true
+
+      - name: Install dependencies
+        run: poetry install
+
+      - name: Get Poetry environment path
+        id: poetry-venv
+        run: |
+          echo "path=$(poetry env info --path)" >> $GITHUB_OUTPUT
