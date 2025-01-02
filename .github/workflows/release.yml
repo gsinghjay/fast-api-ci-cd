@@ -67,12 +67,14 @@ jobs:
         run: |
           git checkout -B ${{ github.ref_name }} ${{ github.sha }}
 
-      - name: Generate Changelog
+      - name: Setup Python and Dependencies
         run: |
           pip install python-semantic-release==9.15.0
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
+      - name: Generate Changelog
+        run: |
           # Generate changelog regardless of release
           semantic-release changelog
 
@@ -91,6 +93,8 @@ jobs:
           prerelease: ${{ inputs.prerelease || false }}
           prerelease_token: ${{ inputs.prerelease_token }}
           force: ${{ inputs.force != 'none' && inputs.force || '' }}
+          git_committer_name: "github-actions[bot]"
+          git_committer_email: "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Publish to GitHub Release Assets
         uses: python-semantic-release/publish-action@v9.15.0
