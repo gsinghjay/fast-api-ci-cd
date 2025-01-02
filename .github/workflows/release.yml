@@ -74,10 +74,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ needs.ci.outputs.venv-name }}
-          path: .
+          path: artifact
 
-      - name: Set execute permissions for virtual environment
+      - name: Restore virtual environment
         run: |
+          cp -r artifact/.venv .
+          cp artifact/poetry.lock .
+          cp artifact/pyproject.toml .
           chmod -R +x .venv/bin/
 
       - name: Python Semantic Release

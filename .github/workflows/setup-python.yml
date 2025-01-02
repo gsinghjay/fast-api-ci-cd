@@ -39,12 +39,16 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
+      - name: Create artifact directory
+        run: |
+          mkdir -p artifact
+          cp poetry.lock artifact/
+          cp pyproject.toml artifact/
+          cp -r .venv artifact/
+
       - name: Upload virtual environment
         uses: actions/upload-artifact@v4
         with:
           name: venv-${{ github.run_id }}
-          path: |
-            .venv/**/*
-            poetry.lock
-            pyproject.toml
+          path: artifact/
           if-no-files-found: error
