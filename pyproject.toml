@@ -48,20 +48,11 @@ commit_message = "chore(release): {version} [skip ci]"
 [tool.python_semantic_release.remote]
 token = "env:GH_TOKEN"
 
+# Simplified branch configuration - only main branch
 [tool.python_semantic_release.branches.main]
-match = ["main", "master"]
+match = ["main"]
 prerelease = false
 prerelease_token = ""
-
-[tool.python_semantic_release.branches.develop]
-match = ["develop", "dev"]
-prerelease = true
-prerelease_token = "beta"
-
-[tool.python_semantic_release.branches.release]
-match = ["release/*", "releases/*"]
-prerelease = true
-prerelease_token = "rc"
 
 [tool.python_semantic_release.changelog]
 sections = [
