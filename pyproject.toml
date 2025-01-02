@@ -30,8 +30,10 @@ build-backend = "poetry.core.masonry.api"
 
 # New-style config for python-semantic-release 9.x
 [tool.python_semantic_release]
-version_variable = ["app/__init__.py:__version__"]
-version_toml = ["pyproject.toml:tool.poetry.version"]
+version_variable = [
+    "app/__init__.py:__version__",
+    "pyproject.toml:tool.poetry.version"
+]
 version_source = ["tag", "commit"]
 commit_version_number = true
 upload_to_repository = false
