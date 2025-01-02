@@ -2,6 +2,29 @@
 
 
 
+## v5.0.6 (2025-01-02)
+
+### Chore
+
+* chore: test ([`fa4e029`](https://github.com/gsinghjay/fast-api-ci-cd/commit/fa4e0295d1bb6cc33e8782ef2f3a19a5f8c18f88))
+
+### Fix
+
+* fix(ci): use direct path to semantic-release executable
+
+- Use .venv/bin/semantic-release directly\n- Remove poetry run prefix\n- Keep consistent with lint.yml and test.yml execution style ([`c952892`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c9528926ad7239c35c621f33e3a0519eaff9c468))
+
+### Unknown
+
+* Merge pull request #77 from gsinghjay/ci/venv-and-restore
+
+chore: test ([`0dbafd6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0dbafd637c109edde1421276b7972a920ea59620))
+
+* Merge pull request #76 from gsinghjay/ci/venv-and-restore
+
+fix(ci): use direct path to semantic-release executable ([`ccd56be`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ccd56be94a15313e92cabba353e2bc50ebff9839))
+
+
 ## v5.0.5 (2025-01-02)
 
 ### Fix
