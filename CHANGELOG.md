@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## Unreleased
+## v1.5.1 (2025-01-02)
 
 ### Bug Fixes
 
@@ -16,6 +16,11 @@
 
 - Add paths-ignore for CHANGELOG.md updates - Add conditional checks to skip CI on bot commits - Add
   skip conditions for release and changelog updates - Prevent workflow triggers on [skip ci] tags
+
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`ddc80bb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ddc80bb23282263520ebe497c15de3cb798f51de))
 
 
 ## v1.5.0 (2025-01-02)
