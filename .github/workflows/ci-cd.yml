@@ -61,13 +61,14 @@ jobs:
   ##########################################################################
   lint:
     if: |
-      github.actor != 'github-actions[bot]' ||
-      (!contains(github.event.head_commit.message, '[skip ci]') &&
+      (github.event_name == 'pull_request') ||
+      (github.actor != 'github-actions[bot]' &&
+       !contains(github.event.head_commit.message, '[skip ci]') &&
        !contains(github.event.head_commit.message, '[ci skip]') &&
        !contains(github.event.head_commit.message, '[no ci]') &&
        !contains(github.event.head_commit.message, 'chore(release)'))
     name: Lint
-    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+    runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v3  # Checks out the repository code
@@ -128,8 +129,9 @@ jobs:
   ##########################################################################
   test:
     if: |
-      github.actor != 'github-actions[bot]' ||
-      (!contains(github.event.head_commit.message, '[skip ci]') &&
+      (github.event_name == 'pull_request') ||
+      (github.actor != 'github-actions[bot]' &&
+       !contains(github.event.head_commit.message, '[skip ci]') &&
        !contains(github.event.head_commit.message, '[ci skip]') &&
        !contains(github.event.head_commit.message, '[no ci]') &&
        !contains(github.event.head_commit.message, 'chore(release)'))
