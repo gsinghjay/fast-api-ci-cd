@@ -1,6 +1,6 @@
 # FastAPI CI/CD Template
 
-[![CI/CD Pipeline](https://github.com/gsinghjay/fast-api-ci-cd/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/gsinghjay/fast-api-ci-cd/actions/workflows/ci-cd.yml)
+[![CI/CD Pipeline](https://github.com/gsinghjay/fast-api-ci-cd/actions/workflows/release.yml/badge.svg)](https://github.com/gsinghjay/fast-api-ci-cd/actions/workflows/release.yml)
 [![Latest Release](https://img.shields.io/github/v/release/gsinghjay/fast-api-ci-cd)](https://github.com/gsinghjay/fast-api-ci-cd/releases)
 [![Python Version](https://img.shields.io/badge/python-3.11-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -246,27 +246,28 @@ gh run view --web
    - Ensure PAT_TOKEN has required scopes
    - Check workflow permissions in yml files
 
-## 🔄 Workflow Diagram
+## 🔄 Workflow Architecture
 
 ```mermaid
 flowchart TD
     subgraph "CI/CD Pipeline"
         A[Push/PR] --> B{Event Type?}
 
-        B -->|PR or Push| C[Lint Job]
-        B -->|PR or Push| D[Test Job]
+        B -->|PR or Push| C[Lint Workflow]
+        B -->|PR or Push| D[Test Workflow]
 
         C --> E{All Checks Pass?}
         D --> E
 
-        E -->|Yes & Main Branch| F[Release Job]
+        E -->|Yes & Main Branch| F[Release Workflow]
         E -->|Yes & Feature Branch| G[Skip Release]
 
-        F --> H[Semantic Release]
-        H --> I{Released?}
+        F --> H[Generate Changelog]
+        H --> I[Semantic Release]
+        I --> J{Released?}
 
-        I -->|Yes| J[Publish Assets]
-        I -->|No| K[Skip Publish]
+        J -->|Yes| K[Tag Validation]
+        J -->|No| L[Skip Publish]
 
         subgraph "Skip Conditions"
             P[Skip if:] --> P1[github-actions bot]
@@ -282,34 +283,64 @@ flowchart TD
 
     class A trigger
     class E check
-    class H release
-    class J publish
+    class I release
+    class K publish
 ```
 
-### Workflow Steps Explained
+### Workflow Files Structure
 
-1. **Trigger Events**
-   - Pull Requests to any branch
-   - Push to main branch
-   - Manual workflow dispatch
-
-2. **Lint Job**
+1. **Lint Workflow** (.github/workflows/lint.yml)
    - Runs Black code formatter
-   - Checks commit message format
-   - Validates code style
+   - Validates commit messages with Commitlint
+   - Uses Poetry for dependency management
+   - Skips on automated commits and releases
 
-3. **Test Job**
+2. **Test Workflow** (.github/workflows/test.yml)
    - Runs pytest with coverage
-   - Requires lint job success
-   - Uses Python 3.11
+   - Uses Poetry for dependency management
+   - Matrix testing with Python 3.11
+   - Skips on automated commits
 
-4. **Release Job (main only)**
-   - Creates semantic version
-   - Updates CHANGELOG.md
-   - Creates GitHub release
-   - Publishes release assets
+3. **Release Workflow** (.github/workflows/release.yml)
+   - Triggers on main branch pushes
+   - Generates changelog
+   - Creates semantic releases
+   - Publishes GitHub releases
+   - Uses Poetry for consistent dependency management
+   - Includes manual dispatch options for:
+     - Prereleases
+     - Force version bumps
+     - Custom prerelease tokens
 
-5. **Skip Conditions**
-   - Bot commits
-   - [skip ci] tags
-   - Release commits
+4. **Tag Validation** (.github/workflows/tag-validation.yml)
+   - Validates tag authenticity
+   - Ensures tags are created by GitHub Actions
+   - Removes unauthorized tags
+   - Verifies semantic versioning format
+
+### Workflow Execution
+
+1. **On Pull Request:**
+   - Lint and Test workflows run
+   - Release workflow is skipped
+   - All checks must pass for merge
+
+2. **On Push to Main:**
+   - Full pipeline executes
+   - Changelog is updated
+   - New release is created if needed
+   - Tags are validated
+
+3. **Manual Dispatch:**
+   - Available for release workflow
+   - Supports prerelease creation
+   - Allows force version bumps
+
+### Skip Conditions
+
+Workflows are skipped when:
+- Commit is from github-actions[bot]
+- Commit message contains:
+  - [skip ci]
+  - chore(release)
+- Changes are automated release updates
