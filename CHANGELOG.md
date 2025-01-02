@@ -1,6 +1,17 @@
 # CHANGELOG
 
 
+## v3.1.0 (2025-01-02)
+
+### Features
+
+- Add automated version management system
+  ([`6c66301`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6c66301890cd52666d0f943b41d653828003c46d))
+
+- Integrate Python Semantic Release for version control - Configure automatic version bumping in
+  CI/CD pipeline - Enable automated changelog generation
+
+
 ## v3.0.0 (2025-01-02)
 
 ### Chores
