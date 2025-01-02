@@ -1,6 +1,115 @@
 # CHANGELOG
 
 
+## v5.0.0 (2025-01-02)
+
+### Bug Fixes
+
+- Add `paths` filter to the `push` trigger
+  ([`0f1ae69`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0f1ae69c935b3a9917b7da00b4e9cee7f578cb0d))
+
+- Added `workflow_call` to trigger `ci.yml`
+  ([`530c018`](https://github.com/gsinghjay/fast-api-ci-cd/commit/530c0188822d8785d8ca9dd9813c0d432800b69b))
+
+- Changed secret name because of reserved name
+  ([`42c8f3f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/42c8f3fcd80394eb846e692e89c8b4b5f1ad4ad9))
+
+- Preserve directory structure and env across jobs
+  ([`4cdf91d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/4cdf91ddc3e9b52f2a0ee8b502e259bd21602032))
+
+- Properly use the cached virtual environment and its dependencies
+  ([`35257cd`](https://github.com/gsinghjay/fast-api-ci-cd/commit/35257cd52d11f714fa9c142bccd51a9ca4b74b4a))
+
+- Remove circular dependency
+  ([`f765b8f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f765b8f628123cabde486931fb365848175e1e3e))
+
+- Removed path filters
+  ([`a3c7e61`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a3c7e617cc756ef9b8dc1f3d986b067de04eef8b))
+
+- Removed the file from the paths filter
+  ([`6dc06e8`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6dc06e8af4b0798e84fe74ce8dc541d4a6a6f1e4))
+
+- Reserved name
+  ([`2af0745`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2af074539ba8369c46f223ce7ede5e34aa94e61c))
+
+- Token naming issue
+  ([`d57959b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d57959b99a87b3c6b02ab613fe063d6849722168))
+
+- Use tar to compress venv
+  ([`78296d4`](https://github.com/gsinghjay/fast-api-ci-cd/commit/78296d41424cee771643e62772e3e90d27cd1217))
+
+- **ci**: Improve artifact sharing between workflows
+  ([`0cd29d2`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0cd29d245abb28aa4b5465e9e131ffc8638931b3))
+
+- Add unique artifact names with run ID - Pass artifact name through workflow inputs - Add setup as
+  dependency for release job
+
+- **ci**: Properly use Poetry in workflows
+  ([`dfc3c13`](https://github.com/gsinghjay/fast-api-ci-cd/commit/dfc3c13f44d3870a609a06e7ae30abdd99b740ec))
+
+- Remove requirements.txt usage - Use poetry run for commands - Include poetry.lock and
+  pyproject.toml in artifacts - Remove manual venv activation
+
+### Chores
+
+- Add debug output
+  ([`083610d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/083610d9f78012a8707d2c5d5abb34a8e7340bb5))
+
+- Merge conflict
+  ([`44a8ae1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/44a8ae14c2976fe6f791b090f53266d8a1b1cb01))
+
+- **ci**: Remove separate release workflow
+  ([`f0170b6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f0170b652031630d672786d03763777410f7482c))
+
+### Continuous Integration
+
+- Optimize workflow environment sharing
+  ([`6f9d94f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6f9d94f66e38b739178cde0dc182a18805c0d9b3))
+
+- Use artifacts to share virtual environment - Remove duplicate environment setup - Simplify job
+  dependencies
+
+- Optimize workflow job dependencies
+  ([`fd6cd91`](https://github.com/gsinghjay/fast-api-ci-cd/commit/fd6cd912b8dcd362d8a18141a3af47051c70d4d7))
+
+- Run setup job first - Run lint and test jobs in parallel - Run release job after all checks pass
+
+- Optimize workflow job dependencies
+  ([`8dc8182`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8dc818261224ed51f10590609a69afe769f7de17))
+
+- Run setup job first - Run lint and test jobs in parallel - Run release job after all checks pass
+
+### Features
+
+- **ci**: Integrate release job into main CI workflow
+  ([`5f63e26`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5f63e26c1966661d6b725f1b304a09ce0a8fcf56))
+
+BREAKING CHANGE: Release process now runs as part of the main CI workflow instead of a separate
+  workflow. This ensures proper sequencing of setup, lint, test, and release steps.
+
+- Adds release job that runs after lint and test - Only executes on main branch - Maintains all
+  semantic-release functionality - Removes need for separate release workflow
+
+### Refactoring
+
+- **ci**: Improve reusable workflows following GitHub best practices
+  ([`ed90712`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ed90712c41b64fb269d73d278575b9d70ea5a8c6))
+
+- Add proper input/output/secrets definitions - Simplify workflow dependencies - Improve Python
+  version handling - Add token handling for commitlint
+
+- **ci**: Reorganize workflow structure
+  ([`d4bfd3e`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d4bfd3ed2268ddf3231e34bb715e7e5f11611838))
+
+- Add ci.yml as main orchestrator workflow - Make test.yml and lint.yml purely reusable - Update
+  release.yml to use ci workflow - Fix artifact upload/download order
+
+### BREAKING CHANGES
+
+- **ci**: Release process now runs as part of the main CI workflow instead of a separate workflow.
+  This ensures proper sequencing of setup, lint, test, and release steps.
+
+
 ## v4.1.1 (2025-01-02)
 
 ### Bug Fixes
