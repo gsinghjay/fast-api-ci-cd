@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_call:
     secrets:
       token:
@@ -49,13 +49,13 @@ jobs:
 
   release:
     name: Create Release
-    # Only run after lint and test pass
     needs: [lint, test]
-    # Only run on main branch pushes
     if: |
       github.ref == 'refs/heads/main' &&
       !contains(github.event.head_commit.message, '[skip ci]') &&
-      github.actor != 'github-actions[bot]'
+      !contains(github.event.head_commit.message, 'chore(release)') &&
+      github.actor != 'github-actions[bot]' &&
+      github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -67,11 +67,28 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Cache semantic-release
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-semantic-release-${{ hashFiles('**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-semantic-release-
+
       - name: Python Semantic Release
+        uses: python-semantic-release/python-semantic-release@v8.7.2
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PSR_BUILD_METADATA: build.${{ github.run_number }}
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate Version Files
         run: |
-          pip install python-semantic-release
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          semantic-release version
+          poetry run semantic-release version --noop
+          poetry run semantic-release check-build
+
+      - name: Verify Release
+        if: success()
+        run: |
+          poetry run semantic-release version --print
+          git describe --tags --abbrev=0
