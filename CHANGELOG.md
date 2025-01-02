@@ -1,6 +1,38 @@
 # CHANGELOG
 
 
+## Unreleased
+
+### Bug Fixes
+
+- **ci**: Improve branch handling and semantic-release configuration
+  ([`e5135fc`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e5135fc0da76442ee7de0ba72bfd9803bb9c3247))
+
+- **ci**: Update semantic-release config to handle beta versions correctly
+  ([`0205e1b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0205e1bd2dac59dc1e3c0de4a978e7ab942503c8))
+
+### Documentation
+
+- Add documentation for custom QR code colors
+  ([#27](https://github.com/gsinghjay/fast-api-ci-cd/pull/27),
+  [`28d8ca6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/28d8ca68beeb7947ac20636cdae743bf2b073464))
+
+- Add documentation for custom QR code colors
+  ([#28](https://github.com/gsinghjay/fast-api-ci-cd/pull/28),
+  [`2f037d0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2f037d046a616df30031d2864ba340e378192ed2))
+
+- Enhance README with detailed workflow and debugging instructions
+  ([`f6987fe`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f6987febb2112a3e1ce7119dc44d8d9887b0aad8))
+
+### Features
+
+- Add support for custom QR code colors
+  ([`8697ea0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8697ea0234c945406f949d386f3a975fe9b00a37))
+
+- **ci**: Enhance release verification with detailed status messages
+  ([`5f00625`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5f00625eac215dea58f14327725c1e6644259763))
+
+
 ## v1.3.0-beta.1 (2025-01-01)
 
 ### Bug Fixes
@@ -93,6 +125,9 @@
 
 - Add branch protection rules and naming conventions
   ([`851e65b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/851e65b1ab265321f13fa727aff77e9d43997d64))
+
+- Update CHANGELOG.md [skip ci]
+  ([`5dc58d0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5dc58d0157f1d0d47904a698592dd7caffcba151))
 
 - Update CHANGELOG.md [skip ci]
   ([`ff10ee8`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ff10ee80d64129025b50e18286368f96d7a2a262))
