@@ -27,6 +27,9 @@ env/
 .coverage
 htmlcov/
 .pytest_cache/
+coverage.xml
+.coverage.*
+coverage/
 
 # Logs
 *.log
@@ -34,3 +37,16 @@ htmlcov/
 # Local development
 .env
 .env.local
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm/
+.yarn/
+
+# Cache directories
+.cache/
+__pycache__/
+*.pyc
