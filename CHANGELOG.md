@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## v1.6.3 (2025-01-02)
+## Unreleased
 
 ### Bug Fixes
 
@@ -18,6 +18,12 @@
 - Add workflow_call triggers to lint and test workflows - Configure proper job dependencies in
   release workflow - Ensure sequential execution: lint -> test -> release - Update commitlint rules
   for consistent line lengths - Fix workflow reusability issues
+
+- **ci**: Ensure consistent git author for releases
+  ([`de08aa0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/de08aa02fbe182b596c5457a21e186d388e436b3))
+
+- Add git committer details to semantic-release step - Ensure consistent git configuration - Fix tag
+  validation issues
 
 ### Documentation
 
