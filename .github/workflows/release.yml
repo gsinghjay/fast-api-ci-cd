@@ -41,17 +41,21 @@ jobs:
     needs: [setup]
     uses: ./.github/workflows/lint.yml
     with:
-      artifact-name: ${{ needs.setup.outputs.artifact-name }}
+      venv-name: ${{ needs.setup.outputs.venv-name }}
+      python-version: "3.11"
     permissions:
       contents: read
       pull-requests: read
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   test:
     name: Run Tests
     needs: [setup]
     uses: ./.github/workflows/test.yml
     with:
-      artifact-name: ${{ needs.setup.outputs.artifact-name }}
+      venv-name: ${{ needs.setup.outputs.venv-name }}
+      python-version: "3.11"
     permissions:
       contents: read
       checks: write
@@ -86,23 +90,27 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Create virtual environment
+        run: python -m venv .venv
+
       - name: Download virtual environment
         uses: actions/download-artifact@v4
         with:
-          name: ${{ needs.setup.outputs.artifact-name }}
-          path: .venv
+          name: ${{ needs.setup.outputs.venv-name }}
+          path: .
 
-      - name: Set environment variables
+      - name: Install dependencies
         run: |
-          echo "VIRTUAL_ENV=$PWD/.venv" >> $GITHUB_ENV
-          echo "$PWD/.venv/bin" >> $GITHUB_PATH
-          chmod -R +x .venv/bin
+          source .venv/bin/activate
+          pip install -r requirements.txt
 
       - name: Python Semantic Release
         id: release
         uses: python-semantic-release/python-semantic-release@v9.15.0
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VIRTUAL_ENV: ${{ github.workspace }}/.venv
+          PATH: ${{ github.workspace }}/.venv/bin:${{ env.PATH }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           directory: .

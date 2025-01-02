@@ -9,33 +9,21 @@ on:
         default: "3.11"
         description: "Python version to use"
     outputs:
-      cache-hit:
-        description: "Whether there was a cache hit for dependencies"
-        value: ${{ jobs.setup.outputs.cache-hit }}
-      venv-path:
-        description: "Path to the virtual environment"
-        value: ${{ jobs.setup.outputs.venv-path }}
-      artifact-name:
+      venv-name:
         description: "Name of the virtual environment artifact"
-        value: ${{ jobs.setup.outputs.artifact-name }}
+        value: ${{ jobs.setup.outputs.venv-name }}
 
 jobs:
   setup:
     name: Setup Python
     runs-on: ubuntu-latest
     outputs:
-      cache-hit: ${{ steps.cache-deps.outputs.cache-hit }}
-      venv-path: ${{ steps.get-venv-path.outputs.path }}
-      artifact-name: ${{ steps.set-artifact-name.outputs.name }}
+      venv-name: venv-${{ github.run_id }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Set artifact name
-        id: set-artifact-name
-        run: echo "name=venv-${{ github.run_id }}" >> $GITHUB_OUTPUT
 
       - name: Set up Python ${{ inputs.python-version }}
         uses: actions/setup-python@v4
@@ -43,35 +31,21 @@ jobs:
           python-version: ${{ inputs.python-version }}
           cache: "pip"
 
-      - name: Cache dependencies
-        id: cache-deps
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.cache/pip
-            ~/.cache/pypoetry
-            .venv
-          key: ${{ runner.os }}-python-${{ inputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-python-${{ inputs.python-version }}-
-            ${{ runner.os }}-python-
-
       - name: Install Poetry
         run: |
           pip install poetry==1.8.5
           poetry config virtualenvs.in-project true
 
       - name: Install dependencies
-        run: poetry install
-
-      - name: Get virtual environment path
-        id: get-venv-path
         run: |
-          echo "path=$PWD/.venv" >> $GITHUB_OUTPUT
+          poetry install
+          poetry run pip freeze > requirements.txt
 
       - name: Upload virtual environment
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.set-artifact-name.outputs.name }}
-          path: .venv
-          retention-days: 1
+          name: venv-${{ github.run_id }}
+          path: |
+            .venv/**/*
+            requirements.txt
+          if-no-files-found: error

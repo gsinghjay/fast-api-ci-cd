@@ -3,10 +3,18 @@ name: Lint
 on:
   workflow_call:
     inputs:
-      artifact-name:
+      venv-name:
         required: true
         type: string
         description: "Name of the virtual environment artifact"
+      python-version:
+        required: false
+        type: string
+        default: "3.11"
+        description: "Python version to use"
+    secrets:
+      GITHUB_TOKEN:
+        required: true
   pull_request:
     branches: [ main ]
   push:
@@ -37,25 +45,30 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: ${{ inputs.python-version }}
+
+      - name: Create virtual environment
+        run: python -m venv .venv
 
       - name: Download virtual environment
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.artifact-name }}
-          path: .venv
+          name: ${{ inputs.venv-name }}
+          path: .
 
-      - name: Set environment variables
+      - name: Install dependencies
         run: |
-          echo "VIRTUAL_ENV=$PWD/.venv" >> $GITHUB_ENV
-          echo "$PWD/.venv/bin" >> $GITHUB_PATH
-          chmod -R +x .venv/bin
+          source .venv/bin/activate
+          pip install -r requirements.txt
 
       - name: Run Black
-        run: black --check .
+        run: |
+          source .venv/bin/activate
+          black --check .
 
       - name: Check commit messages
         uses: wagoid/commitlint-github-action@v5
         with:
           configFile: commitlint.config.js
           failOnWarnings: true
+          token: ${{ secrets.GITHUB_TOKEN }}
