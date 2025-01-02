@@ -167,15 +167,11 @@ For more detailed documentation, see:
      ```
 
 2. **Configure GitHub Repository**
-   - Go to repository Settings → Secrets and Variables → Actions
-   - Add `PAT_TOKEN` secret:
-     - Generate token at GitHub → Settings → Developer settings → Personal access tokens
-     - Required scopes: `repo`, `write:packages`
-   - Configure branch protection rules:
-     - Settings → Branches → Add rule
-     - Protect `main` branch
-     - Require pull request reviews
-     - Require status checks to pass
+   - Go to repository Settings → Branches → Add rule
+   - Protect `main` branch
+   - Require pull request reviews
+   - Require status checks to pass
+   - Note: The workflows use `GITHUB_TOKEN` which is automatically provided by GitHub Actions
 
 3. **Update Configuration Files**
    - Update `pyproject.toml`:
@@ -213,7 +209,7 @@ gh run view --web
 ### Common Issues & Solutions
 
 1. **Release Creation Fails**
-   - Check PAT_TOKEN permissions
+   - Check workflow permissions in repository settings
    - Ensure commit messages follow convention
    - Verify branch protection settings
    - Check git configuration:
@@ -226,7 +222,7 @@ gh run view --web
    - Only updates on main branch merges
    - Verify commit message format
    - Check workflow logs for errors
-   - Ensure PAT_TOKEN has write permissions
+   - Ensure workflow has write permissions
 
 3. **Pre-commit Hooks Failing**
    - Update hooks:
@@ -243,8 +239,8 @@ gh run view --web
 4. **Workflow Permission Issues**
    - Repository Settings → Actions → General
    - Enable "Allow GitHub Actions to create and approve pull requests"
-   - Ensure PAT_TOKEN has required scopes
    - Check workflow permissions in yml files
+   - Ensure proper permissions are set in workflow files
 
 ## 🔄 Semantic Versioning
 
