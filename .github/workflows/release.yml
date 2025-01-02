@@ -30,8 +30,15 @@ permissions:
   id-token: write
 
 jobs:
+  setup:
+    name: Setup Environment
+    uses: ./.github/workflows/setup-python.yml
+    with:
+      python-version: "3.11"
+
   lint:
     name: Lint Check
+    needs: [setup]
     uses: ./.github/workflows/lint.yml
     permissions:
       contents: read
@@ -39,22 +46,15 @@ jobs:
 
   test:
     name: Run Tests
-    needs: [lint]
+    needs: [setup]
     uses: ./.github/workflows/test.yml
     permissions:
       contents: read
       checks: write
 
-  setup:
-    name: Setup Environment
-    needs: [test]
-    uses: ./.github/workflows/setup-python.yml
-    with:
-      python-version: "3.11"
-
   release:
     name: Create Release
-    needs: [setup]
+    needs: [lint, test]
     runs-on: ubuntu-latest
     if: |
       github.ref == 'refs/heads/main' &&
