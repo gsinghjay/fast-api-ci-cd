@@ -1,6 +1,41 @@
 # CHANGELOG
 
 
+## v2.0.0 (2025-01-02)
+
+### Bug Fixes
+
+- **release**: Pass workflow dispatch inputs to semantic-release
+  ([`8aa77e5`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8aa77e5145bae6c721a59c700121b035b76b340a))
+
+- Add prerelease input handling - Add force version bump input - Add prerelease token input - Enable
+  manual control of release process
+
+BREAKING CHANGE: Manual workflow dispatch now directly controls semantic-release behavior
+
+### Continuous Integration
+
+- **release**: Simplify semantic release workflow
+  ([`0bcbd03`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0bcbd033d44fccc0707c54275fe37e09894f48c8))
+
+- Remove redundant git committer configuration (handled by pyproject.toml) - Remove prerelease and
+  force options (handled by workflow_dispatch) - Keep publish action for GitHub release assets -
+  Align with python-semantic-release documentation
+
+### Documentation
+
+- Update workflow documentation
+  ([`2eab334`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2eab334201a4385938515d2f762b67abda8488eb))
+
+- Update CI/CD badge to point to release workflow - Replace workflow diagram with new architecture -
+  Add detailed workflow files structure - Add workflow execution and skip conditions - Remove
+  outdated workflow steps section
+
+### BREAKING CHANGES
+
+- **release**: Manual workflow dispatch now directly controls semantic-release behavior
+
+
 ## v1.6.4 (2025-01-02)
 
 ### Bug Fixes
