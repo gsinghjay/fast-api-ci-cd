@@ -49,10 +49,15 @@ commit_message = "chore(release): {version} [skip ci]"
 token = "env:GH_TOKEN"
 
 # Simplified branch configuration - only main branch
-[tool.python_semantic_release.branches.main]
-match = ["main"]
-prerelease = false
-prerelease_token = ""
+[tool.python_semantic_release.branches]
+main = [
+    { name = "main" }
+]
+development = [
+    { name = "fix/.*" },
+    { name = "feature/.*" },
+    { name = "develop" }
+]
 
 [tool.python_semantic_release.changelog]
 sections = [
@@ -78,5 +83,5 @@ exclude_commit_patterns = [
 ]
 render_title = true
 render_commit_links = true
-include_unreleased = true
+include_unreleased = false
 unreleased_section_title = "Unreleased"
