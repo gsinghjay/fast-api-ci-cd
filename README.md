@@ -62,10 +62,10 @@ A production-ready FastAPI template with robust CI/CD pipeline, semantic version
 
 ### Commit Message Format
 
-Follow the Conventional Commits standard:
+Follow the Angular Commit Message Convention:
 
 ```bash
-type(scope): description
+<type>(<scope>): <description>
 
 [optional body]
 
@@ -73,14 +73,64 @@ type(scope): description
 ```
 
 Types:
-- feat: New feature
-- fix: Bug fix
-- docs: Documentation changes
-- style: Code style changes
-- refactor: Code refactoring
-- perf: Performance improvements
-- test: Adding/updating tests
-- chore: Maintenance tasks
+- feat: A new feature (MINOR version bump)
+- fix: A bug fix (PATCH version bump)
+- docs: Documentation only changes
+- style: Changes that do not affect the meaning of the code
+- refactor: A code change that neither fixes a bug nor adds a feature
+- perf: A code change that improves performance
+- test: Adding missing tests or correcting existing tests
+- build: Changes that affect the build system or external dependencies
+- ci: Changes to our CI configuration files and scripts
+- chore: Other changes that don't modify src or test files
+
+Breaking Changes:
+- Add `BREAKING CHANGE:` in the footer
+- Or append `!` after type/scope (e.g., `feat!:` or `feat(api)!:`)
+- Triggers a MAJOR version bump
+
+Examples:
+```bash
+# Feature with scope
+feat(auth): add OAuth2 authentication
+
+# Bug fix with breaking change
+fix!: remove deprecated API endpoints
+
+BREAKING CHANGE: The /v1/api/* endpoints have been removed.
+
+# Documentation update
+docs(readme): update installation instructions
+
+# Multiple-line description with scope
+feat(api): improve error handling for REST endpoints
+
+Implement better error messages and status codes
+for all REST API endpoints.
+
+Closes #123
+```
+
+Scope:
+- Optional parentheses-enclosed identifier
+- Indicates section of codebase (e.g., api, auth, core)
+- Should be noun describing the section
+
+Description:
+- Imperative, present tense: "change" not "changed" nor "changes"
+- Don't capitalize first letter
+- No period (.) at the end
+
+Body:
+- Free-form
+- Provide context and motivation for changes
+- Use imperative, present tense
+
+Footer:
+- Reference issues being closed
+- Note breaking changes
+- Multiple footers allowed
+- Format: `token: value` or `BREAKING CHANGE: description`
 
 ## 🛠️ Development Setup
 
@@ -404,30 +454,29 @@ flowchart TD
     subgraph "CI/CD Pipeline"
         A[Push/PR] --> B{Event Type?}
 
-        B --> C[Setup Job]
-        C --> D{Branch Type?}
+        B --> |PR/Push| C[Setup Python]
+        C --> D[Install Dependencies]
+        D --> E[Cache Environment]
 
-        D -->|Any| E[Lint Job]
-        D -->|Any| F[Test Job]
+        E --> F[Lint Check]
+        E --> G[Test]
 
-        E --> G{Checks Pass?}
-        F --> G
+        F & G --> H{All Checks Pass?}
 
-        G -->|Yes & Main| H[Release Job]
-        G -->|Yes & Feature| I[Skip Release]
+        H -->|No| I[Report Failure]
+        H -->|Yes & PR| J[Ready for Review]
+        H -->|Yes & Push to Main| K[Semantic Release]
 
-        H --> J[Generate Changelog]
-        J --> K[Semantic Release]
-        K --> L{Released?}
+        K --> L[Generate Changelog]
+        L --> M[Create Release]
+        M --> N[Publish Assets]
 
-        L -->|Yes| M[Create GitHub Release]
-        L -->|No| N[Skip Publish]
-
-        subgraph "Skip Conditions"
-            P[Skip if:] --> P1[github-actions bot]
-            P --> P2[semantic-release user]
-            P --> P3[skip ci tag]
-            P --> P4[chore release]
+        subgraph "Skip Release Conditions"
+            S1[Skip if]
+            S2[Commit by github-actions]
+            S3["Message contains 'skip ci'"]
+            S4["Message has 'chore(release)'"]
+            S1 --> S2 & S3 & S4
         end
     end
 
@@ -435,69 +484,83 @@ flowchart TD
     classDef setup fill:#FFE4B5
     classDef check fill:#FFB6C1
     classDef release fill:#ADD8E6
-    classDef publish fill:#98FB98
+    classDef skip fill:#D3D3D3
 
     class A trigger
-    class C setup
-    class G check
-    class K release
-    class M publish
+    class C,D,E setup
+    class F,G,H check
+    class K,L,M,N release
+    class S1,S2,S3,S4 skip
 ```
 
 ### Workflow Files Structure
 
 1. **CI Workflow** (.github/workflows/ci.yml)
    - Main orchestrator workflow
-   - Manages job dependencies and sequencing
-   - Handles environment and artifact sharing
-   - Integrates setup, lint, test, and release jobs
+   - Triggers on push to main and pull requests
+   - Controls the release process
+   - Uses reusable workflows for setup, lint, and test
 
-2. **Lint Workflow** (.github/workflows/lint.yml)
-   - Reusable workflow for code quality checks
+2. **Setup Workflow** (.github/workflows/setup-python.yml)
+   - Sets up Python environment
+   - Installs and configures Poetry
+   - Creates and caches virtual environment
+   - Shares environment via artifacts
+
+3. **Lint Workflow** (.github/workflows/lint.yml)
    - Runs Black code formatter
    - Validates commit messages with Commitlint
-   - Uses Poetry for dependency management
+   - Uses shared virtual environment
 
-3. **Test Workflow** (.github/workflows/test.yml)
-   - Reusable workflow for testing
+4. **Test Workflow** (.github/workflows/test.yml)
    - Runs pytest with coverage
-   - Uses Poetry for dependency management
-   - Matrix testing with Python 3.11
+   - Uses shared virtual environment
+   - Reports test results
 
 ### Workflow Execution
 
 1. **Setup Phase:**
-   - Initializes Python environment
-   - Sets up Poetry and dependencies
-   - Creates and caches virtual environment
-   - Shares environment across jobs via artifacts
+   - Initializes Python 3.11 environment
+   - Installs Poetry and dependencies
+   - Creates virtual environment
+   - Caches dependencies for speed
+   - Shares environment via artifacts
 
 2. **Parallel Checks:**
-   - Lint and Test jobs run simultaneously
-   - Both use the shared environment from Setup
+   - Lint and Test jobs run concurrently
+   - Both use the shared virtual environment
    - All checks must pass to proceed
 
 3. **Release Phase (Main Branch Only):**
-   - Runs after all checks pass
-   - Updates changelog
-   - Creates semantic release
-   - Publishes to GitHub
-   - Uses shared environment from Setup
+   - Triggered on push to main
+   - Uses python-semantic-release
+   - Updates CHANGELOG.md
+   - Creates GitHub release
+   - Publishes release assets
 
 ### Skip Conditions
 
-Workflows are skipped when:
-- Commit is from users:
-  - github-actions[bot]
-  - semantic-release
+Workflow skips release when:
+- Commit is from github-actions[bot]
 - Commit message contains:
   - [skip ci]
   - chore(release)
-- Changes are automated release updates
+- Event is a pull request
+
+### Security and Permissions
+
+- Uses built-in GITHUB_TOKEN
+- Minimal required permissions per job:
+  - Lint: read (contents, pull-requests)
+  - Test: read (contents), write (checks)
+  - Release: write (contents, id-token)
 
 ### Environment Optimization
 
-- Virtual environment shared via artifacts
-- Poetry for consistent dependency management
-- Cached dependencies to speed up builds
-- Preserved directory structure across jobs
+- Shared virtual environment via artifacts
+- Poetry for dependency management
+- Cached dependencies:
+  - Poetry virtual environment
+  - Pip cache
+  - Poetry package cache
+- Preserved environment across jobs
