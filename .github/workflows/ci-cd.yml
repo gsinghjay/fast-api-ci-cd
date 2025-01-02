@@ -191,13 +191,13 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Generate changelog with unreleased section
-          semantic-release changelog --unreleased
+          # Generate changelog
+          semantic-release changelog
 
           # Commit and push if there are changes
           if [[ -n $(git status --porcelain CHANGELOG.md) ]]; then
             git add CHANGELOG.md
-            git commit -m "docs: update CHANGELOG.md with unreleased changes [skip ci]"
+            git commit -m "docs: update CHANGELOG.md [skip ci]"
             git push origin HEAD:${{ github.head_ref }}
           fi
 
