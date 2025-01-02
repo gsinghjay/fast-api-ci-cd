@@ -300,6 +300,12 @@ changelog_sections = [  # Keep a Changelog categories
     "refactor"
 ]
 
+# Changelog Behavior
+include_unreleased = true  # Track upcoming changes
+always_update = true      # Update changelog even without version bump
+render_commit_links = true  # Add links to commits
+render_title = true        # Include version headers
+
 # Release Settings
 upload_to_repository = false
 build_command = "poetry build"
@@ -322,6 +328,9 @@ tag_type = "annotated"  # Use annotated tags for better documentation
    - Includes release dates and version links
    - Keeps an Unreleased section for upcoming changes
    - Links to Git comparisons between versions
+   - Updates changelog even for non-version-bumping changes
+   - Tracks all commits in the Unreleased section
+   - Provides complete history of all changes
 
 ### Manual Release Commands
 
