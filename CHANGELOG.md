@@ -1,6 +1,30 @@
 # CHANGELOG
 
 
+## v1.6.4 (2025-01-02)
+
+### Bug Fixes
+
+- **ci**: Handle concurrent changes in release workflow
+  ([`1097ec0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1097ec07187a72c41c7c2354fcae15ac1914f47d))
+
+### Continuous Integration
+
+- Prevent workflow trigger loops
+  ([`05236d0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/05236d0ab349f5a64e304443610aa836a02c19b1))
+
+- Add conditions to prevent release workflow from running on automated commits - Remove redundant CI
+  skip conditions from test workflow - Add explicit conditions to prevent github-actions[bot] from
+  triggering new workflows
+
+- Standardize Poetry usage across workflows
+  ([`b809859`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b809859f4d476b80621a101eba50f1d142da7e39))
+
+- Unify Poetry configuration across all workflow files - Remove redundant pip upgrade steps -
+  Standardize cache configuration - Configure virtualenvs.create false consistently - Remove
+  --no-root flag from poetry install commands
+
+
 ## v1.6.3 (2025-01-02)
 
 ### Bug Fixes
