@@ -5,6 +5,10 @@ on:
     branches: [ main ]
   push:
     branches: [ main ]
+  workflow_call:
+    secrets:
+      GITHUB_TOKEN:
+        required: true
   workflow_dispatch:
 
 jobs:
