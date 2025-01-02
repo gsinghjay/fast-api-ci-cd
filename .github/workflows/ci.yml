@@ -90,6 +90,17 @@ jobs:
           cp artifact/pyproject.toml .
           chmod -R +x .venv/bin/
 
+      - name: Debug Environment
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Directory contents:"
+          ls -la
+          echo "Virtual env contents:"
+          ls -la .venv/bin || echo "No .venv/bin directory"
+          echo "Poetry location:"
+          which poetry || echo "Poetry not found in PATH"
+
       - name: Python Semantic Release
         uses: python-semantic-release/python-semantic-release@v8.7.2
         with:
@@ -97,11 +108,11 @@ jobs:
 
       - name: Validate Version Files
         run: |
-          .venv/bin/poetry run semantic-release version --noop
-          .venv/bin/poetry run semantic-release check-build
+          poetry run semantic-release version --noop
+          poetry run semantic-release check-build
 
       - name: Verify Release
         if: success()
         run: |
-          .venv/bin/poetry run semantic-release version --print
+          poetry run semantic-release version --print
           git describe --tags --abbrev=0
