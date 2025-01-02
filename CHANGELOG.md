@@ -2,6 +2,22 @@
 
 
 
+## v5.0.4 (2025-01-02)
+
+### Fix
+
+* fix(ci): activate virtual environment for semantic-release commands
+
+- Add virtual environment activation before running semantic-release
+- Use full path to Poetry from virtual environment ([`1f4a63a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1f4a63a91de00ab278b186265ce36602e18b964d))
+
+### Unknown
+
+* Merge pull request #74 from gsinghjay/ci/venv-and-restore
+
+fix(ci): activate virtual environment for semantic-release commands ([`9d16701`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9d16701d9525f7cf5dff5ac24d0df6ac9c6d19c4))
+
+
 ## v5.0.3 (2025-01-02)
 
 ### Fix
