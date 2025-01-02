@@ -2,6 +2,23 @@
 
 
 
+## v5.0.2 (2025-01-02)
+
+### Fix
+
+* fix(ci): use shared virtual environment for release job
+
+- Add setup job as dependency for release job
+- Use cached Poetry and dependencies from setup job
+- Fix semantic-release commands to use virtual environment ([`31bc972`](https://github.com/gsinghjay/fast-api-ci-cd/commit/31bc972498925553672074073c6e0a85df88ce1b))
+
+### Unknown
+
+* Merge pull request #72 from gsinghjay/ci/venv-and-restore
+
+fix(ci): use shared virtual environment for release job ([`3ffbaf0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3ffbaf010a4a86c253f257dbae92af2aa8348f89))
+
+
 ## v5.0.1 (2025-01-02)
 
 ### Fix
