@@ -78,3 +78,5 @@ exclude_commit_patterns = [
 ]
 render_title = true
 render_commit_links = true
+include_unreleased = true
+unreleased_section_title = "Unreleased"
