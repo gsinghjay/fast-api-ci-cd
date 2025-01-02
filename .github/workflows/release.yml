@@ -3,9 +3,6 @@ name: Release
 on:
   push:
     branches: [ main ]
-    paths:
-      - 'pyproject.toml'
-      - 'app/**'
   workflow_dispatch:
     inputs:
       prerelease:
@@ -72,8 +69,6 @@ jobs:
     runs-on: ubuntu-latest
     if: |
       github.ref == 'refs/heads/main' &&
-      github.actor != 'github-actions[bot]' &&
-      github.actor != 'semantic-release' &&
       !contains(github.event.head_commit.message, '[skip ci]')
     concurrency:
       group: release
