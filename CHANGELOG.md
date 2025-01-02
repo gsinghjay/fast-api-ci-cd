@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## Unreleased
+## v1.6.3 (2025-01-02)
 
 ### Bug Fixes
 
@@ -20,6 +20,9 @@
   for consistent line lengths - Fix workflow reusability issues
 
 ### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`ed9486f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ed9486f9469cccdae1ba8bb9d73865b38f0604c2))
 
 - Update CHANGELOG.md [skip ci]
   ([`6ca62a6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6ca62a6fad0adcb501612e5b6af5b58bc99c5527))
