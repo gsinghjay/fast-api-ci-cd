@@ -14,6 +14,8 @@ A production-ready FastAPI template with robust CI/CD pipeline, semantic version
 - [Prerequisites](#-prerequisites)
 - [Quick Start](#-quick-start)
 - [Development Guide](#️-development-guide)
+- [Workflow Guide](#-workflow-guide)
+- [Debugging Guide](#-debugging-guide)
 - [Metrics and Monitoring](#-metrics-and-monitoring)
 - [Environment Variables](#-environment-variables)
 - [License](#-license)
@@ -36,6 +38,9 @@ A production-ready FastAPI template with robust CI/CD pipeline, semantic version
 - Test coverage reporting
 - Prometheus metrics integration
 - Structured logging with structlog
+- Automated beta and release candidate versioning
+- Branch-specific release configurations
+- Detailed debugging and monitoring capabilities
 
 ## 📋 Prerequisites
 
@@ -43,6 +48,7 @@ A production-ready FastAPI template with robust CI/CD pipeline, semantic version
 - Poetry (Python package manager)
 - Git
 - Node.js 18+ (for commitlint)
+- GitHub Personal Access Token (PAT) with repo scope
 
 ## 🚀 Quick Start
 
@@ -75,304 +81,214 @@ A production-ready FastAPI template with robust CI/CD pipeline, semantic version
    poetry run pre-commit install --hook-type commit-msg
    ```
 
-4. **Run the application**
+4. **Configure GitHub Token**
    ```bash
-   # Development server
-   poetry run uvicorn app.main:app --reload
+   # Add to your environment or .env file
+   export GH_TOKEN=your_github_pat_token
+   ```
+
+5. **Run the application**
+   ```bash
+   # Development server with hot reload
+   poetry run uvicorn app.main:app --reload --log-level debug
 
    # Production server
-   poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000
+   poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
    ```
 
-## 🛠️ Development Guide
+## 🔄 Workflow Guide
 
-### Project Structure
-```
-fast-api-ci-cd/
-├── .github/
-│   └── workflows/           # CI/CD workflow definitions
-├── app/
-│   ├── __init__.py         # Version and app initialization
-│   └── main.py             # Main FastAPI application
-├── tests/                   # Test directory
-├── .gitignore              # Git ignore rules
-├── CHANGELOG.md            # Automated changelog
-├── commitlint.config.js    # Commit message rules
-├── poetry.lock            # Lock file for dependencies
-├── pyproject.toml         # Project configuration
-└── README.md              # This file
-```
+### Development Workflow
 
-### Branch Protection Rules
-
-To enforce our release workflow, set up these branch protection rules in GitHub (Settings → Branches → Add rule):
-
-1. **`main` Branch Protection**:
-   ```yaml
-   Branch name pattern: main
-   Rules:
-     - ✓ Require a pull request before merging
-     - ✓ Require status checks to pass before merging
-         - Required checks: lint, test
-     - ✓ Require conversation resolution before merging
-     - ✓ Require linear history
-     - ✓ Include administrators
-     - ✓ Allow force pushes (only for CI/CD)
-     - ✓ Require signed commits
-   ```
-
-2. **`develop` Branch Protection**:
-   ```yaml
-   Branch name pattern: develop
-   Rules:
-     - ✓ Require a pull request before merging
-     - ✓ Require status checks to pass before merging
-         - Required checks: lint, test
-     - ✓ Require conversation resolution before merging
-     - ✓ Allow force pushes (only for CI/CD)
-     - ✓ Require signed commits
-   ```
-
-3. **`release/*` Branch Protection**:
-   ```yaml
-   Branch name pattern: release/*
-   Rules:
-     - ✓ Require a pull request before merging
-     - ✓ Require status checks to pass before merging
-         - Required checks: lint, test
-     - ✓ Require conversation resolution before merging
-     - ✓ Restrict who can push to matching branches
-         - Allow: Maintainers, Release managers
-     - ✓ Require signed commits
-   ```
-
-4. **Branch Naming Conventions**:
-   - Feature branches: `feature/*`
-   - Bug fix branches: `fix/*`
-   - Release branches: `release/*`
-   - Hotfix branches: `hotfix/*`
-
-### Versioning System
-
-This project uses semantic versioning (SemVer) with automated version management through python-semantic-release:
-
-1. **Version Format**: `MAJOR.MINOR.PATCH` (e.g., 1.0.0)
-2. **Version Bumps**:
-   - `MAJOR`: Breaking changes (feat! or BREAKING CHANGE)
-   - `MINOR`: New features (feat)
-   - `PATCH`: Bug fixes (fix), performance improvements (perf), or refactoring (refactor)
-
-### Release Commands
-
-The project uses python-semantic-release for version management:
-
-```bash
-# Check current version
-semantic-release print-version --current
-
-# Preview next version
-semantic-release print-version --next
-
-# Update version files
-semantic-release version
-
-# Generate changelog
-semantic-release changelog
-
-# Create GitHub release
-semantic-release publish
-```
-
-### Commit Convention
-
-We use Conventional Commits to automate versioning and changelog generation:
-
-```
-<type>(<scope>): <description>
-
-[optional body]
-
-[optional footer]
-```
-
-**Types**:
-- `feat`: New feature (minor version bump)
-- `fix`: Bug fix (patch version bump)
-- `perf`: Performance improvement (patch version bump)
-- `refactor`: Code refactoring (patch version bump)
-- `docs`: Documentation changes
-- `style`: Code style changes
-- `test`: Adding/updating tests
-- `chore`: Maintenance tasks
-
-**Examples**:
-```bash
-# Feature (minor version bump)
-git commit -m "feat(auth): add JWT authentication"
-
-# Bug fix (patch version bump)
-git commit -m "fix(api): handle null response in user service"
-
-# Breaking change (major version bump)
-git commit -m "feat(api)!: change authentication endpoint structure"
-```
-
-### CI/CD Pipeline
-
-Our CI/CD pipeline consists of four main stages:
-
-```mermaid
-graph TD
-    A[Push/PR] --> B{Lint}
-    B -->|Success| C{Test}
-    B -->|Failure| Z[Failed]
-    C -->|Success| D{Branch?}
-    C -->|Failure| Z
-
-    %% Branch-specific releases
-    D -->|main| E[Regular Release]
-    D -->|develop| F[Beta Release]
-    D -->|release/*| G[RC Release]
-    D -->|other| H[No Release]
-
-    %% Release processes
-    E --> I[Tag Validation]
-    F --> I
-    G --> I
-
-    %% Final states
-    I -->|Valid| J[Success]
-    I -->|Invalid| K[Delete Tag]
-
-    %% Manual workflow
-    L[Manual Trigger] -->|with params| M{Release Type}
-    M -->|prerelease=true| N[Pre-release]
-    M -->|prerelease=false| O[Regular Release]
-    N --> I
-    O --> I
-```
-
-1. **Lint Stage**:
-   - Black code formatting
-   - Commitlint message validation
-   - Pre-commit hook checks
-
-2. **Test Stage**:
-   - Runs pytest with coverage
-   - Generates coverage report
-   - Updates changelog
-
-3. **Release Stage** (main branch only):
-   - Uses semantic-release for versioning
-   - Generates changelog automatically
-   - Creates GitHub release
-   - Pushes git tag
-   - Supports manual workflow triggers with:
-     - Prerelease versions (alpha, beta, etc.)
-     - Force version bumps (patch, minor, major)
-     - Build metadata
-     - Commit signing with SSH keys
-
-4. **Tag Validation**:
-   - Verifies tag authenticity
-   - Ensures proper versioning
-
-### Manual Release Workflow
-
-You can trigger manual releases with specific configurations through GitHub Actions:
-
-1. **Navigate** to Actions → CI/CD Pipeline → Run workflow
-2. **Configure** release options:
-   - `prerelease`: Create a prerelease version (true/false)
-   - `prerelease_token`: Token for prerelease (e.g., 'alpha', 'beta')
-   - `force`: Force version bump ('patch', 'minor', 'major')
-   - `build_metadata`: Additional build metadata to append
-
-### Pre-release Patterns
-
-The pipeline supports both manual and automated pre-releases:
-
-1. **Automated Pre-releases**:
-   - `develop` branch → `beta` releases (e.g., v1.2.3-beta.1)
-   - `release/*` branches → `rc` releases (e.g., v1.2.3-rc.1)
-   - Feature branches → Manual alpha releases
-
-2. **Manual Pre-releases**:
-   You can create custom pre-releases using workflow dispatch:
+1. **Start a New Feature/Fix**
    ```bash
-   # Beta release
-   prerelease: true
-   prerelease_token: beta
-
-   # Release candidate
-   prerelease: true
-   prerelease_token: rc
-
-   # Alpha release with build metadata
-   prerelease: true
-   prerelease_token: alpha
-   build_metadata: "20240101"
+   # Create a new branch
+   git checkout develop
+   git pull origin develop
+   git checkout -b feature/your-feature  # or fix/your-fix
    ```
 
-3. **Version Patterns**:
-   - Regular releases: `v1.2.3`
-   - Beta releases: `v1.2.3-beta.1`
-   - Release candidates: `v1.2.3-rc.1`
-   - Alpha releases: `v1.2.3-alpha.1`
-   - With metadata: `v1.2.3-beta.1+20240101`
+2. **Make Changes and Commit**
+   ```bash
+   # Stage changes
+   git add .
 
-### Changelog Generation
-
-The changelog is automatically generated by semantic-release and follows the Keep a Changelog format:
-
-1. **Sections**:
-   - Features
-   - Bug Fixes
-   - Breaking Changes
-   - Documentation
-   - Performance
-   - Refactoring
-
-2. **Generation Rules**:
-   - Release commits are excluded
-   - [skip ci] commits are excluded
-   - Changelog updates are excluded
-
-3. **Configuration**:
-   The changelog format is configured in `pyproject.toml`:
-   ```toml
-   [tool.python_semantic_release]
-   changelog_sections = [
-       "feature",
-       "fix",
-       "breaking",
-       "documentation",
-       "performance",
-       "refactor"
-   ]
-   changelog_components = [
-       "semantic_release.changelog.changelog_headers",
-       "semantic_release.changelog.compare_url",
-       "semantic_release.changelog.commit_list"
-   ]
+   # Commit with conventional commit message
+   git commit -m "feat(scope): add amazing feature"
+   # or
+   git commit -m "fix(scope): resolve specific issue"
    ```
+
+3. **Push and Create PR**
+   ```bash
+   git push origin feature/your-feature
+   # Create PR to develop branch via GitHub UI
+   ```
+
+4. **Release Process**
+   ```bash
+   # Beta releases (from develop)
+   git checkout develop
+   git pull origin develop
+   # CI will automatically create beta release
+
+   # Release candidates (from release/*)
+   git checkout -b release/1.3.0
+   git push origin release/1.3.0
+   # CI will automatically create RC release
+
+   # Final release (from main)
+   # Create PR from develop to main
+   # CI will create final release after merge
+   ```
+
+### Version Management
+
+1. **Check Versions**
+   ```bash
+   # Current version
+   poetry run semantic-release print-version --current
+
+   # Next version
+   poetry run semantic-release print-version --next
+   ```
+
+2. **Manual Release Trigger**
+   ```bash
+   # Via GitHub Actions UI:
+   # - Set prerelease: true/false
+   # - Set prerelease_token: beta/rc/alpha
+   # - Set force: patch/minor/major
+   # - Set build_metadata: (optional)
+   ```
+
+## 🐛 Debugging Guide
+
+### Local Debugging
+
+1. **Enable Debug Logging**
+   ```bash
+   # Run with debug logging
+   poetry run uvicorn app.main:app --reload --log-level debug
+   ```
+
+2. **Use Debug Endpoints**
+   ```bash
+   # Health check
+   curl http://localhost:8000/health
+
+   # Debug info (development only)
+   curl http://localhost:8000/debug/info
+   ```
+
+3. **Troubleshoot CI/CD**
+   ```bash
+   # Local semantic-release dry run
+   poetry run semantic-release print-version --next
+
+   # Verify git configuration
+   git config --list
+
+   # Check GitHub token
+   gh auth status
+   ```
+
+### Common Issues
+
+1. **Release Creation Fails**
+   - Verify GitHub token permissions
+   - Check branch protection rules
+   - Ensure commit messages follow convention
+   - Verify git user configuration
+
+2. **Version Not Incrementing**
+   - Check commit message format
+   - Verify branch configuration in pyproject.toml
+   - Check semantic-release logs in GitHub Actions
+
+3. **Workflow Debugging**
+   - Enable workflow debug logging:
+     ```yaml
+     env:
+       ACTIONS_RUNNER_DEBUG: true
+       ACTIONS_STEP_DEBUG: true
+     ```
 
 ## 📊 Metrics and Monitoring
 
-The application includes Prometheus metrics at `/metrics` endpoint for monitoring:
-- Request counts
-- Response times
-- Error rates
-- System metrics
+### Available Metrics
+
+1. **Application Metrics** (at `/metrics`)
+   - Request counts by endpoint
+   - Response times (p50, p95, p99)
+   - Error rates and types
+   - Active connections
+   - Resource utilization
+
+2. **Custom Business Metrics**
+   ```python
+   # Example metric registration
+   REQUEST_COUNT = Counter('http_requests_total', 'Total HTTP requests')
+
+   # Example usage in endpoint
+   @app.get("/")
+   async def root():
+       REQUEST_COUNT.inc()
+       return {"message": "Hello World"}
+   ```
+
+### Monitoring Setup
+
+1. **Prometheus Configuration**
+   ```yaml
+   scrape_configs:
+     - job_name: 'fastapi'
+       scrape_interval: 10s
+       static_configs:
+         - targets: ['localhost:8000']
+   ```
+
+2. **Grafana Dashboard**
+   - Import provided dashboard template
+   - Configure Prometheus data source
+   - Set up alerting rules
+
+### Health Checks
+
+1. **Endpoints**
+   ```bash
+   # Basic health check
+   curl http://localhost:8000/health
+
+   # Detailed health status
+   curl http://localhost:8000/health/detail
+
+   # Readiness probe
+   curl http://localhost:8000/ready
+   ```
+
+2. **Custom Health Checks**
+   ```python
+   # Example custom health check
+   @app.get("/health/custom")
+   async def custom_health():
+       return {
+           "status": "healthy",
+           "checks": {
+               "database": "connected",
+               "cache": "available"
+           }
+       }
+   ```
 
 ## 🔒 Environment Variables
 
 Required environment variables:
 - `GH_TOKEN`: GitHub token for releases (CI/CD)
-
-## 📝 License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
+- `LOG_LEVEL`: Logging level (debug/info/warning/error)
+- `PORT`: Application port (default: 8000)
+- `WORKERS`: Number of worker processes (default: 1)
+- `METRICS_ENABLED`: Enable/disable Prometheus metrics (true/false)
 
 ## 🤝 Contributing
 
@@ -389,29 +305,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - Input validation using Pydantic models
 - CORS middleware configured
 - Structured logging for audit trails
-
-## 🐳 Docker Support
-
-```bash
-# Build the image
-docker build -t qr-code-api .
-
-# Run the container
-docker run -p 8000:8000 qr-code-api
-```
-
-## 📚 API Documentation
-
-Once running, access the interactive API documentation at:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
-
-## ⚡ Performance
-
-- Async endpoint handling
-- Connection pooling
-- Response caching
-- Optimized QR code generation
+- Automated security scanning in CI/CD
+- Signed commits required
 
 ## 🧪 Testing
 
@@ -421,6 +316,12 @@ poetry run pytest --cov=app tests/
 
 # Generate coverage report
 poetry run coverage html
+
+# Run specific test file
+poetry run pytest tests/test_specific.py -v
+
+# Run tests with logging
+poetry run pytest --log-cli-level=DEBUG
 ```
 
 ## 🚨 Error Handling
@@ -430,3 +331,17 @@ The API implements standardized error responses:
 - 404: Not Found - Resource doesn't exist
 - 429: Too Many Requests - Rate limit exceeded
 - 500: Internal Server Error - Server-side issues
+
+Custom error handling:
+```python
+@app.exception_handler(CustomException)
+async def custom_exception_handler(request: Request, exc: CustomException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "message": exc.message,
+            "error_code": exc.error_code,
+            "details": exc.details
+        }
+    )
+```
