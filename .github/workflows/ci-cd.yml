@@ -196,26 +196,16 @@ jobs:
   ##########################################################################
   release:
     name: Release
-    if: |
-      (github.ref == 'refs/heads/main' && github.event_name == 'push') ||
-      (github.ref == 'refs/heads/develop' && github.event_name == 'push') ||
-      (startsWith(github.ref, 'refs/heads/release/') && github.event_name == 'push') ||
-      (startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push')
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'  # Only run on main branch pushes
     needs: test
     runs-on: ubuntu-latest
-    env:
-      # Add environment variables for semantic release configuration
-      PSR_PRERELEASE: ${{ ((github.ref == 'refs/heads/develop') || (startsWith(github.ref, 'refs/heads/release/'))) && 'true' || github.event.inputs.prerelease || 'false' }}
-      PSR_PRERELEASE_TOKEN: ${{ github.ref == 'refs/heads/develop' && 'beta' || startsWith(github.ref, 'refs/heads/release/') && 'rc' || github.event.inputs.prerelease_token || '' }}
-      PSR_BUILD_METADATA: ${{ github.event.inputs.build_metadata || '' }}
-      PSR_FORCE_LEVEL: ${{ github.event.inputs.force || '' }}
     steps:
       - name: Check out code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Important for correct version calculation
-          token: ${{ secrets.PAT_TOKEN }}  # Use PAT instead of GITHUB_TOKEN
-          ref: ${{ github.ref }}  # Explicitly checkout the triggering ref
+          fetch-depth: 0
+          token: ${{ secrets.PAT_TOKEN }}
+          ref: ${{ github.ref }}
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -228,49 +218,11 @@ jobs:
           poetry install --no-root
           pip install python-semantic-release==9.15.0
 
-      - name: Configure Git for Semantic Release
-        run: |
-          # Set up Git user identity
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          # Ensure we're on the correct branch
-          git checkout "${GITHUB_REF#refs/heads/}" || git checkout -b "${GITHUB_REF#refs/heads/}"
-          git status
-
-      - name: Sync with Remote Repository
-        run: |
-          echo "=== Syncing with Remote Repository ==="
-          # Fetch all history and tags
-          git fetch --prune --tags --force origin || {
-            echo "Failed to fetch from remote"
-            exit 1
-          }
-          echo "Successfully fetched from remote"
-
-          # Set up tracking branch
-          if ! git branch --set-upstream-to=origin/${GITHUB_REF#refs/heads/} ${GITHUB_REF#refs/heads/}; then
-            echo "Warning: Could not set upstream branch (this is normal for new branches)"
-          fi
-
-          # Attempt to sync with remote
-          if ! git pull --rebase --autostash; then
-            echo "Warning: Could not sync with remote (this is normal for new branches or if local is ahead)"
-            # Reset any failed rebase
-            git rebase --abort || true
-          else
-            echo "Successfully synced with remote"
-          fi
-
       - name: Release
         id: release
         uses: python-semantic-release/python-semantic-release@v9.15.0
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
-          PYTHONVERBOSE: 1
-          GIT_PYTHON_TRACE: 1
-          GIT_TRACE: 1
-          GIT_CURL_VERBOSE: 1
         with:
           github_token: ${{ secrets.PAT_TOKEN }}
           git_committer_name: "github-actions[bot]"
