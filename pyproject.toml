@@ -49,26 +49,26 @@ commit_message = "chore(release): {version} [skip ci]"
 
 [tool.python_semantic_release.remote]
 token = "env:GH_TOKEN"
-# Add these if you want to sign releases
 sign_tags = true
 provider = "github"
 
 # Simplified branch configuration - only main branch
 [tool.python_semantic_release.branches]
 main = [
-    { name = "main" }
+    { name = "main", prerelease = false },
+    { name = "master", prerelease = false }
 ]
-development = [
-    { name = "fix/.*" },
-    { name = "feature/.*" },
-    { name = "develop" }
+prerelease = [
+    { name = "develop", prerelease = true, prerelease_token = "beta" },
+    { name = "feature/.*", prerelease = true, prerelease_token = "alpha" },
+    { name = "fix/.*", prerelease = true, prerelease_token = "rc" }
 ]
 
 [tool.python_semantic_release.changelog]
 sections = [
+    "breaking",
     "feature",
     "fix",
-    "breaking",
     "documentation",
     "performance",
     "refactor"
@@ -76,10 +76,16 @@ sections = [
 components = [
     "semantic_release.changelog.changelog_headers",
     "semantic_release.changelog.compare_url",
-    "semantic_release.changelog.commit_list"
+    "semantic_release.changelog.commit_list",
+    "semantic_release.changelog.release_notes_generator"
 ]
 include_prereleases = true
-exclude_commit_patterns = []
+exclude_commit_patterns = [
+    "^chore\\(release\\):.*",
+    "^chore:\\s*update dependency.*",
+    "^chore\\(deps\\):.*",
+    "\\[skip ci\\]"
+]
 render_title = true
 render_commit_links = true
 include_unreleased = true
