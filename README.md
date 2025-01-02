@@ -2,109 +2,31 @@
 
 [![CI/CD Pipeline](https://github.com/gsinghjay/fast-api-ci-cd/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/gsinghjay/fast-api-ci-cd/actions/workflows/ci-cd.yml)
 [![Latest Release](https://img.shields.io/github/v/release/gsinghjay/fast-api-ci-cd)](https://github.com/gsinghjay/fast-api-ci-cd/releases)
-[![Python Version](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/downloads/)
-[![Code Coverage](https://img.shields.io/codecov/c/github/gsinghjay/fast-api-ci-cd)](https://codecov.io/gh/gsinghjay/fast-api-ci-cd)
+[![Python Version](https://img.shields.io/badge/python-3.11-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A production-ready FastAPI template with robust CI/CD pipeline, semantic versioning, and best practices.
 
-## 📑 Table of Contents
+## 📑 Features
 
-- [Features](#-features)
-- [Prerequisites](#-prerequisites)
-- [Quick Start](#-quick-start)
-- [Development Guide](#️-development-guide)
-- [Workflow Guide](#-workflow-guide)
-- [Debugging Guide](#-debugging-guide)
-- [Metrics and Monitoring](#-metrics-and-monitoring)
-- [Environment Variables](#-environment-variables)
-- [License](#-license)
-- [Contributing](#-contributing)
-- [Security](#-security)
-- [Docker Support](#-docker-support)
-- [API Documentation](#-api-documentation)
-- [Performance](#-performance)
-- [Testing](#-testing)
-- [Error Handling](#-error-handling)
-
-## 🌟 Features
-
-- FastAPI-based RESTful API
+- FastAPI-based RESTful API with QR code generation
 - Poetry for dependency management
 - Comprehensive CI/CD pipeline with GitHub Actions
-- Semantic versioning and automated releases
-- Automated changelog generation
+- Semantic versioning with automated releases
+- Automated changelog generation on main branch
 - Code quality checks (Black, Commitlint)
-- Test coverage reporting
-- Prometheus metrics integration
 - Structured logging with structlog
-- Automated beta and release candidate versioning
-- Branch-specific release configurations
-- Detailed debugging and monitoring capabilities
-
-## 📋 Prerequisites
-
-- Python 3.9 or higher
-- Poetry (Python package manager)
-- Git
-- Node.js 18+ (for commitlint)
-- GitHub Personal Access Token (PAT) with repo scope
-
-## 🚀 Quick Start
-
-1. **Use this template**
-   ```bash
-   # Clone the repository
-   git clone https://github.com/yourusername/fast-api-ci-cd
-   cd fast-api-ci-cd
-   ```
-
-2. **Install dependencies**
-   ```bash
-   # Install Poetry
-   curl -sSL https://install.python-poetry.org | python3 -
-
-   # Install project dependencies
-   poetry install
-
-   # Install commitlint
-   npm install -g @commitlint/cli @commitlint/config-conventional
-
-   # Install semantic-release
-   pip install python-semantic-release==9.15.0
-   ```
-
-3. **Set up pre-commit hooks**
-   ```bash
-   # Install pre-commit hooks
-   poetry run pre-commit install
-   poetry run pre-commit install --hook-type commit-msg
-   ```
-
-4. **Configure GitHub Token**
-   ```bash
-   # Add to your environment or .env file
-   export GH_TOKEN=your_github_pat_token
-   ```
-
-5. **Run the application**
-   ```bash
-   # Development server with hot reload
-   poetry run uvicorn app.main:app --reload --log-level debug
-
-   # Production server
-   poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
-   ```
+- Prometheus metrics integration
+- Conventional Commits standard
+- Pull Request based workflow
+- Release automation on main branch
 
 ## 🔄 Workflow Guide
 
 ### Development Workflow
 
-1. **Start a New Feature/Fix**
+1. **Create a Feature Branch**
    ```bash
-   # Create a new branch
-   git checkout develop
-   git pull origin develop
    git checkout -b feature/your-feature  # or fix/your-fix
    ```
 
@@ -119,250 +41,80 @@ A production-ready FastAPI template with robust CI/CD pipeline, semantic version
    git commit -m "fix(scope): resolve specific issue"
    ```
 
-3. **Push and Create PR**
+3. **Create Pull Request**
    ```bash
    git push origin feature/your-feature
-   # Create PR to develop branch via GitHub UI
+   # Create PR to main branch via GitHub UI
    ```
 
 4. **Release Process**
-   ```bash
-   # Beta releases (from develop)
-   git checkout develop
-   git pull origin develop
-   # CI will automatically create beta release
+   - Merging to main branch automatically:
+     - Updates CHANGELOG.md
+     - Creates a new release
+     - Updates version numbers
+     - Creates GitHub release with assets
 
-   # Release candidates (from release/*)
-   git checkout -b release/1.3.0
-   git push origin release/1.3.0
-   # CI will automatically create RC release
+### Commit Message Format
 
-   # Final release (from main)
-   # Create PR from develop to main
-   # CI will create final release after merge
-   ```
-
-### Version Management
-
-1. **Check Versions**
-   ```bash
-   # Current version
-   poetry run semantic-release print-version --current
-
-   # Next version
-   poetry run semantic-release print-version --next
-   ```
-
-2. **Manual Release Trigger**
-   ```bash
-   # Via GitHub Actions UI:
-   # - Set prerelease: true/false
-   # - Set prerelease_token: beta/rc/alpha
-   # - Set force: patch/minor/major
-   # - Set build_metadata: (optional)
-   ```
-
-## 🐛 Debugging Guide
-
-### Local Debugging
-
-1. **Enable Debug Logging**
-   ```bash
-   # Run with debug logging
-   poetry run uvicorn app.main:app --reload --log-level debug
-   ```
-
-2. **Use Debug Endpoints**
-   ```bash
-   # Health check
-   curl http://localhost:8000/health
-
-   # Debug info (development only)
-   curl http://localhost:8000/debug/info
-   ```
-
-3. **Troubleshoot CI/CD**
-   ```bash
-   # Local semantic-release dry run
-   poetry run semantic-release print-version --next
-
-   # Verify git configuration
-   git config --list
-
-   # Check GitHub token
-   gh auth status
-   ```
-
-### Common Issues
-
-1. **Release Creation Fails**
-   - Verify GitHub token permissions
-   - Check branch protection rules
-   - Ensure commit messages follow convention
-   - Verify git user configuration
-
-2. **Version Not Incrementing**
-   - Check commit message format
-   - Verify branch configuration in pyproject.toml
-   - Check semantic-release logs in GitHub Actions
-
-3. **Workflow Debugging**
-   - Enable workflow debug logging:
-     ```yaml
-     env:
-       ACTIONS_RUNNER_DEBUG: true
-       ACTIONS_STEP_DEBUG: true
-     ```
-
-## 📊 Metrics and Monitoring
-
-### Available Metrics
-
-1. **Application Metrics** (at `/metrics`)
-   - Request counts by endpoint
-   - Response times (p50, p95, p99)
-   - Error rates and types
-   - Active connections
-   - Resource utilization
-
-2. **Custom Business Metrics**
-   ```python
-   # Example metric registration
-   REQUEST_COUNT = Counter('http_requests_total', 'Total HTTP requests')
-
-   # Example usage in endpoint
-   @app.get("/")
-   async def root():
-       REQUEST_COUNT.inc()
-       return {"message": "Hello World"}
-   ```
-
-### Monitoring Setup
-
-1. **Prometheus Configuration**
-   ```yaml
-   scrape_configs:
-     - job_name: 'fastapi'
-       scrape_interval: 10s
-       static_configs:
-         - targets: ['localhost:8000']
-   ```
-
-2. **Grafana Dashboard**
-   - Import provided dashboard template
-   - Configure Prometheus data source
-   - Set up alerting rules
-
-### Health Checks
-
-1. **Endpoints**
-   ```bash
-   # Basic health check
-   curl http://localhost:8000/health
-
-   # Detailed health status
-   curl http://localhost:8000/health/detail
-
-   # Readiness probe
-   curl http://localhost:8000/ready
-   ```
-
-2. **Custom Health Checks**
-   ```python
-   # Example custom health check
-   @app.get("/health/custom")
-   async def custom_health():
-       return {
-           "status": "healthy",
-           "checks": {
-               "database": "connected",
-               "cache": "available"
-           }
-       }
-   ```
-
-## 🔒 Environment Variables
-
-Required environment variables:
-- `GH_TOKEN`: GitHub token for releases (CI/CD)
-- `LOG_LEVEL`: Logging level (debug/info/warning/error)
-- `PORT`: Application port (default: 8000)
-- `WORKERS`: Number of worker processes (default: 1)
-- `METRICS_ENABLED`: Enable/disable Prometheus metrics (true/false)
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Commit using conventional commits (`git commit -m "feat: add amazing feature"`)
-5. Push to the branch (`git push origin feature/amazing-feature`)
-6. Open a Pull Request
-
-## 🔐 Security
-
-- All endpoints are rate-limited
-- Input validation using Pydantic models
-- CORS middleware configured
-- Structured logging for audit trails
-- Automated security scanning in CI/CD
-- Signed commits required
-
-## 🧪 Testing
+Follow the Conventional Commits standard:
 
 ```bash
-# Run tests with coverage
-poetry run pytest --cov=app tests/
+type(scope): description
 
-# Generate coverage report
-poetry run coverage html
+[optional body]
 
-# Run specific test file
-poetry run pytest tests/test_specific.py -v
-
-# Run tests with logging
-poetry run pytest --log-cli-level=DEBUG
+[optional footer]
 ```
 
-## 🚨 Error Handling
+Types:
+- feat: New feature
+- fix: Bug fix
+- docs: Documentation changes
+- style: Code style changes
+- refactor: Code refactoring
+- perf: Performance improvements
+- test: Adding/updating tests
+- chore: Maintenance tasks
 
-The API implements standardized error responses:
-- 400: Bad Request - Invalid input
-- 404: Not Found - Resource doesn't exist
-- 429: Too Many Requests - Rate limit exceeded
-- 500: Internal Server Error - Server-side issues
+## 🛠️ Development Setup
 
-Custom error handling:
-```python
-@app.exception_handler(CustomException)
-async def custom_exception_handler(request: Request, exc: CustomException):
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={
-            "message": exc.message,
-            "error_code": exc.error_code,
-            "details": exc.details
-        }
-    )
+1. **Install Dependencies**
+   ```bash
+   # Install Poetry
+   curl -sSL https://install.python-poetry.org | python3 -
+
+   # Install project dependencies
+   poetry install
+
+   # Install commitlint
+   npm install -g @commitlint/cli @commitlint/config-conventional
+   ```
+
+2. **Set up Pre-commit Hooks**
+   ```bash
+   poetry run pre-commit install
+   poetry run pre-commit install --hook-type commit-msg
+   ```
+
+3. **Configure GitHub Token**
+   ```bash
+   # Add to your environment
+   export GH_TOKEN=your_github_pat_token
+   ```
+
+## 🚀 Running the Application
+
+```bash
+# Development server
+poetry run uvicorn app.main:app --reload --log-level debug
+
+# Production server
+poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
 
-## Features
+## 📝 API Documentation
 
-- Generate QR codes from URLs
-- Custom QR code colors (fill and background)
-- Customizable QR code size and border
-- Base64 encoded output
-- Error handling with descriptive messages
-- API documentation with Swagger UI
-- Prometheus metrics for monitoring
-- Structured logging with JSON format
-- CI/CD pipeline with automated testing and releases
-- Semantic versioning with automated changelog
-
-## Usage
-
-### Generate a QR Code
-
+### Generate QR Code
 ```bash
 curl -X POST "http://localhost:8000/api/v1/qr-code/generate" \
      -H "Content-Type: application/json" \
@@ -375,19 +127,66 @@ curl -X POST "http://localhost:8000/api/v1/qr-code/generate" \
      }'
 ```
 
-The response will contain a base64 encoded QR code image:
+## 🔍 Environment Variables
 
-```json
-{
-    "qr_code": "base64_encoded_image_data"
-}
-```
+Required environment variables:
+- `GH_TOKEN`: GitHub token for releases
+- `LOG_LEVEL`: Logging level (debug/info/warning/error)
+- `PORT`: Application port (default: 8000)
+- `WORKERS`: Number of worker processes (default: 1)
+- `METRICS_ENABLED`: Enable/disable Prometheus metrics
 
-You can customize the QR code appearance:
-- `fill_color`: The color of the QR code pattern (default: "#000000" - black)
-- `background_color`: The color of the QR code background (default: "#FFFFFF" - white)
-- `box_size`: Size of each QR code box in pixels (default: 10, range: 1-100)
-- `border`: Size of the QR code border in boxes (default: 4, range: 0-20)
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Make changes following our commit conventions
+4. Create a Pull Request to main branch
+5. Ensure CI checks pass
+6. Wait for review and merge
+
+## 📚 Documentation
+
+For more detailed documentation, see:
+- [CHANGELOG.md](CHANGELOG.md) for version history
+- [API Documentation](http://localhost:8000/docs) when running locally
+- [GitHub Actions Workflows](.github/workflows) for CI/CD details
+
+## 🔧 Setup Instructions
+
+### Using This Template
+
+1. **Create New Repository**
+   - Click "Use this template" on GitHub
+   - Or clone and reinitialize:
+     ```bash
+     git clone https://github.com/gsinghjay/fast-api-ci-cd
+     cd fast-api-ci-cd
+     rm -rf .git
+     git init
+     ```
+
+2. **Configure GitHub Repository**
+   - Go to repository Settings → Secrets and Variables → Actions
+   - Add `PAT_TOKEN` secret:
+     - Generate token at GitHub → Settings → Developer settings → Personal access tokens
+     - Required scopes: `repo`, `write:packages`
+   - Configure branch protection rules:
+     - Settings → Branches → Add rule
+     - Protect `main` branch
+     - Require pull request reviews
+     - Require status checks to pass
+
+3. **Update Configuration Files**
+   - Update `pyproject.toml`:
+     ```toml
+     [tool.poetry]
+     name = "your-project-name"
+     version = "1.0.0"
+     authors = ["Your Name <your.email@example.com>"]
+     ```
+   - Update GitHub workflow files in `.github/workflows/`
+   - Update repository URLs in documentation
 
 ### Workflow Debugging Commands
 
@@ -398,14 +197,8 @@ gh run list --limit 5
 # Watch a specific workflow run
 gh run watch
 
-# View details of the latest workflow run
-gh run view
-
-# View a specific workflow run by ID
-gh run view <run-id>
-
-# View workflow job logs
-gh run view --log --job <job-id>
+# View workflow run details
+gh run view --log
 
 # List failed workflow runs
 gh run list --status failed
@@ -413,17 +206,111 @@ gh run list --status failed
 # Download workflow artifacts
 gh run download <run-id>
 
-# Track workflow progress
-gh run list --limit 1 --watch
-
-# View workflow run details in browser
+# View workflow in browser
 gh run view --web
 ```
 
-These commands help you:
-- Monitor workflow progress in real-time
-- Debug failed workflows
-- View detailed logs
-- Track version creation
-- Verify workflow triggers
-- Download artifacts for inspection
+### Common Issues & Solutions
+
+1. **Release Creation Fails**
+   - Check PAT_TOKEN permissions
+   - Ensure commit messages follow convention
+   - Verify branch protection settings
+   - Check git configuration:
+     ```bash
+     git config --list
+     gh auth status
+     ```
+
+2. **Changelog Not Updating**
+   - Only updates on main branch merges
+   - Verify commit message format
+   - Check workflow logs for errors
+   - Ensure PAT_TOKEN has write permissions
+
+3. **Pre-commit Hooks Failing**
+   - Update hooks:
+     ```bash
+     pre-commit clean
+     pre-commit autoupdate
+     ```
+   - Check commit message format
+   - Run black manually:
+     ```bash
+     poetry run black .
+     ```
+
+4. **Workflow Permission Issues**
+   - Repository Settings → Actions → General
+   - Enable "Allow GitHub Actions to create and approve pull requests"
+   - Ensure PAT_TOKEN has required scopes
+   - Check workflow permissions in yml files
+
+## 🔄 Workflow Diagram
+
+```mermaid
+flowchart TD
+    subgraph "CI/CD Pipeline"
+        A[Push/PR] --> B{Event Type?}
+
+        B -->|PR or Push to feature| C[Lint Job]
+        B -->|Push to main| D[Lint Job]
+
+        C --> E[Test Job]
+        D --> F[Test Job]
+
+        E --> G{Is main branch?}
+        F --> G
+
+        G -->|No| H[Update Changelog]
+        G -->|Yes| I[Release Job]
+
+        I --> J[Checkout Code]
+        J --> K[Force Branch]
+        K --> L[Semantic Release]
+        L --> M{Released?}
+
+        M -->|Yes| N[Publish Assets]
+        M -->|No| O[Skip Publish]
+
+        subgraph "Conditions"
+            P[Skip if:]
+            P --> P1[github-actions bot]
+            P --> P2[[skip ci] tag]
+            P --> P3[chore(release)]
+        end
+    end
+
+    style A fill:#90EE90
+    style I fill:#FFB6C1
+    style L fill:#ADD8E6
+    style N fill:#98FB98
+```
+
+### Workflow Steps Explained
+
+1. **Trigger Events**
+   - Pull Requests to any branch
+   - Push to main branch
+   - Manual workflow dispatch
+
+2. **Lint Job**
+   - Runs Black code formatter
+   - Checks commit message format
+   - Validates code style
+
+3. **Test Job**
+   - Runs pytest with coverage
+   - Requires lint job success
+   - Uses Python 3.11
+
+4. **Release Job (main only)**
+   - Creates semantic version
+   - Updates CHANGELOG.md
+   - Creates GitHub release
+   - Publishes release assets
+
+5. **Skip Conditions**
+   - Bot commits
+   - [skip ci] tags
+   - Release commits
