@@ -1,6 +1,25 @@
 # CHANGELOG
 
 
+## v2.0.1 (2025-01-02)
+
+### Bug Fixes
+
+- Added conditions to prevent release loops
+  ([`c99a48c`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c99a48c4fa37aebf191ccbf88bc106c865fcab4a))
+
+### Continuous Integration
+
+- **release**: Exclude semantic version commits from triggers
+  ([`2713e6d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2713e6d6e49ecf74471b41f17fe5adcac28638b0))
+
+- Add regex pattern to exclude version number commits (e.g. 2.0.0) - Prevent workflow loops from
+  automated version bumps - Keep manual workflow dispatch functionality - Improve automated release
+  handling
+
+[skip ci]
+
+
 ## v2.0.0 (2025-01-02)
 
 ### Bug Fixes
