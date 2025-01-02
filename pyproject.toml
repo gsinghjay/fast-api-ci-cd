@@ -47,6 +47,9 @@ commit_message = "chore(release): {version} [skip ci]"
 
 [tool.python_semantic_release.remote]
 token = "env:GH_TOKEN"
+# Add these if you want to sign releases
+sign_tags = true
+provider = "github"
 
 # Simplified branch configuration - only main branch
 [tool.python_semantic_release.branches]
