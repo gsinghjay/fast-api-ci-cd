@@ -51,8 +51,13 @@ jobs:
   release:
     name: Create Release
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-    needs: [lint, test]  # Only run release after both lint and test pass
+    # Only run release on main branch and when not triggered by automated commits
+    if: |
+      github.ref == 'refs/heads/main' &&
+      github.actor != 'github-actions[bot]' &&
+      !contains(github.event.head_commit.message, 'chore(release)') &&
+      !contains(github.event.head_commit.message, '[skip ci]')
+    needs: [lint, test]
     concurrency: release
 
     steps:
