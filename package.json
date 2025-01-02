@@ -1,0 +1,9 @@
+{
+  "name": "fast-api-ci-cd",
+  "version": "1.6.2",
+  "private": true,
+  "devDependencies": {
+    "@commitlint/cli": "^18.6.0",
+    "@commitlint/config-conventional": "^18.6.0"
+  }
+}
