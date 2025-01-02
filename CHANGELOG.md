@@ -1,10 +1,41 @@
 # CHANGELOG
 
 
+## v6.0.0 (2025-01-02)
+
+### Breaking
+
+* feat(changelog): implement Keep a Changelog format
+
+- Add missing changelog sections (deprecated, removed, security)
+- Update commit parser to use angular format
+- Configure changelog generation to match Keep a Changelog spec
+
+BREAKING CHANGE: This changes the format of generated changelogs.
+Previous changelog entries will remain but new entries will follow the Keep a Changelog format. ([`94c8a94`](https://github.com/gsinghjay/fast-api-ci-cd/commit/94c8a94b0641c99899c8b23e691bd01887f85d0f))
+
+### Refactoring
+
+* refactor(ci): simplify release workflow using semantic-release actions
+
+- Remove virtual environment setup (handled by semantic-release Docker container)
+- Add publish action for GitHub release assets
+- Update to latest semantic-release action version ([`0dab11f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0dab11f8a581fde1a97e770db11f73e7dda5142e))
+
+### Unknown
+
+* Merge pull request #80 from gsinghjay/ci/Angular
+
+feat(changelog): align configuration with Keep a Changelog format ([`c48b214`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c48b2141388a6770b0b24e0d2d9640e412830a39))
+
+* Merge pull request #79 from gsinghjay/ci/venv-and-restore
+
+refactor(ci): simplify release workflow using semantic-release actions ([`57eb79a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/57eb79a03c6fbfc574bf25424c58b6e2aa6ab261))
+
 
 ## v5.0.7 (2025-01-02)
 
-### Fix
+### Bug Fixes
 
 * fix(ci): correct semantic-release command flags
 
@@ -20,15 +51,15 @@ fix(ci): correct semantic-release command flags ([`3732943`](https://github.com/
 
 ## v5.0.6 (2025-01-02)
 
-### Chore
-
-* chore: test ([`fa4e029`](https://github.com/gsinghjay/fast-api-ci-cd/commit/fa4e0295d1bb6cc33e8782ef2f3a19a5f8c18f88))
-
-### Fix
+### Bug Fixes
 
 * fix(ci): use direct path to semantic-release executable
 
 - Use .venv/bin/semantic-release directly\n- Remove poetry run prefix\n- Keep consistent with lint.yml and test.yml execution style ([`c952892`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c9528926ad7239c35c621f33e3a0519eaff9c468))
+
+### Chores
+
+* chore: test ([`fa4e029`](https://github.com/gsinghjay/fast-api-ci-cd/commit/fa4e0295d1bb6cc33e8782ef2f3a19a5f8c18f88))
 
 ### Unknown
 
@@ -43,7 +74,7 @@ fix(ci): use direct path to semantic-release executable ([`ccd56be`](https://git
 
 ## v5.0.5 (2025-01-02)
 
-### Fix
+### Bug Fixes
 
 * fix(ci): remove redundant poetry installation in release job
 
@@ -60,7 +91,7 @@ fix(ci): remove redundant poetry installation in release job ([`5c87d41`](https:
 
 ## v5.0.4 (2025-01-02)
 
-### Fix
+### Bug Fixes
 
 * fix(ci): activate virtual environment for semantic-release commands
 
@@ -76,7 +107,7 @@ fix(ci): activate virtual environment for semantic-release commands ([`9d16701`]
 
 ## v5.0.3 (2025-01-02)
 
-### Fix
+### Bug Fixes
 
 * fix(ci): add environment debugging and fix poetry commands ([`2ad33ec`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2ad33ecfc21ca2fb2f60938e12457c25b68f084f))
 
@@ -89,7 +120,7 @@ fix(ci): add environment debugging and fix poetry commands ([`eeb4645`](https://
 
 ## v5.0.2 (2025-01-02)
 
-### Fix
+### Bug Fixes
 
 * fix(ci): use shared virtual environment for release job
 
@@ -106,7 +137,7 @@ fix(ci): use shared virtual environment for release job ([`3ffbaf0`](https://git
 
 ## v5.0.1 (2025-01-02)
 
-### Fix
+### Bug Fixes
 
 * fix: revert back before metadata ([`1851163`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1851163fb278d6e6ece245fd968ee051acb29d78))
 
@@ -119,7 +150,7 @@ fix: revert back before metadata ([`d8a80f0`](https://github.com/gsinghjay/fast-
 
 ## v5.0.0+build.27 (2025-01-02)
 
-### Ci
+### Continuous Integration
 
 * ci(release): add build metadata to version numbers ([`9834fcd`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9834fcd1256ad4ede9b0e86005f125ecf648762d))
 
@@ -159,35 +190,7 @@ lint, test, and release steps.
 - Maintains all semantic-release functionality
 - Removes need for separate release workflow ([`5f63e26`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5f63e26c1966661d6b725f1b304a09ce0a8fcf56))
 
-### Chore
-
-* chore(ci): remove separate release workflow ([`f0170b6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f0170b652031630d672786d03763777410f7482c))
-
-* chore: merge conflict ([`44a8ae1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/44a8ae14c2976fe6f791b090f53266d8a1b1cb01))
-
-* chore: add debug output ([`083610d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/083610d9f78012a8707d2c5d5abb34a8e7340bb5))
-
-### Ci
-
-* ci: optimize workflow environment sharing
-
-- Use artifacts to share virtual environment
-- Remove duplicate environment setup
-- Simplify job dependencies ([`6f9d94f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6f9d94f66e38b739178cde0dc182a18805c0d9b3))
-
-* ci: optimize workflow job dependencies
-
-- Run setup job first
-- Run lint and test jobs in parallel
-- Run release job after all checks pass ([`fd6cd91`](https://github.com/gsinghjay/fast-api-ci-cd/commit/fd6cd912b8dcd362d8a18141a3af47051c70d4d7))
-
-* ci: optimize workflow job dependencies
-
-- Run setup job first
-- Run lint and test jobs in parallel
-- Run release job after all checks pass ([`8dc8182`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8dc818261224ed51f10590609a69afe769f7de17))
-
-### Fix
+### Bug Fixes
 
 * fix: remove circular dependency ([`f765b8f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f765b8f628123cabde486931fb365848175e1e3e))
 
@@ -224,7 +227,35 @@ lint, test, and release steps.
 - Pass artifact name through workflow inputs
 - Add setup as dependency for release job ([`0cd29d2`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0cd29d245abb28aa4b5465e9e131ffc8638931b3))
 
-### Refactor
+### Chores
+
+* chore(ci): remove separate release workflow ([`f0170b6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f0170b652031630d672786d03763777410f7482c))
+
+* chore: merge conflict ([`44a8ae1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/44a8ae14c2976fe6f791b090f53266d8a1b1cb01))
+
+* chore: add debug output ([`083610d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/083610d9f78012a8707d2c5d5abb34a8e7340bb5))
+
+### Continuous Integration
+
+* ci: optimize workflow environment sharing
+
+- Use artifacts to share virtual environment
+- Remove duplicate environment setup
+- Simplify job dependencies ([`6f9d94f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6f9d94f66e38b739178cde0dc182a18805c0d9b3))
+
+* ci: optimize workflow job dependencies
+
+- Run setup job first
+- Run lint and test jobs in parallel
+- Run release job after all checks pass ([`fd6cd91`](https://github.com/gsinghjay/fast-api-ci-cd/commit/fd6cd912b8dcd362d8a18141a3af47051c70d4d7))
+
+* ci: optimize workflow job dependencies
+
+- Run setup job first
+- Run lint and test jobs in parallel
+- Run release job after all checks pass ([`8dc8182`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8dc818261224ed51f10590609a69afe769f7de17))
+
+### Refactoring
 
 * refactor(ci): reorganize workflow structure
 
@@ -266,7 +297,7 @@ fix: add `paths` filter to the `push` trigger ([`34021ac`](https://github.com/gs
 
 chore: merge conflict ([`324e985`](https://github.com/gsinghjay/fast-api-ci-cd/commit/324e985d3437c28d262f240838dd5d834848c6db))
 
-* Merge branch &#39;main&#39; of github.com:gsinghjay/fast-api-ci-cd ([`fd926a6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/fd926a61a1565e34838bdca2289dbb1eadfabe25))
+* Merge branch 'main' of github.com:gsinghjay/fast-api-ci-cd ([`fd926a6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/fd926a61a1565e34838bdca2289dbb1eadfabe25))
 
 * Merge pull request #62 from gsinghjay/ci/reusable-workflows
 
@@ -275,7 +306,21 @@ ci: optimize workflow job dependencies ([`680490d`](https://github.com/gsinghjay
 
 ## v4.1.1 (2025-01-02)
 
-### Ci
+### Bug Fixes
+
+* fix(ci): improve environment handling across workflows
+
+- Use environment variables from setup-python
+- Consistent Poetry setup across all jobs
+- Simplify environment activation ([`7c8a1fd`](https://github.com/gsinghjay/fast-api-ci-cd/commit/7c8a1fdaff530bec53bdbad1f7fd172680a5d4f2))
+
+* fix: improve poetry environment handling in workflows
+
+- Use poetry run instead of activating venv
+- Ensure proper caching of poetry environment
+- Simplify setup workflow ([`9cba052`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9cba05294df046e1e972405b15b22fd074c10c89))
+
+### Continuous Integration
 
 * ci: implement reusable workflow for Python and Poetry setup
 
@@ -294,20 +339,6 @@ ci: optimize workflow job dependencies ([`680490d`](https://github.com/gsinghjay
 ### Documentation
 
 * docs: update README to use GITHUB_TOKEN instead of PAT_TOKEN ([`97268b0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/97268b0a4f443d7988571803e0be055f554dc6f3))
-
-### Fix
-
-* fix(ci): improve environment handling across workflows
-
-- Use environment variables from setup-python
-- Consistent Poetry setup across all jobs
-- Simplify environment activation ([`7c8a1fd`](https://github.com/gsinghjay/fast-api-ci-cd/commit/7c8a1fdaff530bec53bdbad1f7fd172680a5d4f2))
-
-* fix: improve poetry environment handling in workflows
-
-- Use poetry run instead of activating venv
-- Ensure proper caching of poetry environment
-- Simplify setup workflow ([`9cba052`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9cba05294df046e1e972405b15b22fd074c10c89))
 
 ### Unknown
 
@@ -330,11 +361,11 @@ docs: update README to use GITHUB_TOKEN instead of PAT_TOKEN ([`b25a809`](https:
 
 ## v4.1.0 (2025-01-02)
 
-### Ci
+### Continuous Integration
 
 * ci: add poetry dependency caching to workflows ([`e779053`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e77905390bd221583665785b010f9cc069469563))
 
-### Feature
+### Features
 
 * feat: add test feature for release workflow ([`d7191ad`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d7191add229ede36d5e97c889ab4f3e356db2b1f))
 
@@ -361,7 +392,7 @@ ci: add poetry dependency caching to workflows ([`efb5859`](https://github.com/g
 
 BREAKING CHANGE: Version management now requires explicit version_toml configuration ([`f583e74`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f583e74095dcd0e1744c79009d523eaf3af03f6e))
 
-### Feature
+### Features
 
 * feat: add automated version management system
 
@@ -378,15 +409,11 @@ BREAKING CHANGE: Version management now requires explicit version_toml configura
 
 BREAKING CHANGE: description of breaking changes ([`b4b8909`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b4b8909cb8970a11ea055c5082d731c2bcafb1de))
 
-### Chore
+### Chores
 
 * chore(config): update author information ([`a4e364a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a4e364a7c995d0714334ff4e9c4c6fb2be31865c))
 
 * chore: merge changes ([`a28a970`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a28a970061ef744647ab4a2666b6eb43cb1e42b8))
-
-### Ci
-
-* ci(release): exclude semantic-release user from triggers ([`1f3ee46`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1f3ee468e34159405f0562da0ca455b40da4994e))
 
 ### Documentation
 
@@ -395,7 +422,13 @@ BREAKING CHANGE: description of breaking changes ([`b4b8909`](https://github.com
 
 ## v2.0.1 (2025-01-02)
 
-### Ci
+### Bug Fixes
+
+* fix: added conditions to prevent release loops ([`c99a48c`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c99a48c4fa37aebf191ccbf88bc106c865fcab4a))
+
+### Continuous Integration
+
+* ci(release): exclude semantic-release user from triggers ([`1f3ee46`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1f3ee468e34159405f0562da0ca455b40da4994e))
 
 * ci(release): exclude semantic version commits from triggers
 
@@ -405,10 +438,6 @@ BREAKING CHANGE: description of breaking changes ([`b4b8909`](https://github.com
 - Improve automated release handling
 
 [skip ci] ([`2713e6d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2713e6d6e49ecf74471b41f17fe5adcac28638b0))
-
-### Fix
-
-* fix: added conditions to prevent release loops ([`c99a48c`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c99a48c4fa37aebf191ccbf88bc106c865fcab4a))
 
 ### Unknown
 
@@ -425,7 +454,7 @@ ci(release): exclude semantic version commits from triggers ([`8999a1d`](https:/
 
 - Remove tag-validation.yml as validation is handled by semantic-release
 - Tag signing and validation now configured in pyproject.toml
-- Rely on semantic-release&#39;s built-in tag management
+- Rely on semantic-release's built-in tag management
 - Simplify CI/CD pipeline
 
 BREAKING CHANGE: Tag validation now handled entirely by semantic-release configuration ([`c2bea40`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c2bea40cbd4ab2cc88fe3f4a08b083c393f70332))
@@ -439,7 +468,7 @@ BREAKING CHANGE: Tag validation now handled entirely by semantic-release configu
 
 BREAKING CHANGE: Manual workflow dispatch now directly controls semantic-release behavior ([`8aa77e5`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8aa77e5145bae6c721a59c700121b035b76b340a))
 
-### Ci
+### Continuous Integration
 
 * ci(release): simplify semantic release workflow
 
@@ -479,7 +508,11 @@ docs: update workflow documentation ([`9d64df9`](https://github.com/gsinghjay/fa
 
 ## v1.6.4 (2025-01-02)
 
-### Ci
+### Bug Fixes
+
+* fix(ci): handle concurrent changes in release workflow ([`1097ec0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1097ec07187a72c41c7c2354fcae15ac1914f47d))
+
+### Continuous Integration
 
 * ci: standardize Poetry usage across workflows
 
@@ -494,10 +527,6 @@ docs: update workflow documentation ([`9d64df9`](https://github.com/gsinghjay/fa
 - Add conditions to prevent release workflow from running on automated commits
 - Remove redundant CI skip conditions from test workflow
 - Add explicit conditions to prevent github-actions[bot] from triggering new workflows ([`05236d0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/05236d0ab349f5a64e304443610aa836a02c19b1))
-
-### Fix
-
-* fix(ci): handle concurrent changes in release workflow ([`1097ec0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1097ec07187a72c41c7c2354fcae15ac1914f47d))
 
 ### Unknown
 
@@ -516,25 +545,7 @@ fix(ci): handle concurrent changes in release workflow ([`b2b4250`](https://gith
 
 ## v1.6.3 (2025-01-02)
 
-### Documentation
-
-* docs: update CHANGELOG.md [skip ci] ([`61e3e84`](https://github.com/gsinghjay/fast-api-ci-cd/commit/61e3e84734b9944fcf5e3c305aa3c95b6aad0539))
-
-* docs: update CHANGELOG.md [skip ci] ([`d30beb5`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d30beb511b53c15e5b080dbad3113ad94662625f))
-
-* docs: update CHANGELOG.md [skip ci] ([`f3b2249`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f3b22490e84d48eb962365e5a2f6a12ee0cec1ee))
-
-* docs: update CHANGELOG.md [skip ci] ([`43ff1c2`](https://github.com/gsinghjay/fast-api-ci-cd/commit/43ff1c28df77b37ff8c8dfcc220e871ebf7425e8))
-
-* docs: update CHANGELOG.md [skip ci] ([`2546b4a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2546b4a72bbb37d00b5e384dc82b6ed68d9d2715))
-
-* docs: update CHANGELOG.md [skip ci] ([`ed9486f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ed9486f9469cccdae1ba8bb9d73865b38f0604c2))
-
-* docs: update CHANGELOG.md [skip ci] ([`6ca62a6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6ca62a6fad0adcb501612e5b6af5b58bc99c5527))
-
-* docs: update CHANGELOG.md [skip ci] ([`a55cde7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a55cde7a639fd56fc5c5aef522ae317d0b1bbd1b))
-
-### Fix
+### Bug Fixes
 
 * fix(ci): improve tag validation by using git log for tagger info ([`56eb267`](https://github.com/gsinghjay/fast-api-ci-cd/commit/56eb2677fbfba463ac292654af3582dd24a439ac))
 
@@ -561,9 +572,27 @@ fix(ci): handle concurrent changes in release workflow ([`b2b4250`](https://gith
 
 - Add workflow_call triggers to lint and test workflows
 - Configure proper job dependencies in release workflow
-- Ensure sequential execution: lint -&gt; test -&gt; release
+- Ensure sequential execution: lint -> test -> release
 - Update commitlint rules for consistent line lengths
 - Fix workflow reusability issues ([`5c46bb8`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5c46bb873c549cb97c6f3e105f8096143fc6d0b4))
+
+### Documentation
+
+* docs: update CHANGELOG.md [skip ci] ([`61e3e84`](https://github.com/gsinghjay/fast-api-ci-cd/commit/61e3e84734b9944fcf5e3c305aa3c95b6aad0539))
+
+* docs: update CHANGELOG.md [skip ci] ([`d30beb5`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d30beb511b53c15e5b080dbad3113ad94662625f))
+
+* docs: update CHANGELOG.md [skip ci] ([`f3b2249`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f3b22490e84d48eb962365e5a2f6a12ee0cec1ee))
+
+* docs: update CHANGELOG.md [skip ci] ([`43ff1c2`](https://github.com/gsinghjay/fast-api-ci-cd/commit/43ff1c28df77b37ff8c8dfcc220e871ebf7425e8))
+
+* docs: update CHANGELOG.md [skip ci] ([`2546b4a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2546b4a72bbb37d00b5e384dc82b6ed68d9d2715))
+
+* docs: update CHANGELOG.md [skip ci] ([`ed9486f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ed9486f9469cccdae1ba8bb9d73865b38f0604c2))
+
+* docs: update CHANGELOG.md [skip ci] ([`6ca62a6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6ca62a6fad0adcb501612e5b6af5b58bc99c5527))
+
+* docs: update CHANGELOG.md [skip ci] ([`a55cde7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a55cde7a639fd56fc5c5aef522ae317d0b1bbd1b))
 
 ### Unknown
 
@@ -600,12 +629,21 @@ ci!(workflows): split monolithic CI/CD pipeline into focused workflows
   - Simplify coverage reporting
   - Update gitignore patterns
 
-BREAKING CHANGE: CI/CD pipeline has been completely restructured into separate
-workflows for better maintainability and clarity. This improves pipeline
+BREAKING CHANGE: CI/CD pipeline has been completely restructured into separate 
+workflows for better maintainability and clarity. This improves pipeline 
 reliability, resource utilization, and development experience. ([`5c259c5`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5c259c58f9a0d93aa606b9192ef08184fca32836))
 
 
 ## v1.6.2 (2025-01-02)
+
+### Bug Fixes
+
+* fix(ci): ensure changelog updates on every push
+
+- Add explicit changelog generation step
+- Update changelog regardless of release status
+- Configure semantic-release to include all commits
+- Separate changelog generation from release process ([`57ec646`](https://github.com/gsinghjay/fast-api-ci-cd/commit/57ec6466145f198d89c38b2b2f0f1a81cc8ca3c7))
 
 ### Documentation
 
@@ -625,15 +663,6 @@ reliability, resource utilization, and development experience. ([`5c259c5`](http
 - Show job dependencies and conditions
 - Add color coding for different stages
 - Document skip conditions ([`5e986cb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5e986cb4c4cc7b8972570141237b91ff0132343a))
-
-### Fix
-
-* fix(ci): ensure changelog updates on every push
-
-- Add explicit changelog generation step
-- Update changelog regardless of release status
-- Configure semantic-release to include all commits
-- Separate changelog generation from release process ([`57ec646`](https://github.com/gsinghjay/fast-api-ci-cd/commit/57ec6466145f198d89c38b2b2f0f1a81cc8ca3c7))
 
 ### Unknown
 
@@ -656,7 +685,7 @@ docs(readme): add workflow diagram and explanation ([`b60a16f`](https://github.c
 
 ## v1.6.1 (2025-01-02)
 
-### Fix
+### Bug Fixes
 
 * fix(ci): simplify release workflow
 
@@ -669,7 +698,7 @@ docs(readme): add workflow diagram and explanation ([`b60a16f`](https://github.c
 
 - Use .* pattern for matching fix and feature branches
 - Separate patterns for clearer branch matching
-- Fix &#39;branch not in release groups&#39; error ([`197246a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/197246a1163f8b7aff0f8620b21ad952ba935ebc))
+- Fix 'branch not in release groups' error ([`197246a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/197246a1163f8b7aff0f8620b21ad952ba935ebc))
 
 * fix(config): update branch patterns for changelog generation
 
@@ -720,15 +749,7 @@ fix(ci): correct condition logic for github-actions bot in workflow ([`0bbcf70`]
 
 ## v1.6.0 (2025-01-02)
 
-### Feature
-
-* feat(ci): add changelog updates for pull requests
-
-- Add unreleased section to changelog generation
-- Update changelog during PR development
-- Configure semantic-release for unreleased changes ([`ed12395`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ed12395784275436148d659f3a925a1b9ef8653c))
-
-### Fix
+### Bug Fixes
 
 * fix(release): use both tags and commits for versioning
 
@@ -742,6 +763,14 @@ fix(ci): correct condition logic for github-actions bot in workflow ([`0bbcf70`]
 - Use pyproject.toml configuration for unreleased changes
 - Simplify changelog generation command ([`5c4c1b1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5c4c1b17834a6e71ad47b5397465355153a57797))
 
+### Features
+
+* feat(ci): add changelog updates for pull requests
+
+- Add unreleased section to changelog generation
+- Update changelog during PR development
+- Configure semantic-release for unreleased changes ([`ed12395`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ed12395784275436148d659f3a925a1b9ef8653c))
+
 ### Unknown
 
 * Merge pull request #33 from gsinghjay/develop
@@ -751,11 +780,7 @@ feat(ci): add changelog updates for pull requests ([`ea8d89f`](https://github.co
 
 ## v1.5.1 (2025-01-02)
 
-### Documentation
-
-* docs: update CHANGELOG.md [skip ci] ([`ddc80bb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ddc80bb23282263520ebe497c15de3cb798f51de))
-
-### Fix
+### Bug Fixes
 
 * fix(ci): ensure tests run on pull requests
 
@@ -770,6 +795,10 @@ feat(ci): add changelog updates for pull requests ([`ea8d89f`](https://github.co
 - Add skip conditions for release and changelog updates
 - Prevent workflow triggers on [skip ci] tags ([`fd2a99b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/fd2a99b55ca63c03ad65df61b66fb6d6a2af0841))
 
+### Documentation
+
+* docs: update CHANGELOG.md [skip ci] ([`ddc80bb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ddc80bb23282263520ebe497c15de3cb798f51de))
+
 ### Unknown
 
 * Merge pull request #32 from gsinghjay/develop
@@ -779,7 +808,7 @@ fix(ci): prevent workflow recursion from bot commits ([`a3df4a9`](https://github
 
 ## v1.5.0 (2025-01-02)
 
-### Chore
+### Chores
 
 * chore(release): update semantic-release config for main-only releases ([`d18cf04`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d18cf04eba0355c83785433c95a3095a246dba24))
 
@@ -787,7 +816,7 @@ fix(ci): prevent workflow recursion from bot commits ([`a3df4a9`](https://github
 
 * docs: update CHANGELOG.md [skip ci] ([`6b62894`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6b62894aa0d09c5733d46d621c966dbe25063355))
 
-### Feature
+### Features
 
 * feat(ci): simplify release workflow to main branch only ([`6ee5af4`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6ee5af43c5693d45062b7d841bc9cf3936827eef))
 
@@ -800,21 +829,13 @@ Develop ([`b508551`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b508551f
 
 ## v1.4.0 (2025-01-02)
 
-### Chore
-
-* chore: merge develop and resolve conflicts ([`b48b4cc`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b48b4cc84ee315cadbe78fe8a445f7f29ecfa402))
-
 ### Documentation
 
 * docs: update CHANGELOG.md [skip ci] ([`90db080`](https://github.com/gsinghjay/fast-api-ci-cd/commit/90db08060a0f7325ab489215f2f3676b0cadbf48))
 
-* docs: add workflow debugging commands ([`34b6f6d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/34b6f6dbfee768c1e091bdd395a36da89a2f80c9))
-
-### Feature
+### Features
 
 * feat: add color code validation ([`32c497f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/32c497f726986a057fc314b5867e6676023fc915))
-
-* feat: add QR code size customization options ([`e1ba631`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e1ba631b99cf3eff3fc9f5c98d3678e3960fe37c))
 
 ### Unknown
 
@@ -822,14 +843,20 @@ Develop ([`b508551`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b508551f
 
 Develop ([`298e091`](https://github.com/gsinghjay/fast-api-ci-cd/commit/298e0916e82c2077485c4f5e02f3560d6d3bced2))
 
-* Merge branch &#39;main&#39; into develop ([`001a3c9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/001a3c9a14e5214f48c418c47088235abe24bb02))
-
-* Merge pull request #29 from gsinghjay/feature/add-qr-size-option
-
-feat: add QR code size customization options ([`55b2eeb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/55b2eebe1d0ad7977d6eb026ee482fa0b86744c1))
+* Merge branch 'main' into develop ([`001a3c9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/001a3c9a14e5214f48c418c47088235abe24bb02))
 
 
 ## v1.3.0 (2025-01-02)
+
+### Bug Fixes
+
+* fix(ci): update semantic-release config to handle beta versions correctly ([`0205e1b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0205e1bd2dac59dc1e3c0de4a978e7ab942503c8))
+
+* fix(ci): improve branch handling and semantic-release configuration ([`e5135fc`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e5135fc0da76442ee7de0ba72bfd9803bb9c3247))
+
+### Chores
+
+* chore: merge develop and resolve conflicts ([`b48b4cc`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b48b4cc84ee315cadbe78fe8a445f7f29ecfa402))
 
 ### Documentation
 
@@ -839,74 +866,46 @@ feat: add QR code size customization options ([`55b2eeb`](https://github.com/gsi
 
 * docs: add documentation for custom QR code colors (#27) ([`28d8ca6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/28d8ca68beeb7947ac20636cdae743bf2b073464))
 
+* docs: add workflow debugging commands ([`34b6f6d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/34b6f6dbfee768c1e091bdd395a36da89a2f80c9))
+
 * docs: add documentation for custom QR code colors ([`5c9b512`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5c9b5127d0d6085b44d6320ef05c756a33d73d0a))
+
+* docs: update CHANGELOG.md [skip ci] ([`5dc58d0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5dc58d0157f1d0d47904a698592dd7caffcba151))
 
 * docs: enhance README with detailed workflow and debugging instructions ([`f6987fe`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f6987febb2112a3e1ce7119dc44d8d9887b0aad8))
 
-### Feature
+### Features
+
+* feat: add QR code size customization options ([`e1ba631`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e1ba631b99cf3eff3fc9f5c98d3678e3960fe37c))
 
 * feat: add support for custom QR code colors ([`8697ea0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8697ea0234c945406f949d386f3a975fe9b00a37))
 
 * feat(ci): enhance release verification with detailed status messages ([`5f00625`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5f00625eac215dea58f14327725c1e6644259763))
 
-### Fix
-
-* fix(ci): update semantic-release config to handle beta versions correctly ([`0205e1b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0205e1bd2dac59dc1e3c0de4a978e7ab942503c8))
-
-* fix(ci): improve branch handling and semantic-release configuration ([`e5135fc`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e5135fc0da76442ee7de0ba72bfd9803bb9c3247))
-
 ### Unknown
-
-* Merge pull request #26 from gsinghjay/docs/add-custom-colors-docs
-
-Docs/add custom colors docs ([`30445f3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/30445f3c2eaff3ecd2d0c7dadb19fc80466f5d1e))
-
-* Merge branch &#39;dev&#39; of github.com:gsinghjay/fast-api-ci-cd into develop ([`8504379`](https://github.com/gsinghjay/fast-api-ci-cd/commit/850437963d6c5245bdc9d94473f3463ac9dac2fb))
 
 * Merge pull request #25 from gsinghjay/develop
 
 feat(ci): enhance release workflow with semantic options ([`a49f0ed`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a49f0ed28436640916f6ef38609fcd459d8338d0))
 
+* Merge pull request #29 from gsinghjay/feature/add-qr-size-option
+
+feat: add QR code size customization options ([`55b2eeb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/55b2eebe1d0ad7977d6eb026ee482fa0b86744c1))
+
+* Merge pull request #26 from gsinghjay/docs/add-custom-colors-docs
+
+Docs/add custom colors docs ([`30445f3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/30445f3c2eaff3ecd2d0c7dadb19fc80466f5d1e))
+
+* Merge branch 'dev' of github.com:gsinghjay/fast-api-ci-cd into develop ([`8504379`](https://github.com/gsinghjay/fast-api-ci-cd/commit/850437963d6c5245bdc9d94473f3463ac9dac2fb))
+
+* Merge pull request #23 from gsinghjay/main
+
+chore: sync `dev` and `main` ([`c4137b6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c4137b6224ee434a55cdffc3fe3b931444a09964))
+
 
 ## v1.3.0-beta.1 (2025-01-01)
 
-### Ci
-
-* ci: improve ci/cd workflow reliability and tag handling
-
-- fix: correct dependency between tag-validation and release jobs
-- feat: add annotated tag support for better validation
-- fix: standardize python-semantic-release version to 9.15.0
-- fix: improve GitHub CLI authentication
-- chore: enhance workflow_dispatch input handling ([`bbfa061`](https://github.com/gsinghjay/fast-api-ci-cd/commit/bbfa061ccd817600bca70d0f56eec7b80870427b))
-
-### Documentation
-
-* docs: update CHANGELOG.md [skip ci] ([`5dc58d0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5dc58d0157f1d0d47904a698592dd7caffcba151))
-
-* docs: add branch protection rules and naming conventions ([`851e65b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/851e65b1ab265321f13fa727aff77e9d43997d64))
-
-* docs: update CHANGELOG.md [skip ci] ([`ff10ee8`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ff10ee80d64129025b50e18286368f96d7a2a262))
-
-* docs: update mermaid diagram to show complete release flow ([`ce2ecad`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ce2ecadbd28dd9a7258197026cb64af1c34b58dc))
-
-### Feature
-
-* feat(release): add branch-specific release configurations
-
-- Configure main branch for regular releases
-- Configure develop branch for beta releases
-- Configure release/* branches for RC releases ([`b8ec310`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b8ec310ee2643add5d24e69c8c68c40f9364c22d))
-
-* feat(ci): enhance release workflow with semantic options
-
-- Add manual workflow trigger with configurable parameters
-- Support prerelease versions with custom tokens
-- Add build metadata support
-- Enable commit signing with SSH keys
-- Improve version control with force level options ([`0d0fb10`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0d0fb1017a72d763d34af1dbda4a53071ba32f20))
-
-### Fix
+### Bug Fixes
 
 * fix(ci): simplify Git authentication and use consistent token handling ([`ad23d07`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ad23d072332ce033e20429370ae3df4ea13d3d50))
 
@@ -972,11 +971,39 @@ feat(ci): enhance release workflow with semantic options ([`a49f0ed`](https://gi
 - Add proper HTTPS authentication for Git operations
 - Use GITHUB_TOKEN for remote URL authentication ([`70a4049`](https://github.com/gsinghjay/fast-api-ci-cd/commit/70a4049760f283f39b701ff14c5fc1011ff29129))
 
-### Unknown
+### Continuous Integration
 
-* Merge pull request #23 from gsinghjay/main
+* ci: improve ci/cd workflow reliability and tag handling
 
-chore: sync `dev` and `main` ([`c4137b6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c4137b6224ee434a55cdffc3fe3b931444a09964))
+- fix: correct dependency between tag-validation and release jobs
+- feat: add annotated tag support for better validation
+- fix: standardize python-semantic-release version to 9.15.0
+- fix: improve GitHub CLI authentication
+- chore: enhance workflow_dispatch input handling ([`bbfa061`](https://github.com/gsinghjay/fast-api-ci-cd/commit/bbfa061ccd817600bca70d0f56eec7b80870427b))
+
+### Documentation
+
+* docs: add branch protection rules and naming conventions ([`851e65b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/851e65b1ab265321f13fa727aff77e9d43997d64))
+
+* docs: update CHANGELOG.md [skip ci] ([`ff10ee8`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ff10ee80d64129025b50e18286368f96d7a2a262))
+
+* docs: update mermaid diagram to show complete release flow ([`ce2ecad`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ce2ecadbd28dd9a7258197026cb64af1c34b58dc))
+
+### Features
+
+* feat(release): add branch-specific release configurations
+
+- Configure main branch for regular releases
+- Configure develop branch for beta releases
+- Configure release/* branches for RC releases ([`b8ec310`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b8ec310ee2643add5d24e69c8c68c40f9364c22d))
+
+* feat(ci): enhance release workflow with semantic options
+
+- Add manual workflow trigger with configurable parameters
+- Support prerelease versions with custom tokens
+- Add build metadata support
+- Enable commit signing with SSH keys
+- Improve version control with force level options ([`0d0fb10`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0d0fb1017a72d763d34af1dbda4a53071ba32f20))
 
 
 ## v1.2.0 (2025-01-01)
@@ -989,7 +1016,7 @@ chore: sync `dev` and `main` ([`c4137b6`](https://github.com/gsinghjay/fast-api-
 
 * docs: add manual release workflow documentation ([`d4e82a7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d4e82a7f10621ce3bc8a1f7652e2736ca7060af8))
 
-### Feature
+### Features
 
 * feat(ci): add automated pre-release patterns for different branches ([`7fae1bc`](https://github.com/gsinghjay/fast-api-ci-cd/commit/7fae1bc47cac96731d3e877c80c1e297d94e16a8))
 
@@ -1000,7 +1027,7 @@ chore: sync `dev` and `main` ([`c4137b6`](https://github.com/gsinghjay/fast-api-
 
 * docs: update CHANGELOG.md [skip ci] ([`09c869a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/09c869a9edc191cee2ec6ba75a8e55a06b19b35c))
 
-### Feature
+### Features
 
 * feat(ci): enhance release workflow with semantic options and manual triggers ([`0b25b9d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0b25b9d7e93d28d6e8a7c74477fc02b0ec025a5b))
 
@@ -1014,11 +1041,7 @@ chore: sync `dev` and `main` ([`c4137b6`](https://github.com/gsinghjay/fast-api-
 
 ## v1.0.11 (2025-01-01)
 
-### Documentation
-
-* docs: update CHANGELOG.md [skip ci] ([`2ebfbde`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2ebfbde66aca1abb537c6ebeb7370c7fa9ef0222))
-
-### Fix
+### Bug Fixes
 
 * fix(changelog): exclude github-actions bot commits from changelog
 
@@ -1026,8 +1049,16 @@ chore: sync `dev` and `main` ([`c4137b6`](https://github.com/gsinghjay/fast-api-
 - Filter out automated changelog updates
 - Maintain clean changelog without bot entries ([`52010b0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/52010b08635c1e6b034015acf1660b2e48087813))
 
+### Documentation
+
+* docs: update CHANGELOG.md [skip ci] ([`2ebfbde`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2ebfbde66aca1abb537c6ebeb7370c7fa9ef0222))
+
 
 ## v1.0.10 (2025-01-01)
+
+### Bug Fixes
+
+* fix(changelog): exclude [skip ci] and related patterns from changelog ([`697fd83`](https://github.com/gsinghjay/fast-api-ci-cd/commit/697fd83fd785c9b8caf1b39c1fa40f4ad90035ec))
 
 ### Documentation
 
@@ -1041,12 +1072,16 @@ chore: sync `dev` and `main` ([`c4137b6`](https://github.com/gsinghjay/fast-api-
 
 * docs: remove [skip ci] annotations from changelog ([`7d0e78d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/7d0e78dda4346c407c897ab97c46ef56424b4910))
 
-### Fix
-
-* fix(changelog): exclude [skip ci] and related patterns from changelog ([`697fd83`](https://github.com/gsinghjay/fast-api-ci-cd/commit/697fd83fd785c9b8caf1b39c1fa40f4ad90035ec))
-
 
 ## v1.0.9 (2025-01-01)
+
+### Bug Fixes
+
+* fix(ci): remove invalid --ci flag from semantic-release commands ([`9636c0f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9636c0fdd9de821e6d42e59d2a78aaaa3ef369a7))
+
+* fix(ci): add git sync step and use CI mode for semantic-release ([`431296c`](https://github.com/gsinghjay/fast-api-ci-cd/commit/431296c47455bf4adaa96aea85cdee4f1d673786))
+
+* fix(ci): correct version retrieval in release verification ([`e85e60d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e85e60d879cbcd00d133e2ebed33ed356048d6ea))
 
 ### Documentation
 
@@ -1064,56 +1099,40 @@ chore: sync `dev` and `main` ([`c4137b6`](https://github.com/gsinghjay/fast-api-
 
 * docs: update README with detailed versioning and CI/CD information ([`9106aa9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9106aa9eb79a1270a63904dc1519e11edd8b9e01))
 
-### Fix
-
-* fix(ci): remove invalid --ci flag from semantic-release commands ([`9636c0f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9636c0fdd9de821e6d42e59d2a78aaaa3ef369a7))
-
-* fix(ci): add git sync step and use CI mode for semantic-release ([`431296c`](https://github.com/gsinghjay/fast-api-ci-cd/commit/431296c47455bf4adaa96aea85cdee4f1d673786))
-
-* fix(ci): correct version retrieval in release verification ([`e85e60d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e85e60d879cbcd00d133e2ebed33ed356048d6ea))
-
-### Refactor
+### Refactoring
 
 * refactor(ci): simplify release process using semantic-release commands ([`8225d08`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8225d087dd8437ee685d00cfc5a69ec3b11ede23))
 
 ### Unknown
 
-* Merge branch &#39;main&#39; of github.com:gsinghjay/fast-api-ci-cd ([`88f04c2`](https://github.com/gsinghjay/fast-api-ci-cd/commit/88f04c29a130a074d86d44d785684463b9da90c5))
+* Merge branch 'main' of github.com:gsinghjay/fast-api-ci-cd ([`88f04c2`](https://github.com/gsinghjay/fast-api-ci-cd/commit/88f04c29a130a074d86d44d785684463b9da90c5))
 
 
 ## v1.0.8 (2025-01-01)
+
+### Bug Fixes
+
+* fix(ci): correct release notes generation in CI/CD pipeline ([`9849cdb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9849cdb421a14894235c70e60beb895cac71165a))
 
 ### Documentation
 
 * docs: update CHANGELOG.md [skip ci] ([`559bf45`](https://github.com/gsinghjay/fast-api-ci-cd/commit/559bf451e22a3f03c93a58ca1768dde118204175))
 
-### Fix
-
-* fix(ci): correct release notes generation in CI/CD pipeline ([`9849cdb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9849cdb421a14894235c70e60beb895cac71165a))
-
 
 ## v1.0.7 (2025-01-01)
+
+### Bug Fixes
+
+* fix(ci): improve changelog generation using semantic-release ([`2540961`](https://github.com/gsinghjay/fast-api-ci-cd/commit/25409613951f1d4e3dfa4452c478151457479c1a))
 
 ### Documentation
 
 * docs: update CHANGELOG.md [skip ci] ([`d33b594`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d33b5941831facf5c874eb089dae7ee1cb596a9e))
 
-### Fix
-
-* fix(ci): improve changelog generation using semantic-release ([`2540961`](https://github.com/gsinghjay/fast-api-ci-cd/commit/25409613951f1d4e3dfa4452c478151457479c1a))
-
 
 ## v1.0.6 (2025-01-01)
 
-### Chore
-
-* chore(release): 1.0.6 [skip ci] ([`e8ee582`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e8ee58270e481c4e326e848c4cbf70d38e389ac9))
-
-### Documentation
-
-* docs: update CHANGELOG.md [skip ci] ([`892c342`](https://github.com/gsinghjay/fast-api-ci-cd/commit/892c34220d30ee94e96ade910a82b27d53e16464))
-
-### Fix
+### Bug Fixes
 
 * fix(ci): improve changelog generation configuration
 
@@ -1121,18 +1140,18 @@ chore: sync `dev` and `main` ([`c4137b6`](https://github.com/gsinghjay/fast-api-
 - Exclude release commits from changelog
 - Configure changelog formatting ([`569e547`](https://github.com/gsinghjay/fast-api-ci-cd/commit/569e547ae6ccd4864e2d4f1673b9bbb76b2014c0))
 
+### Chores
 
-## v1.0.5 (2025-01-01)
-
-### Chore
-
-* chore(release): 1.0.5 [skip ci] ([`0f4c74a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0f4c74a0677f7325b2181dd96224a40110924c28))
+* chore(release): 1.0.6 [skip ci] ([`e8ee582`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e8ee58270e481c4e326e848c4cbf70d38e389ac9))
 
 ### Documentation
 
-* docs: update CHANGELOG.md [skip ci] ([`a6d7a09`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a6d7a097a096fd683c3b34d3630f694ac35d89ae))
+* docs: update CHANGELOG.md [skip ci] ([`892c342`](https://github.com/gsinghjay/fast-api-ci-cd/commit/892c34220d30ee94e96ade910a82b27d53e16464))
 
-### Fix
+
+## v1.0.5 (2025-01-01)
+
+### Bug Fixes
 
 * fix(ci): add GitHub release creation to CI/CD pipeline
 
@@ -1140,20 +1159,18 @@ chore: sync `dev` and `main` ([`c4137b6`](https://github.com/gsinghjay/fast-api-
 - Create GitHub releases for tags
 - Add release verification step ([`5a434ca`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5a434ca82fa7a95a9e1eadac4351e69102ddbb0c))
 
+### Chores
 
-## v1.0.4 (2025-01-01)
-
-### Chore
-
-* chore(release): 1.0.4 [skip ci] ([`b8d50a7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b8d50a7fe330e21e00e6acafb2689c268088780d))
+* chore(release): 1.0.5 [skip ci] ([`0f4c74a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0f4c74a0677f7325b2181dd96224a40110924c28))
 
 ### Documentation
 
-* docs: update CHANGELOG.md [skip ci] ([`addaa9b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/addaa9ba5502fb14c3a91e9e4da042362ae55554))
+* docs: update CHANGELOG.md [skip ci] ([`a6d7a09`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a6d7a097a096fd683c3b34d3630f694ac35d89ae))
 
-* docs: update CHANGELOG.md [skip ci] ([`db0dbde`](https://github.com/gsinghjay/fast-api-ci-cd/commit/db0dbde5c77700cf764bdab678f2767910fd5bbc))
 
-### Fix
+## v1.0.4 (2025-01-01)
+
+### Bug Fixes
 
 * fix(version): align version numbers with git tags
 
@@ -1161,7 +1178,11 @@ This commit fixes the version number discrepancy
 between files and git tags, ensuring consistent
 versioning across the project. ([`67e0852`](https://github.com/gsinghjay/fast-api-ci-cd/commit/67e0852517a7d13d2c3cb5a00ac0501d235f99dc))
 
-### Style
+### Chores
+
+* chore(release): 1.0.4 [skip ci] ([`b8d50a7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b8d50a7fe330e21e00e6acafb2689c268088780d))
+
+### Code Style
 
 * style: apply pre-commit hooks and formatting
 
@@ -1172,20 +1193,16 @@ versioning across the project. ([`67e0852`](https://github.com/gsinghjay/fast-ap
 - Fix YAML formatting
 - Update documentation formatting ([`da67f7c`](https://github.com/gsinghjay/fast-api-ci-cd/commit/da67f7c01e91141e31141231be273c6452398dfa))
 
+### Documentation
+
+* docs: update CHANGELOG.md [skip ci] ([`addaa9b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/addaa9ba5502fb14c3a91e9e4da042362ae55554))
+
+* docs: update CHANGELOG.md [skip ci] ([`db0dbde`](https://github.com/gsinghjay/fast-api-ci-cd/commit/db0dbde5c77700cf764bdab678f2767910fd5bbc))
+
 
 ## v1.0.3 (2025-01-01)
 
-### Chore
-
-* chore(release): 1.0.3 [skip ci] ([`b26ce30`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b26ce3070718d04f95c6af68a9e5a29059db3fdc))
-
-### Documentation
-
-* docs: update CHANGELOG.md [skip ci] ([`59f2bb2`](https://github.com/gsinghjay/fast-api-ci-cd/commit/59f2bb2d455cf70730859144f8e47bd917fa520a))
-
-* docs: update CHANGELOG.md [skip ci] ([`d6f8d05`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d6f8d0592c5fca5f41b83aa8a0c1a9677b9242b4))
-
-### Fix
+### Bug Fixes
 
 * fix(ci): improve version management and changelog generation
 
@@ -1202,23 +1219,33 @@ versioning across the project. ([`67e0852`](https://github.com/gsinghjay/fast-ap
 - Improve error handling for existing tags
 - Add informative message when skipping release ([`8584c27`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8584c275d5a25ecb4c9ee784b9fc3fcf99985f20))
 
-### Refactor
+### Chores
 
-* refactor(ci): remove redundant post-merge verification
+* chore(release): 1.0.3 [skip ci] ([`b26ce30`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b26ce3070718d04f95c6af68a9e5a29059db3fdc))
 
-- Remove post-merge verification job
-- Simplify workflow dependencies
-- Reduce CI execution time
-- Rely on existing test and release jobs for verification ([`ac9d317`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ac9d31755196877e7836f8e216beddda31d19ebb))
+### Documentation
+
+* docs: update CHANGELOG.md [skip ci] ([`59f2bb2`](https://github.com/gsinghjay/fast-api-ci-cd/commit/59f2bb2d455cf70730859144f8e47bd917fa520a))
+
+* docs: update CHANGELOG.md [skip ci] ([`d6f8d05`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d6f8d0592c5fca5f41b83aa8a0c1a9677b9242b4))
 
 ### Unknown
 
-* Merge branch &#39;main&#39; of github.com:gsinghjay/fast-api-ci-cd ([`2f8170e`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2f8170e22f4c9e0ea671222df61e699e865cc4f0))
+* Merge branch 'main' of github.com:gsinghjay/fast-api-ci-cd ([`2f8170e`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2f8170e22f4c9e0ea671222df61e699e865cc4f0))
 
 
 ## v1.0.2 (2025-01-01)
 
-### Chore
+### Bug Fixes
+
+* fix(ci): improve semantic release version management
+
+- Add explicit version checking
+- Use git tags for version tracking
+- Implement proper semantic version bumping
+- Add commit message validation ([`c55d026`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c55d0263553ac2b1d11d53bf01bae2f0427d6346))
+
+### Chores
 
 * chore(release): 1.0.2 [skip ci] ([`8215ee4`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8215ee4aa344a48843a9a4b17c72008f1721eb24))
 
@@ -1232,16 +1259,14 @@ versioning across the project. ([`67e0852`](https://github.com/gsinghjay/fast-ap
 
 * docs: update CHANGELOG.md [skip ci] ([`3628a92`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3628a9263a44e96541158e63c93c4867b5d0081f))
 
-### Fix
+### Refactoring
 
-* fix(ci): improve semantic release version management
+* refactor(ci): remove redundant post-merge verification
 
-- Add explicit version checking
-- Use git tags for version tracking
-- Implement proper semantic version bumping
-- Add commit message validation ([`c55d026`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c55d0263553ac2b1d11d53bf01bae2f0427d6346))
-
-### Refactor
+- Remove post-merge verification job
+- Simplify workflow dependencies
+- Reduce CI execution time
+- Rely on existing test and release jobs for verification ([`ac9d317`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ac9d31755196877e7836f8e216beddda31d19ebb))
 
 * refactor(ci): simplify release process
 
@@ -1258,22 +1283,12 @@ versioning across the project. ([`67e0852`](https://github.com/gsinghjay/fast-ap
 
 ### Unknown
 
-* Merge branch &#39;main&#39; of github.com:gsinghjay/fast-api-ci-cd ([`c68be39`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c68be394e11e20783c9afe9db9342b3cf1a89509))
+* Merge branch 'main' of github.com:gsinghjay/fast-api-ci-cd ([`c68be39`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c68be394e11e20783c9afe9db9342b3cf1a89509))
 
 
 ## v1.0.1 (2025-01-01)
 
-### Chore
-
-* chore: bump version to 0.1.1-dev.0 [skip ci] ([`727dd70`](https://github.com/gsinghjay/fast-api-ci-cd/commit/727dd7047f71762a7a830bddf9dbdd53f2791afe))
-
-### Documentation
-
-* docs: update CHANGELOG.md [skip ci] ([`be9f5a9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/be9f5a97110464b0369e6d633e5a2e2a5557da95))
-
-* docs: update CHANGELOG.md [skip ci] ([`e223933`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e223933affd531780688f03c6014e196cf6a6a1f))
-
-### Fix
+### Bug Fixes
 
 * fix(ci): remove remaining dev version update configurations
 
@@ -1282,7 +1297,13 @@ versioning across the project. ([`67e0852`](https://github.com/gsinghjay/fast-ap
 - Remove dev version update logic
 - Fix invalid PEP 440 version error ([`d6f0424`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d6f04247bee1a3823cfe7ab527f40acbb9fbde16))
 
-### Refactor
+### Documentation
+
+* docs: update CHANGELOG.md [skip ci] ([`be9f5a9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/be9f5a97110464b0369e6d633e5a2e2a5557da95))
+
+* docs: update CHANGELOG.md [skip ci] ([`e223933`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e223933affd531780688f03c6014e196cf6a6a1f))
+
+### Refactoring
 
 * refactor(ci): remove dev version updates and notifications
 
@@ -1301,7 +1322,7 @@ fix(ci): remove remaining dev version update configurations ([`25b5e9b`](https:/
 
 Dev ([`42f9294`](https://github.com/gsinghjay/fast-api-ci-cd/commit/42f9294cf03b7a76d6d2975f360a2caed590a55d))
 
-* Merge branch &#39;main&#39; into dev ([`e5ef30c`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e5ef30c6d37a923d5e5d3b6aa18975c45eb451db))
+* Merge branch 'main' into dev ([`e5ef30c`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e5ef30c6d37a923d5e5d3b6aa18975c45eb451db))
 
 
 ## v1.0.0 (2025-01-01)
@@ -1310,7 +1331,7 @@ Dev ([`42f9294`](https://github.com/gsinghjay/fast-api-ci-cd/commit/42f9294cf03b
 
 * fix(ci): remove explicit branch flag from semantic-release
 
-- Remove redundant --branch flag as it&#39;s not needed with pyproject.toml config
+- Remove redundant --branch flag as it's not needed with pyproject.toml config
 - Simplify semantic-release command for better maintainability
 - Ensure compatibility with semantic-release configuration in pyproject.toml
 
@@ -1328,63 +1349,7 @@ Branch configuration is now exclusively managed through pyproject.toml. ([`58a81
 BREAKING CHANGE: This updates the semantic-release configuration and
 requires specific GitHub repository permissions to be set. ([`3723090`](https://github.com/gsinghjay/fast-api-ci-cd/commit/372309076ca902404431964b9d9cebe0fb7dece0))
 
-### Chore
-
-* chore(release): bump version and update changelog [skip ci] ([`88aba68`](https://github.com/gsinghjay/fast-api-ci-cd/commit/88aba685be1fbafbf2956694876f3a0ea4f344ae))
-
-* chore: re-add project files without cache ([`46f0bf7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/46f0bf7d5c0ccd7b95983f6dca8acf1347673c42))
-
-* chore: add .gitignore file ([`ca11881`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ca1188162ac75c5e57b42c081039d4106d1ae0d5))
-
-### Ci
-
-* ci: enable CI/CD pipeline for all branches ([`3083dd1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3083dd1bd72ff48000e155884a6bdf5dd568753a))
-
-* ci: standardize poetry installation and lock file handling ([`e802d7e`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e802d7edc5cc431fa47eac2f17efc49c5ef6627c))
-
-* ci: update all Python versions to 3.11 ([`cd70ae6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/cd70ae67f60c9f36fbd7e6e7a383bd159302475b))
-
-* ci: remove Python 3.9 from test matrix ([`320239c`](https://github.com/gsinghjay/fast-api-ci-cd/commit/320239c9e3061f8cb061b611326f22acf291c19a))
-
-* ci: handle poetry.lock file in CI/CD pipeline ([`105f017`](https://github.com/gsinghjay/fast-api-ci-cd/commit/105f0176e6760828503b618431a528fe87a7f5fa))
-
-* ci: update Python version matrix to 3.9-3.11 ([`ed276a1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ed276a1e5b2a4c4fcca29162bc3f9af55639c09a))
-
-* ci: switch to wagoid/commitlint-github-action for commit linting ([`928b238`](https://github.com/gsinghjay/fast-api-ci-cd/commit/928b2385d98278ad01f49a9e96751a8162316b0f))
-
-* ci: fix commitlint configuration and workflow ([`befcdf3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/befcdf3db1752523e6f8cf46e32638f9c10aea8f))
-
-### Documentation
-
-* docs: update CHANGELOG.md [skip ci] ([`0423265`](https://github.com/gsinghjay/fast-api-ci-cd/commit/04232653f0f2f0044ebfcd60d4800aa47c3e3a00))
-
-* docs: update CHANGELOG.md [skip ci] ([`896cf4e`](https://github.com/gsinghjay/fast-api-ci-cd/commit/896cf4e3c5228e7f0422ed0966e27b0afd0cf100))
-
-### Feature
-
-* feat(ci): add alpha release support for dev branch
-
-- Add semantic-release branch configuration for alpha releases
-- Add dedicated release workflow for dev branch
-- Configure prerelease tokens and version format
-- Maintain separate version tracks for dev and main branches
-
-This enables automatic alpha releases when merging to dev branch,
-while maintaining standard releases on main. ([`1675520`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1675520d37064c770fdb8dd383e7f014a5e66063))
-
-* feat: enable changelog updates in feature branches ([`3f98945`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3f98945546615681e5826d19586a0ce65846d800))
-
-* feat: add changelog generation to CI/CD pipeline ([`93241cb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/93241cb66dcbaf28d2e5bfd29e956eb4cc8ea520))
-
-* feat: add custom color support for QR codes ([`3d10cd8`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3d10cd8be9fe78d429219a33e92921dc71b53b0c))
-
-* feat: add structured logging configuration ([`a6fff8e`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a6fff8e7a9ded98d0d73b0b205d2eb3f42179e3c))
-
-* feat: add QR code generation functionality ([`9fbb062`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9fbb0627c04420588903c548c0b649ce5e7e416f))
-
-* feat: initial project setup with basic FastAPI application ([`9b48962`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9b489623ca64b390e10124ae5d6efb0cb1ad4ad3))
-
-### Fix
+### Bug Fixes
 
 * fix(ci): resolve release step git sync issues
 
@@ -1403,16 +1368,16 @@ while maintaining standard releases on main. ([`1675520`](https://github.com/gsi
 
 - Remove duplicate branch configuration entries
 - Keep single unified branch configuration under [tool.python_semantic_release.branches]
-- Fix &#34;Cannot declare branches.dev twice&#34; error
+- Fix "Cannot declare branches.dev twice" error
 - Ensure semantic-release can properly identify release groups
 
-Fixes error: Cannot declare (&#39;tool&#39;, &#39;python_semantic_release&#39;, &#39;branches&#39;, &#39;dev&#39;) twice ([`4691097`](https://github.com/gsinghjay/fast-api-ci-cd/commit/4691097706204849781d84c73b8e005f588ba4e0))
+Fixes error: Cannot declare ('tool', 'python_semantic_release', 'branches', 'dev') twice ([`4691097`](https://github.com/gsinghjay/fast-api-ci-cd/commit/4691097706204849781d84c73b8e005f588ba4e0))
 
 * fix(ci): update semantic-release branch configuration format
 
 - Update branch configuration format in pyproject.toml to match semantic-release 9.x expectations
 - Simplify branch configuration by using direct format instead of nested sections
-- Fix &#34;branch not in release groups&#34; error by using correct configuration structure
+- Fix "branch not in release groups" error by using correct configuration structure
 
 Related to: Previous commit that removed --branch flag from workflow ([`9b03616`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9b03616b7369c101176081218a0ce4d004fc219d))
 
@@ -1429,7 +1394,7 @@ Related to: Previous commit that removed --branch flag from workflow ([`9b03616`
 - Add explicit --branch flag to release command
 - Remove redundant branch configurations
 
-This fixes the &#34;branch &#39;dev&#39; isn&#39;t in any release groups&#34; error
+This fixes the "branch 'dev' isn't in any release groups" error
 and enables proper alpha releases on the dev branch. ([`bacdbb1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/bacdbb172850b0ea62052558614d09e87ec0e2f3))
 
 * fix(ci): correct semantic-release command syntax
@@ -1438,7 +1403,7 @@ and enables proper alpha releases on the dev branch. ([`bacdbb1`](https://github
 - Rely on branch configuration for alpha releases
 - Simplify release command to use configuration
 
-This fixes the &#34;unexpected extra argument&#34; error in the dev release workflow. ([`d94883b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d94883b507f1914edf2111be6b82be5b33fc0aea))
+This fixes the "unexpected extra argument" error in the dev release workflow. ([`d94883b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d94883b507f1914edf2111be6b82be5b33fc0aea))
 
 * fix(ci): resolve semantic-release configuration conflicts
 
@@ -1447,7 +1412,7 @@ This fixes the &#34;unexpected extra argument&#34; error in the dev release work
 - Fix configuration structure to prevent value overwriting
 - Clarify branch release patterns for main and dev
 
-This fixes the &#34;Cannot overwrite a value&#34; error in the CI pipeline. ([`125ec19`](https://github.com/gsinghjay/fast-api-ci-cd/commit/125ec1925fcaa1115e730c588c1cc4a5fbca1b17))
+This fixes the "Cannot overwrite a value" error in the CI pipeline. ([`125ec19`](https://github.com/gsinghjay/fast-api-ci-cd/commit/125ec1925fcaa1115e730c588c1cc4a5fbca1b17))
 
 * fix(ci): correct semantic-release configuration for alpha releases
 
@@ -1502,7 +1467,69 @@ on the dev branch and ensures proper alpha versioning. ([`9caebc7`](https://gith
 
 * fix: update dependencies and replace deprecated on_event with lifespan ([`38d748b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/38d748b1c206b34d3cfd2a397d3315814e6e8a82))
 
-### Refactor
+### Chores
+
+* chore: bump version to 0.1.1-dev.0 [skip ci] ([`727dd70`](https://github.com/gsinghjay/fast-api-ci-cd/commit/727dd7047f71762a7a830bddf9dbdd53f2791afe))
+
+* chore(release): bump version and update changelog [skip ci] ([`88aba68`](https://github.com/gsinghjay/fast-api-ci-cd/commit/88aba685be1fbafbf2956694876f3a0ea4f344ae))
+
+* chore: re-add project files without cache ([`46f0bf7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/46f0bf7d5c0ccd7b95983f6dca8acf1347673c42))
+
+* chore: add .gitignore file ([`ca11881`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ca1188162ac75c5e57b42c081039d4106d1ae0d5))
+
+### Code Style
+
+* style: format code with black ([`4c0449a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/4c0449a9b4313c625575a3c5ce262cce6ec6ea80))
+
+### Continuous Integration
+
+* ci: enable CI/CD pipeline for all branches ([`3083dd1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3083dd1bd72ff48000e155884a6bdf5dd568753a))
+
+* ci: standardize poetry installation and lock file handling ([`e802d7e`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e802d7edc5cc431fa47eac2f17efc49c5ef6627c))
+
+* ci: update all Python versions to 3.11 ([`cd70ae6`](https://github.com/gsinghjay/fast-api-ci-cd/commit/cd70ae67f60c9f36fbd7e6e7a383bd159302475b))
+
+* ci: remove Python 3.9 from test matrix ([`320239c`](https://github.com/gsinghjay/fast-api-ci-cd/commit/320239c9e3061f8cb061b611326f22acf291c19a))
+
+* ci: handle poetry.lock file in CI/CD pipeline ([`105f017`](https://github.com/gsinghjay/fast-api-ci-cd/commit/105f0176e6760828503b618431a528fe87a7f5fa))
+
+* ci: update Python version matrix to 3.9-3.11 ([`ed276a1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ed276a1e5b2a4c4fcca29162bc3f9af55639c09a))
+
+* ci: switch to wagoid/commitlint-github-action for commit linting ([`928b238`](https://github.com/gsinghjay/fast-api-ci-cd/commit/928b2385d98278ad01f49a9e96751a8162316b0f))
+
+* ci: fix commitlint configuration and workflow ([`befcdf3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/befcdf3db1752523e6f8cf46e32638f9c10aea8f))
+
+### Documentation
+
+* docs: update CHANGELOG.md [skip ci] ([`0423265`](https://github.com/gsinghjay/fast-api-ci-cd/commit/04232653f0f2f0044ebfcd60d4800aa47c3e3a00))
+
+* docs: update CHANGELOG.md [skip ci] ([`896cf4e`](https://github.com/gsinghjay/fast-api-ci-cd/commit/896cf4e3c5228e7f0422ed0966e27b0afd0cf100))
+
+### Features
+
+* feat(ci): add alpha release support for dev branch
+
+- Add semantic-release branch configuration for alpha releases
+- Add dedicated release workflow for dev branch
+- Configure prerelease tokens and version format
+- Maintain separate version tracks for dev and main branches
+
+This enables automatic alpha releases when merging to dev branch,
+while maintaining standard releases on main. ([`1675520`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1675520d37064c770fdb8dd383e7f014a5e66063))
+
+* feat: enable changelog updates in feature branches ([`3f98945`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3f98945546615681e5826d19586a0ce65846d800))
+
+* feat: add changelog generation to CI/CD pipeline ([`93241cb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/93241cb66dcbaf28d2e5bfd29e956eb4cc8ea520))
+
+* feat: add custom color support for QR codes ([`3d10cd8`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3d10cd8be9fe78d429219a33e92921dc71b53b0c))
+
+* feat: add structured logging configuration ([`a6fff8e`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a6fff8e7a9ded98d0d73b0b205d2eb3f42179e3c))
+
+* feat: add QR code generation functionality ([`9fbb062`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9fbb0627c04420588903c548c0b649ce5e7e416f))
+
+* feat: initial project setup with basic FastAPI application ([`9b48962`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9b489623ca64b390e10124ae5d6efb0cb1ad4ad3))
+
+### Refactoring
 
 * refactor(ci): simplify release process and changelog generation
 
@@ -1511,23 +1538,23 @@ on the dev branch and ensures proper alpha versioning. ([`9caebc7`](https://gith
 - Update changelog only on main branch
 - Remove unnecessary release-dev job ([`73cee3f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/73cee3f3a5ae0135457783b1d6e827578edb00bc))
 
-### Style
-
-* style: format code with black ([`4c0449a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/4c0449a9b4313c625575a3c5ce262cce6ec6ea80))
-
 ### Unknown
 
 * Merge pull request #20 from gsinghjay/dev
 
 Dev ([`b0050d0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b0050d06ff15ac1702df749a70f5ba0f50c74f4a))
 
-* Merge pull request #19 from gsinghjay/ci/fix-workflow
-
-fix(ci): resolve release step git sync issues ([`53746f3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/53746f32a511ac75e3f6a7c564fd9a99825c141b))
-
 * Merge pull request #17 from gsinghjay/dev
 
 Dev ([`391f4a3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/391f4a3ee35b1477d1a6be0d4d94336550adf464))
+
+* Merge pull request #3 from gsinghjay/dev
+
+Dev ([`7253767`](https://github.com/gsinghjay/fast-api-ci-cd/commit/72537674273c254568e02160eb7dfff0ea46d53e))
+
+* Merge pull request #19 from gsinghjay/ci/fix-workflow
+
+fix(ci): resolve release step git sync issues ([`53746f3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/53746f32a511ac75e3f6a7c564fd9a99825c141b))
 
 * Merge pull request #18 from gsinghjay/ci/fix-workflow
 
@@ -1536,10 +1563,6 @@ refactor(ci): simplify release process and changelog generation ([`9a97d18`](htt
 * Merge pull request #16 from gsinghjay/ci/fix-workflow
 
 fix(ci): simplify changelog update step after removing branch protection ([`bd69f13`](https://github.com/gsinghjay/fast-api-ci-cd/commit/bd69f13478adfd1aa0c216e775ad13bf856fbb3b))
-
-* Merge pull request #3 from gsinghjay/dev
-
-Dev ([`7253767`](https://github.com/gsinghjay/fast-api-ci-cd/commit/72537674273c254568e02160eb7dfff0ea46d53e))
 
 * Merge pull request #15 from gsinghjay/ci/fix-workflow
 
