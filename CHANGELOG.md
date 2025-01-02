@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## Unreleased
+## v1.6.2 (2025-01-02)
 
 ### Bug Fixes
 
@@ -12,6 +12,9 @@
   semantic-release to include all commits - Separate changelog generation from release process
 
 ### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`6382022`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6382022585ff561f7b2e2d2fb2eb8eab11d90437))
 
 - **readme**: Add workflow diagram and explanation
   ([`5e986cb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5e986cb4c4cc7b8972570141237b91ff0132343a))
