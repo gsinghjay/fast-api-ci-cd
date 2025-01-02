@@ -47,8 +47,10 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
 
-      - name: Create virtual environment
-        run: python -m venv .venv
+      - name: Install Poetry
+        run: |
+          pip install poetry==1.8.5
+          poetry config virtualenvs.in-project true
 
       - name: Download virtual environment
         uses: actions/download-artifact@v4
@@ -56,15 +58,8 @@ jobs:
           name: ${{ inputs.venv-name }}
           path: .
 
-      - name: Install dependencies
-        run: |
-          source .venv/bin/activate
-          pip install -r requirements.txt
-
       - name: Run Black
-        run: |
-          source .venv/bin/activate
-          black --check .
+        run: poetry run black --check .
 
       - name: Check commit messages
         uses: wagoid/commitlint-github-action@v5

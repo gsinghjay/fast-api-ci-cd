@@ -90,8 +90,10 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Create virtual environment
-        run: python -m venv .venv
+      - name: Install Poetry
+        run: |
+          pip install poetry==1.8.5
+          poetry config virtualenvs.in-project true
 
       - name: Download virtual environment
         uses: actions/download-artifact@v4
@@ -99,18 +101,11 @@ jobs:
           name: ${{ needs.setup.outputs.venv-name }}
           path: .
 
-      - name: Install dependencies
-        run: |
-          source .venv/bin/activate
-          pip install -r requirements.txt
-
       - name: Python Semantic Release
         id: release
         uses: python-semantic-release/python-semantic-release@v9.15.0
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VIRTUAL_ENV: ${{ github.workspace }}/.venv
-          PATH: ${{ github.workspace }}/.venv/bin:${{ env.PATH }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           directory: .

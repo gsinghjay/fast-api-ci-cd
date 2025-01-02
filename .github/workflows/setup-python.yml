@@ -37,9 +37,7 @@ jobs:
           poetry config virtualenvs.in-project true
 
       - name: Install dependencies
-        run: |
-          poetry install
-          poetry run pip freeze > requirements.txt
+        run: poetry install
 
       - name: Upload virtual environment
         uses: actions/upload-artifact@v4
@@ -47,5 +45,6 @@ jobs:
           name: venv-${{ github.run_id }}
           path: |
             .venv/**/*
-            requirements.txt
+            poetry.lock
+            pyproject.toml
           if-no-files-found: error
