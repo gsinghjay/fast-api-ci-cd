@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+  workflow_call:
+    secrets:
+      token:
+        required: true
+        description: "GitHub token for authentication"
+  workflow_dispatch:
+
+jobs:
+  setup:
+    name: Setup Environment
+    uses: ./.github/workflows/setup-python.yml
+    with:
+      python-version: "3.11"
+
+  lint:
+    name: Lint Check
+    needs: [setup]
+    uses: ./.github/workflows/lint.yml
+    with:
+      venv-name: ${{ needs.setup.outputs.venv-name }}
+      python-version: "3.11"
+    permissions:
+      contents: read
+      pull-requests: read
+    secrets:
+      token: ${{ secrets.token }}
+
+  test:
+    name: Run Tests
+    needs: [setup]
+    uses: ./.github/workflows/test.yml
+    with:
+      venv-name: ${{ needs.setup.outputs.venv-name }}
+      python-version: "3.11"
+    permissions:
+      contents: read
+      checks: write
