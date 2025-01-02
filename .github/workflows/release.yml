@@ -40,6 +40,8 @@ jobs:
     name: Lint Check
     needs: [setup]
     uses: ./.github/workflows/lint.yml
+    with:
+      artifact-name: ${{ needs.setup.outputs.artifact-name }}
     permissions:
       contents: read
       pull-requests: read
@@ -48,13 +50,15 @@ jobs:
     name: Run Tests
     needs: [setup]
     uses: ./.github/workflows/test.yml
+    with:
+      artifact-name: ${{ needs.setup.outputs.artifact-name }}
     permissions:
       contents: read
       checks: write
 
   release:
     name: Create Release
-    needs: [lint, test]
+    needs: [lint, test, setup]
     runs-on: ubuntu-latest
     if: |
       github.ref == 'refs/heads/main' &&
@@ -85,7 +89,7 @@ jobs:
       - name: Download virtual environment
         uses: actions/download-artifact@v4
         with:
-          name: venv
+          name: ${{ needs.setup.outputs.artifact-name }}
           path: .venv
 
       - name: Set environment variables

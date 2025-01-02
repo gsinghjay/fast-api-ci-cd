@@ -15,6 +15,9 @@ on:
       venv-path:
         description: "Path to the virtual environment"
         value: ${{ jobs.setup.outputs.venv-path }}
+      artifact-name:
+        description: "Name of the virtual environment artifact"
+        value: ${{ jobs.setup.outputs.artifact-name }}
 
 jobs:
   setup:
@@ -23,11 +26,16 @@ jobs:
     outputs:
       cache-hit: ${{ steps.cache-deps.outputs.cache-hit }}
       venv-path: ${{ steps.get-venv-path.outputs.path }}
+      artifact-name: ${{ steps.set-artifact-name.outputs.name }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
+      - name: Set artifact name
+        id: set-artifact-name
+        run: echo "name=venv-${{ github.run_id }}" >> $GITHUB_OUTPUT
 
       - name: Set up Python ${{ inputs.python-version }}
         uses: actions/setup-python@v4
@@ -64,6 +72,6 @@ jobs:
       - name: Upload virtual environment
         uses: actions/upload-artifact@v4
         with:
-          name: venv
+          name: ${{ steps.set-artifact-name.outputs.name }}
           path: .venv
           retention-days: 1
