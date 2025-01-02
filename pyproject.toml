@@ -74,14 +74,8 @@ components = [
     "semantic_release.changelog.commit_list"
 ]
 include_prereleases = true
-exclude_commit_patterns = [
-    "^chore\\(release\\):",
-    "^docs\\(changelog\\):",
-    "\\[skip ci\\]",
-    "\\[ci skip\\]",
-    "\\[no changelog\\]"
-]
+exclude_commit_patterns = []
 render_title = true
 render_commit_links = true
-include_unreleased = false
+include_unreleased = true
 unreleased_section_title = "Unreleased"
