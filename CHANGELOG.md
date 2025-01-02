@@ -1,6 +1,23 @@
 # CHANGELOG
 
 
+## Unreleased
+
+### Bug Fixes
+
+- **ci**: Ensure tests run on pull requests
+  ([`dcd4844`](https://github.com/gsinghjay/fast-api-ci-cd/commit/dcd484442c9129df9518fbeb82b4ba9a3faa6ed4))
+
+- Fix conditional logic for PR events in workflow - Separate PR and push event conditions - Ensure
+  lint and test jobs always run on PRs
+
+- **ci**: Prevent workflow recursion from bot commits
+  ([`fd2a99b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/fd2a99b55ca63c03ad65df61b66fb6d6a2af0841))
+
+- Add paths-ignore for CHANGELOG.md updates - Add conditional checks to skip CI on bot commits - Add
+  skip conditions for release and changelog updates - Prevent workflow triggers on [skip ci] tags
+
+
 ## v1.5.0 (2025-01-02)
 
 ### Chores
