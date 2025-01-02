@@ -15,6 +15,15 @@ BREAKING CHANGE: Manual workflow dispatch now directly controls semantic-release
 
 ### Continuous Integration
 
+- Remove redundant tag validation workflow
+  ([`c2bea40`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c2bea40cbd4ab2cc88fe3f4a08b083c393f70332))
+
+- Remove tag-validation.yml as validation is handled by semantic-release - Tag signing and
+  validation now configured in pyproject.toml - Rely on semantic-release's built-in tag management -
+  Simplify CI/CD pipeline
+
+BREAKING CHANGE: Tag validation now handled entirely by semantic-release configuration
+
 - **release**: Simplify semantic release workflow
   ([`0bcbd03`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0bcbd033d44fccc0707c54275fe37e09894f48c8))
 
@@ -32,6 +41,8 @@ BREAKING CHANGE: Manual workflow dispatch now directly controls semantic-release
   outdated workflow steps section
 
 ### BREAKING CHANGES
+
+- Tag validation now handled entirely by semantic-release configuration
 
 - **release**: Manual workflow dispatch now directly controls semantic-release behavior
 
