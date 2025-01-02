@@ -48,6 +48,22 @@ jobs:
         run: |
           git checkout -B ${{ github.ref_name }} ${{ github.sha }}
 
+      - name: Generate Changelog
+        run: |
+          pip install python-semantic-release==9.15.0
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Generate changelog regardless of release
+          semantic-release changelog
+
+          # Commit changelog if changed
+          if [[ -n $(git status --porcelain CHANGELOG.md) ]]; then
+            git add CHANGELOG.md
+            git commit -m "docs: update CHANGELOG.md [skip ci]"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
+
       - name: Python Semantic Release
         id: release
         uses: python-semantic-release/python-semantic-release@v9.15.0
