@@ -11,6 +11,9 @@ on:
       - "**"  # Match all branches
     tags:
       - "v*"  # Tags following the pattern 'v*' (e.g., v1.0.0)
+    # Add paths-ignore to exclude changelog updates
+    paths-ignore:
+      - 'CHANGELOG.md'
   # Trigger the workflow on pull request events targeting any branch
   pull_request:
     branches:
@@ -57,8 +60,15 @@ jobs:
   # 1. Lint Job
   ##########################################################################
   lint:
+    if: |
+      (github.event_name == 'pull_request') ||
+      (github.actor != 'github-actions[bot]' &&
+       !contains(github.event.head_commit.message, '[skip ci]') &&
+       !contains(github.event.head_commit.message, '[ci skip]') &&
+       !contains(github.event.head_commit.message, '[no ci]') &&
+       !contains(github.event.head_commit.message, 'chore(release)'))
     name: Lint
-    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+    runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v3  # Checks out the repository code
@@ -118,6 +128,13 @@ jobs:
   # 2. Test Job
   ##########################################################################
   test:
+    if: |
+      (github.event_name == 'pull_request') ||
+      (github.actor != 'github-actions[bot]' &&
+       !contains(github.event.head_commit.message, '[skip ci]') &&
+       !contains(github.event.head_commit.message, '[ci skip]') &&
+       !contains(github.event.head_commit.message, '[no ci]') &&
+       !contains(github.event.head_commit.message, 'chore(release)'))
     name: Test
     runs-on: ubuntu-latest  # Use the latest Ubuntu runner
     needs: lint  # Ensure the 'lint' job completes before starting 'test'
@@ -195,8 +212,15 @@ jobs:
   # 3. Release Job (Runs only on tags that match v*)
   ##########################################################################
   release:
+    if: |
+      github.ref == 'refs/heads/main' &&
+      github.event_name == 'push' &&
+      (github.actor != 'github-actions[bot]' ||
+       (!contains(github.event.head_commit.message, '[skip ci]') &&
+        !contains(github.event.head_commit.message, '[ci skip]') &&
+        !contains(github.event.head_commit.message, '[no ci]') &&
+        !contains(github.event.head_commit.message, 'chore(release)')))
     name: Release
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'  # Only run on main branch pushes
     needs: test
     runs-on: ubuntu-latest
     steps:
