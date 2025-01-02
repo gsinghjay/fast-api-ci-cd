@@ -32,18 +32,17 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
 
-      - name: Install Poetry
-        run: |
-          pip install poetry==1.8.5
-          poetry config virtualenvs.in-project true
-
       - name: Download virtual environment
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.venv-name }}
           path: .
 
+      - name: Set execute permissions for virtual environment
+        run: |
+          chmod -R +x .venv/bin/
+
       - name: Run tests with coverage
         run: |
-          poetry run coverage run -m pytest
-          poetry run coverage report -m
+          .venv/bin/coverage run -m pytest
+          .venv/bin/coverage report -m
