@@ -1,6 +1,19 @@
 # CHANGELOG
 
 
+## Unreleased
+
+### Chores
+
+- **release**: Update semantic-release config for main-only releases
+  ([`d18cf04`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d18cf04eba0355c83785433c95a3095a246dba24))
+
+### Features
+
+- **ci**: Simplify release workflow to main branch only
+  ([`6ee5af4`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6ee5af43c5693d45062b7d841bc9cf3936827eef))
+
+
 ## v1.4.0 (2025-01-02)
 
 ### Documentation
