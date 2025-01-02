@@ -1,6 +1,64 @@
 # CHANGELOG
 
 
+## v1.6.1 (2025-01-02)
+
+### Bug Fixes
+
+- **ci**: Add debugging for changelog generation
+  ([`78499ed`](https://github.com/gsinghjay/fast-api-ci-cd/commit/78499ed3c5a720acfb8c8f6badda98f674cbce92))
+
+- **ci**: Correct condition logic for github-actions bot in workflow
+  ([`c3c0db9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c3c0db9dce2ba097780d228ca654ca0c44b6e1c6))
+
+- Changed OR operator to AND in workflow conditions - Ensures github-actions bot commits are
+  properly skipped - Prevents CI/CD infinite loops
+
+- **ci**: Correct condition logic for github-actions bot in workflow
+  ([`b742535`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b742535af3279930f1f23335ee1dc182afee34d0))
+
+- Changed OR operator to AND in release job conditions - Ensures github-actions bot commits are
+  properly skipped - Prevents CI/CD infinite loops
+
+- **ci**: Improve changelog generation and remove coverage artifacts
+  ([`a4f0424`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a4f042496885409fdf7358aed307c76e02d7a4ce))
+
+- Add debug verbosity to semantic-release command - Remove coverage.xml artifact upload - Add better
+  debug output for changelog generation - Fix semantic-release verbose flag position
+
+- **ci**: Remove invalid --prerelease flag from changelog generation
+  ([`2af8359`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2af8359581432fb01095423a5076f517af240e02))
+
+- **ci**: Simplify release configuration
+  ([`8f72fa1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8f72fa11467b4f48ad4af418c6cca3c890b58340))
+
+- Remove unnecessary prerelease configuration - Keep only main branch configuration - Simplify
+  changelog generation command
+
+- **ci**: Simplify release workflow
+  ([`4b19367`](https://github.com/gsinghjay/fast-api-ci-cd/commit/4b19367f226bdf4316015b6bb926c649f1337bb8))
+
+- Remove separate changelog update step - Update release job configuration - Configure changelog for
+  release-only updates - Follow semantic-release best practices
+
+- **config**: Remove duplicate branch configuration
+  ([`0cc9aeb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0cc9aeb3c3082a2e048b18e37e1f188293887563))
+
+- Remove duplicate [tool.python_semantic_release.branches.main] section - Fix TOML validation error
+
+- **config**: Update branch patterns for changelog generation
+  ([`73c7101`](https://github.com/gsinghjay/fast-api-ci-cd/commit/73c71013b80c37e94e6db787b85a329fd1761a16))
+
+- Add develop branch pattern to release groups - Include feature/fix branch patterns - Follow
+  semantic-release documentation recommendations
+
+- **config**: Update branch patterns with proper regex
+  ([`197246a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/197246a1163f8b7aff0f8620b21ad952ba935ebc))
+
+- Use .* pattern for matching fix and feature branches - Separate patterns for clearer branch
+  matching - Fix 'branch not in release groups' error
+
+
 ## v1.6.0 (2025-01-02)
 
 ### Bug Fixes
