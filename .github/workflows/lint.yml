@@ -35,19 +35,21 @@ jobs:
           python-version: "3.11"
           cache: "pip"
 
-      - name: Cache Poetry Dependencies
+      - name: Cache dependencies
         uses: actions/cache@v3
         with:
           path: |
+            ~/.cache/pip
             ~/.cache/pypoetry
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+            .venv
+          key: ${{ runner.os }}-python-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
-            ${{ runner.os }}-poetry-
+            ${{ runner.os }}-python-
 
       - name: Install Poetry
         run: |
           pip install poetry==1.8.5
-          poetry config virtualenvs.create false
+          poetry config virtualenvs.in-project true
 
       - name: Install dependencies
         run: poetry install

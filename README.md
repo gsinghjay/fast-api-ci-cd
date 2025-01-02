@@ -12,6 +12,12 @@ A production-ready FastAPI template with robust CI/CD pipeline, semantic version
 - FastAPI-based RESTful API with QR code generation
 - Poetry for dependency management
 - Comprehensive CI/CD pipeline with GitHub Actions
+  - Optimized caching strategy for dependencies
+    - In-project Poetry virtual environments
+    - Poetry package cache
+    - Pip cache for Poetry installation
+  - Matrix testing with Python 3.11
+  - Automated dependency updates
 - Semantic versioning with automated releases
 - Automated changelog generation on main branch
 - Code quality checks (Black, Commitlint)
