@@ -1,6 +1,142 @@
 # CHANGELOG
 
 
+## v1.6.1 (2025-01-02)
+
+### Bug Fixes
+
+- **ci**: Add debugging for changelog generation
+  ([`78499ed`](https://github.com/gsinghjay/fast-api-ci-cd/commit/78499ed3c5a720acfb8c8f6badda98f674cbce92))
+
+- **ci**: Correct condition logic for github-actions bot in workflow
+  ([`c3c0db9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c3c0db9dce2ba097780d228ca654ca0c44b6e1c6))
+
+- Changed OR operator to AND in workflow conditions - Ensures github-actions bot commits are
+  properly skipped - Prevents CI/CD infinite loops
+
+- **ci**: Correct condition logic for github-actions bot in workflow
+  ([`b742535`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b742535af3279930f1f23335ee1dc182afee34d0))
+
+- Changed OR operator to AND in release job conditions - Ensures github-actions bot commits are
+  properly skipped - Prevents CI/CD infinite loops
+
+- **ci**: Improve changelog generation and remove coverage artifacts
+  ([`a4f0424`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a4f042496885409fdf7358aed307c76e02d7a4ce))
+
+- Add debug verbosity to semantic-release command - Remove coverage.xml artifact upload - Add better
+  debug output for changelog generation - Fix semantic-release verbose flag position
+
+- **ci**: Remove invalid --prerelease flag from changelog generation
+  ([`2af8359`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2af8359581432fb01095423a5076f517af240e02))
+
+- **ci**: Simplify release configuration
+  ([`8f72fa1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8f72fa11467b4f48ad4af418c6cca3c890b58340))
+
+- Remove unnecessary prerelease configuration - Keep only main branch configuration - Simplify
+  changelog generation command
+
+- **ci**: Simplify release workflow
+  ([`4b19367`](https://github.com/gsinghjay/fast-api-ci-cd/commit/4b19367f226bdf4316015b6bb926c649f1337bb8))
+
+- Remove separate changelog update step - Update release job configuration - Configure changelog for
+  release-only updates - Follow semantic-release best practices
+
+- **config**: Remove duplicate branch configuration
+  ([`0cc9aeb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0cc9aeb3c3082a2e048b18e37e1f188293887563))
+
+- Remove duplicate [tool.python_semantic_release.branches.main] section - Fix TOML validation error
+
+- **config**: Update branch patterns for changelog generation
+  ([`73c7101`](https://github.com/gsinghjay/fast-api-ci-cd/commit/73c71013b80c37e94e6db787b85a329fd1761a16))
+
+- Add develop branch pattern to release groups - Include feature/fix branch patterns - Follow
+  semantic-release documentation recommendations
+
+- **config**: Update branch patterns with proper regex
+  ([`197246a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/197246a1163f8b7aff0f8620b21ad952ba935ebc))
+
+- Use .* pattern for matching fix and feature branches - Separate patterns for clearer branch
+  matching - Fix 'branch not in release groups' error
+
+
+## v1.6.0 (2025-01-02)
+
+### Bug Fixes
+
+- **ci**: Correct changelog generation in PRs
+  ([`5c4c1b1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5c4c1b17834a6e71ad47b5397465355153a57797))
+
+- Remove invalid --unreleased flag - Use pyproject.toml configuration for unreleased changes -
+  Simplify changelog generation command
+
+- **release**: Use both tags and commits for versioning
+  ([`6418e07`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6418e07827443547d90db6555a32100b98e3eaab))
+
+- Update semantic-release to use both tags and commits - Tags for released versions - Commits for
+  unreleased changes tracking
+
+### Features
+
+- **ci**: Add changelog updates for pull requests
+  ([`ed12395`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ed12395784275436148d659f3a925a1b9ef8653c))
+
+- Add unreleased section to changelog generation - Update changelog during PR development -
+  Configure semantic-release for unreleased changes
+
+
+## v1.5.1 (2025-01-02)
+
+### Bug Fixes
+
+- **ci**: Ensure tests run on pull requests
+  ([`dcd4844`](https://github.com/gsinghjay/fast-api-ci-cd/commit/dcd484442c9129df9518fbeb82b4ba9a3faa6ed4))
+
+- Fix conditional logic for PR events in workflow - Separate PR and push event conditions - Ensure
+  lint and test jobs always run on PRs
+
+- **ci**: Prevent workflow recursion from bot commits
+  ([`fd2a99b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/fd2a99b55ca63c03ad65df61b66fb6d6a2af0841))
+
+- Add paths-ignore for CHANGELOG.md updates - Add conditional checks to skip CI on bot commits - Add
+  skip conditions for release and changelog updates - Prevent workflow triggers on [skip ci] tags
+
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`ddc80bb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ddc80bb23282263520ebe497c15de3cb798f51de))
+
+
+## v1.5.0 (2025-01-02)
+
+### Chores
+
+- **release**: Update semantic-release config for main-only releases
+  ([`d18cf04`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d18cf04eba0355c83785433c95a3095a246dba24))
+
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`6b62894`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6b62894aa0d09c5733d46d621c966dbe25063355))
+
+### Features
+
+- **ci**: Simplify release workflow to main branch only
+  ([`6ee5af4`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6ee5af43c5693d45062b7d841bc9cf3936827eef))
+
+
+## v1.4.0 (2025-01-02)
+
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`90db080`](https://github.com/gsinghjay/fast-api-ci-cd/commit/90db08060a0f7325ab489215f2f3676b0cadbf48))
+
+### Features
+
+- Add color code validation
+  ([`32c497f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/32c497f726986a057fc314b5867e6676023fc915))
+
+
 ## v1.3.0 (2025-01-02)
 
 ### Bug Fixes
@@ -11,7 +147,15 @@
 - **ci**: Update semantic-release config to handle beta versions correctly
   ([`0205e1b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0205e1bd2dac59dc1e3c0de4a978e7ab942503c8))
 
+### Chores
+
+- Merge develop and resolve conflicts
+  ([`b48b4cc`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b48b4cc84ee315cadbe78fe8a445f7f29ecfa402))
+
 ### Documentation
+
+- Add documentation for custom QR code colors
+  ([`5c9b512`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5c9b5127d0d6085b44d6320ef05c756a33d73d0a))
 
 - Add documentation for custom QR code colors
   ([#27](https://github.com/gsinghjay/fast-api-ci-cd/pull/27),
@@ -21,13 +165,22 @@
   ([#28](https://github.com/gsinghjay/fast-api-ci-cd/pull/28),
   [`2f037d0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2f037d046a616df30031d2864ba340e378192ed2))
 
+- Add workflow debugging commands
+  ([`34b6f6d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/34b6f6dbfee768c1e091bdd395a36da89a2f80c9))
+
 - Enhance README with detailed workflow and debugging instructions
   ([`f6987fe`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f6987febb2112a3e1ce7119dc44d8d9887b0aad8))
 
 - Update CHANGELOG.md [skip ci]
   ([`f6e1604`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f6e1604cdf37ead8e326f4ebd6167f3ee724c069))
 
+- Update CHANGELOG.md [skip ci]
+  ([`5dc58d0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5dc58d0157f1d0d47904a698592dd7caffcba151))
+
 ### Features
+
+- Add QR code size customization options
+  ([`e1ba631`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e1ba631b99cf3eff3fc9f5c98d3678e3960fe37c))
 
 - Add support for custom QR code colors
   ([`8697ea0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8697ea0234c945406f949d386f3a975fe9b00a37))
@@ -128,9 +281,6 @@
 
 - Add branch protection rules and naming conventions
   ([`851e65b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/851e65b1ab265321f13fa727aff77e9d43997d64))
-
-- Update CHANGELOG.md [skip ci]
-  ([`5dc58d0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5dc58d0157f1d0d47904a698592dd7caffcba151))
 
 - Update CHANGELOG.md [skip ci]
   ([`ff10ee8`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ff10ee80d64129025b50e18286368f96d7a2a262))

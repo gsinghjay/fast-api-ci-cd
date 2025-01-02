@@ -8,16 +8,11 @@ on:
   # Trigger the workflow on push events to any branch
   push:
     branches:
-      - "**"  # Match all branches
-    tags:
-      - "v*"  # Tags following the pattern 'v*' (e.g., v1.0.0)
-    # Add paths-ignore to exclude changelog updates
-    paths-ignore:
-      - 'CHANGELOG.md'
+      - main
   # Trigger the workflow on pull request events targeting any branch
   pull_request:
     branches:
-      - "**"  # Match all branches
+      - main
   # Allow manual workflow dispatch with parameters
   workflow_dispatch:
     inputs:
@@ -145,7 +140,8 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0  # Fetch all history for changelog generation
+          fetch-depth: 0  # Get full history for changelog
+          token: ${{ secrets.PAT_TOKEN }}  # Use PAT for write access
           ref: ${{ github.head_ref }}  # Checkout the PR branch
 
       - name: Set up Python ${{ matrix.python-version }}
@@ -175,86 +171,36 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          poetry run coverage run -m pytest  # Run tests with coverage
-          poetry run coverage report -m      # Generate coverage report
-          poetry run coverage xml            # Generate coverage XML for artifact
-
-      - name: Update Changelog
-        if: |
-          github.event_name == 'pull_request' ||
-          (github.event_name == 'push' && github.ref != 'refs/heads/main')
-        env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
-        run: |
-          # Install semantic release
-          pip install python-semantic-release==9.15.0
-
-          # Configure git with token
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          # Generate changelog
-          semantic-release changelog
-
-          # For push events, we need to determine the branch name differently
-          if [ "${{ github.event_name }}" == "push" ]; then
-            BRANCH_NAME=${GITHUB_REF#refs/heads/}
-          else
-            BRANCH_NAME=${{ github.head_ref }}
-          fi
-
-          # Commit and push if there are changes
-          if [[ -n $(git status --porcelain CHANGELOG.md) ]]; then
-            git add CHANGELOG.md
-            git commit -m "docs: update CHANGELOG.md [skip ci]"
-            git push origin HEAD:${BRANCH_NAME}
-          fi
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report-py${{ matrix.python-version }}  # Name of the artifact
-          path: coverage.xml  # Path to the coverage report
+          poetry run coverage run -m pytest
+          poetry run coverage report -m
 
   ##########################################################################
   # 3. Release Job (Runs only on tags that match v*)
   ##########################################################################
   release:
-    if: |
-      github.ref == 'refs/heads/main' &&
-      github.event_name == 'push' &&
-      (github.actor != 'github-actions[bot]' ||
-       (!contains(github.event.head_commit.message, '[skip ci]') &&
-        !contains(github.event.head_commit.message, '[ci skip]') &&
-        !contains(github.event.head_commit.message, '[no ci]') &&
-        !contains(github.event.head_commit.message, 'chore(release)')))
-    name: Release
-    needs: test
-    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest  # Add this back
+    concurrency: release    # Keep this to prevent race conditions
+    needs: test            # Keep this to ensure tests pass first
+
+    permissions:
+      id-token: write
+      contents: write
+
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.PAT_TOKEN }}
-          ref: ${{ github.ref }}
+          ref: ${{ github.sha }}
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Install dependencies
+      - name: Force correct release branch
         run: |
-          pip install poetry==1.8.5
-          poetry install --no-root
-          pip install python-semantic-release==9.15.0
+          git checkout -B ${{ github.ref_name }} ${{ github.sha }}
 
-      - name: Release
+      - name: Python Semantic Release
         id: release
         uses: python-semantic-release/python-semantic-release@v9.15.0
-        env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         with:
           github_token: ${{ secrets.PAT_TOKEN }}
           git_committer_name: "github-actions[bot]"
@@ -266,32 +212,6 @@ jobs:
         with:
           github_token: ${{ secrets.PAT_TOKEN }}
           tag: ${{ steps.release.outputs.tag }}
-
-      - name: Verify Release
-        if: success()
-        env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
-        run: |
-          echo "=== Verifying Release ==="
-          # Get the latest version from git tags
-          VERSION=$(git describe --tags --abbrev=0)
-          VERSION=${VERSION#v}  # Remove 'v' prefix
-          echo "Latest version tag: v${VERSION}"
-
-          # Check if release exists
-          if ! gh release view "v${VERSION}" &>/dev/null; then
-            echo "Error: Release v${VERSION} was not created successfully"
-            exit 1
-          fi
-
-          # Get release type
-          if [[ "${VERSION}" == *"-beta."* ]]; then
-            echo "Successfully verified beta release v${VERSION}"
-          elif [[ "${VERSION}" == *"-rc."* ]]; then
-            echo "Successfully verified release candidate v${VERSION}"
-          else
-            echo "Successfully verified stable release v${VERSION}"
-          fi
 
   ##########################################################################
   # 4. Tag Validation Job
