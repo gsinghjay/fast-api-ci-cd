@@ -85,8 +85,12 @@ jobs:
       - name: Python Semantic Release
         id: release
         uses: python-semantic-release/python-semantic-release@v9.15.0
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         with:
           github_token: ${{ secrets.PAT_TOKEN }}
+          directory: .
+          root_options: "-vv"
           prerelease: ${{ inputs.prerelease || false }}
           prerelease_token: ${{ inputs.prerelease_token }}
           force: ${{ inputs.force != 'none' && inputs.force || '' }}
