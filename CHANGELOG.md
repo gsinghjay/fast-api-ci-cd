@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## Unreleased
+## v1.3.0 (2025-01-02)
 
 ### Bug Fixes
 
@@ -23,6 +23,9 @@
 
 - Enhance README with detailed workflow and debugging instructions
   ([`f6987fe`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f6987febb2112a3e1ce7119dc44d8d9887b0aad8))
+
+- Update CHANGELOG.md [skip ci]
+  ([`f6e1604`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f6e1604cdf37ead8e326f4ebd6167f3ee724c069))
 
 ### Features
 
