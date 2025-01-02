@@ -1,6 +1,31 @@
 # CHANGELOG
 
 
+## v4.0.0 (2025-01-02)
+
+### Bug Fixes
+
+- Enhance semantic release configuration
+  ([`f583e74`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f583e74095dcd0e1744c79009d523eaf3af03f6e))
+
+- Add verbose logging with -vv flag for better debugging - Ensure proper environment variables for
+  GH_TOKEN - Configure explicit version update patterns for files
+
+BREAKING CHANGE: Version management now requires explicit version_toml configuration
+
+### Features
+
+- Add automated version management system
+  ([`6c66301`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6c66301890cd52666d0f943b41d653828003c46d))
+
+- Integrate Python Semantic Release for version control - Configure automatic version bumping in
+  CI/CD pipeline - Enable automated changelog generation
+
+### BREAKING CHANGES
+
+- Version management now requires explicit version_toml configuration
+
+
 ## v3.0.0 (2025-01-02)
 
 ### Chores
