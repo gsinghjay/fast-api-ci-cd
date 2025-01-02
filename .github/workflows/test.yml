@@ -47,14 +47,11 @@ jobs:
 
       - name: Restore virtual environment
         run: |
-          if [ -d "artifact/.venv" ]; then
-            cp -r artifact/.venv .
-          else
-            echo "Contents of artifact directory:"
-            ls -la artifact/
-            echo "ERROR: No .venv directory found in artifact"
+          if [ ! -f "artifact/venv.tar.gz" ]; then
+            echo "ERROR: venv.tar.gz not found in artifact"
             exit 1
           fi
+          tar xzf artifact/venv.tar.gz
           cp artifact/poetry.lock .
           cp artifact/pyproject.toml .
           chmod -R +x .venv/bin/

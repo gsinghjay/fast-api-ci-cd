@@ -45,21 +45,25 @@ jobs:
           ls -la
           echo "Virtual environment contents:"
           ls -la .venv || echo "No .venv directory"
+          echo "Python executable path:"
+          which python
+          echo "Poetry env info:"
+          poetry env info
 
       - name: Create artifact directory
         run: |
           mkdir -p artifact
           cp poetry.lock artifact/
           cp pyproject.toml artifact/
-          cp -r .venv artifact/ || echo "Failed to copy .venv"
+          if [ ! -d ".venv" ]; then
+            echo "ERROR: .venv directory not found"
+            exit 1
+          fi
+          tar czf artifact/venv.tar.gz .venv/
           echo "Artifact directory contents:"
           ls -la artifact/
-          if [ -d "artifact/.venv" ]; then
-            echo "Virtual env in artifact:"
-            ls -la artifact/.venv/
-          else
-            echo "No .venv in artifact directory"
-          fi
+          echo "Artifact sizes:"
+          du -sh artifact/*
 
       - name: Upload virtual environment
         uses: actions/upload-artifact@v4
