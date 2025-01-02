@@ -2,6 +2,22 @@
 
 
 
+## v5.0.7 (2025-01-02)
+
+### Fix
+
+* fix(ci): correct semantic-release command flags
+
+- Move --noop to top-level flag position
+- Use correct --print flag for version display ([`a0d3c9f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a0d3c9f4e06ee806d6f378c263ca123b2f657e42))
+
+### Unknown
+
+* Merge pull request #78 from gsinghjay/ci/venv-and-restore
+
+fix(ci): correct semantic-release command flags ([`3732943`](https://github.com/gsinghjay/fast-api-ci-cd/commit/373294381e0686c526461b9beff46ce74596d054))
+
+
 ## v5.0.6 (2025-01-02)
 
 ### Chore
@@ -584,8 +600,8 @@ ci!(workflows): split monolithic CI/CD pipeline into focused workflows
   - Simplify coverage reporting
   - Update gitignore patterns
 
-BREAKING CHANGE: CI/CD pipeline has been completely restructured into separate 
-workflows for better maintainability and clarity. This improves pipeline 
+BREAKING CHANGE: CI/CD pipeline has been completely restructured into separate
+workflows for better maintainability and clarity. This improves pipeline
 reliability, resource utilization, and development experience. ([`5c259c5`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5c259c58f9a0d93aa606b9192ef08184fca32836))
 
 
