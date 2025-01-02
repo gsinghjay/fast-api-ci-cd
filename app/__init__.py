@@ -1,5 +1,3 @@
-"""
-QR Code Generator Application
-"""
+"""QR Code Generator Application."""
 
-__version__ = "1.0.6"
+__version__ = "2.1.0"
