@@ -52,7 +52,10 @@ jobs:
       github.ref == 'refs/heads/main' &&
       github.actor != 'github-actions[bot]' &&
       !contains(github.event.head_commit.message, 'chore(release)') &&
-      !contains(github.event.head_commit.message, '[skip ci]')
+      !contains(github.event.head_commit.message, '[skip ci]') &&
+      !contains(github.event.head_commit.message, 'docs: update CHANGELOG.md') &&
+      !contains(github.event.head_commit.message, 'docs(changelog)') &&
+      !matches(github.event.head_commit.message, '^[0-9]+\.[0-9]+\.[0-9]+$')
     needs: [lint, test]
     concurrency: release
 
