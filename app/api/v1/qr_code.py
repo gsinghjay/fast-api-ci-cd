@@ -1,10 +1,11 @@
 """QR Code generation endpoint module."""
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, HttpUrl, Field
+from pydantic import BaseModel, HttpUrl, Field, validator
 import qrcode
 from io import BytesIO
 import base64
+import re
 
 router = APIRouter()
 
@@ -27,6 +28,13 @@ class QRCodeRequest(BaseModel):
         le=20,
         description="Border size in boxes",
     )
+
+    @validator("fill_color", "background_color")
+    def validate_color(cls, v):
+        """Validate color hex codes."""
+        if not re.match(r"^#[0-9A-Fa-f]{6}$", v):
+            raise ValueError("Color must be a valid hex code (e.g., #FF0000)")
+        return v
 
 
 @router.post("/generate")
