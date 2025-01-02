@@ -49,7 +49,7 @@ jobs:
 
   release:
     name: Create Release
-    needs: [lint, test]
+    needs: [lint, test, setup]
     if: |
       github.ref == 'refs/heads/main' &&
       !contains(github.event.head_commit.message, '[skip ci]') &&
@@ -67,13 +67,28 @@ jobs:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Cache semantic-release
-        uses: actions/cache@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-semantic-release-${{ hashFiles('**/pyproject.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-semantic-release-
+          python-version: "3.11"
+
+      - name: Download virtual environment
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.setup.outputs.venv-name }}
+          path: artifact
+          merge-multiple: true
+
+      - name: Restore virtual environment
+        run: |
+          if [ ! -f "artifact/venv.tar.gz" ]; then
+            echo "ERROR: venv.tar.gz not found in artifact"
+            exit 1
+          fi
+          tar xzf artifact/venv.tar.gz
+          cp artifact/poetry.lock .
+          cp artifact/pyproject.toml .
+          chmod -R +x .venv/bin/
 
       - name: Python Semantic Release
         uses: python-semantic-release/python-semantic-release@v8.7.2
@@ -82,11 +97,11 @@ jobs:
 
       - name: Validate Version Files
         run: |
-          poetry run semantic-release version --noop
-          poetry run semantic-release check-build
+          .venv/bin/poetry run semantic-release version --noop
+          .venv/bin/poetry run semantic-release check-build
 
       - name: Verify Release
         if: success()
         run: |
-          poetry run semantic-release version --print
+          .venv/bin/poetry run semantic-release version --print
           git describe --tags --abbrev=0
