@@ -2,6 +2,19 @@
 
 
 
+## v5.0.3 (2025-01-02)
+
+### Fix
+
+* fix(ci): add environment debugging and fix poetry commands ([`2ad33ec`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2ad33ecfc21ca2fb2f60938e12457c25b68f084f))
+
+### Unknown
+
+* Merge pull request #73 from gsinghjay/ci/venv-and-restore
+
+fix(ci): add environment debugging and fix poetry commands ([`eeb4645`](https://github.com/gsinghjay/fast-api-ci-cd/commit/eeb464595cfce20009f58e79e4e7d4fcbdd6e7c1))
+
+
 ## v5.0.2 (2025-01-02)
 
 ### Fix
