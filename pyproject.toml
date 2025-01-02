@@ -53,10 +53,6 @@ token = "env:GH_TOKEN"
 main = [
     { name = "main" }
 ]
-prerelease = [
-    { name = "fix/*", prerelease = true },
-    { name = "feature/*", prerelease = true }
-]
 
 [tool.python_semantic_release.changelog]
 sections = [
