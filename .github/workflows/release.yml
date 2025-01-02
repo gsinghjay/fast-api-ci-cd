@@ -74,12 +74,15 @@ jobs:
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Generate Changelog
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           # Generate changelog regardless of release
           semantic-release changelog
 
           # Commit changelog if changed
           if [[ -n $(git status --porcelain CHANGELOG.md) ]]; then
+            git pull origin ${{ github.ref_name }} --rebase
             git add CHANGELOG.md
             git commit -m "docs: update CHANGELOG.md [skip ci]"
             git push origin HEAD:${{ github.ref_name }}
