@@ -180,7 +180,9 @@ jobs:
           poetry run coverage xml            # Generate coverage XML for artifact
 
       - name: Update Changelog
-        if: github.event_name == 'pull_request'
+        if: |
+          github.event_name == 'pull_request' ||
+          (github.event_name == 'push' && github.ref != 'refs/heads/main')
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
@@ -194,11 +196,18 @@ jobs:
           # Generate changelog
           semantic-release changelog
 
+          # For push events, we need to determine the branch name differently
+          if [ "${{ github.event_name }}" == "push" ]; then
+            BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          else
+            BRANCH_NAME=${{ github.head_ref }}
+          fi
+
           # Commit and push if there are changes
           if [[ -n $(git status --porcelain CHANGELOG.md) ]]; then
             git add CHANGELOG.md
             git commit -m "docs: update CHANGELOG.md [skip ci]"
-            git push origin HEAD:${{ github.head_ref }}
+            git push origin HEAD:${BRANCH_NAME}
           fi
 
       - name: Upload coverage report
