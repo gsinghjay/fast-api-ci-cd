@@ -25,10 +25,6 @@ on:
         required: false
         default: 'none'
 
-permissions:
-  contents: write
-  id-token: write
-
 jobs:
   ci:
     name: Run CI Checks
@@ -40,81 +36,28 @@ jobs:
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
 
-  release:
-    name: Create Release
+  create_release:
     needs: [ci]
     runs-on: ubuntu-latest
     if: |
       github.ref == 'refs/heads/main' &&
-      !contains(github.event.head_commit.message, '[skip ci]')
-    concurrency:
-      group: release
-      cancel-in-progress: true
-
+      !contains(github.event.head_commit.message, '[skip ci]') &&
+      github.actor != 'github-actions[bot]'
+    permissions:
+      contents: write
+      id-token: write
     steps:
-      - name: Check out code
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Configure Git
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Download virtual environment
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ needs.ci.outputs.venv-name }}
-          path: artifact
-          merge-multiple: true
-
-      - name: Debug downloaded artifact
-        run: |
-          echo "Artifact directory contents:"
-          ls -la artifact/
-          echo "Current directory contents:"
-          ls -la
-
-      - name: Restore virtual environment
-        run: |
-          if [ ! -f "artifact/venv.tar.gz" ]; then
-            echo "ERROR: venv.tar.gz not found in artifact"
-            exit 1
-          fi
-          tar xzf artifact/venv.tar.gz
-          cp artifact/poetry.lock .
-          cp artifact/pyproject.toml .
-          chmod -R +x .venv/bin/
-
       - name: Python Semantic Release
-        id: release
-        uses: python-semantic-release/python-semantic-release@v9.15.0
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          directory: .
-          root_options: "-vv"
-          prerelease: ${{ inputs.prerelease || false }}
-          prerelease_token: ${{ inputs.prerelease_token }}
-          force: ${{ inputs.force != 'none' && inputs.force || '' }}
-          changelog: true
-          commit: true
-          push: true
-          build: true
-          tag: true
-          vcs_release: true
-
-      - name: Publish to GitHub Release Assets
-        uses: python-semantic-release/publish-action@v9.15.0
-        if: steps.release.outputs.released == 'true'
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ steps.release.outputs.tag }}
+        run: |
+          pip install python-semantic-release
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          semantic-release version
