@@ -12,6 +12,9 @@ on:
       cache-hit:
         description: "Whether there was a cache hit for dependencies"
         value: ${{ jobs.setup.outputs.cache-hit }}
+      venv-path:
+        description: "Path to the virtual environment"
+        value: ${{ jobs.setup.outputs.venv-path }}
 
 jobs:
   setup:
@@ -19,6 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       cache-hit: ${{ steps.cache-deps.outputs.cache-hit }}
+      venv-path: ${{ steps.get-venv-path.outputs.path }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -52,7 +56,14 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
-      - name: Set environment variables
+      - name: Get virtual environment path
+        id: get-venv-path
         run: |
-          echo "VIRTUAL_ENV=$PWD/.venv" >> $GITHUB_ENV
-          echo "$PWD/.venv/bin" >> $GITHUB_PATH
+          echo "path=$PWD/.venv" >> $GITHUB_OUTPUT
+
+      - name: Upload virtual environment
+        uses: actions/upload-artifact@v4
+        with:
+          name: venv
+          path: .venv
+          retention-days: 1
