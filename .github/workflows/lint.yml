@@ -13,8 +13,15 @@ permissions:
   pull-requests: read
 
 jobs:
+  setup:
+    name: Setup Environment
+    uses: ./.github/workflows/setup-python.yml
+    with:
+      python-version: "3.11"
+
   lint:
     name: Run Linters
+    needs: [setup]
     runs-on: ubuntu-latest
     # Skip on release commits
     if: |
@@ -42,17 +49,15 @@ jobs:
             ~/.cache/pip
             ~/.cache/pypoetry
             .venv
-          key: ${{ runner.os }}-python-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-python-3.11-${{ hashFiles('**/poetry.lock') }}
           restore-keys: |
+            ${{ runner.os }}-python-3.11-
             ${{ runner.os }}-python-
 
       - name: Install Poetry
         run: |
           pip install poetry==1.8.5
           poetry config virtualenvs.in-project true
-
-      - name: Install dependencies
-        run: poetry install
 
       - name: Run Black
         run: poetry run black --check .
