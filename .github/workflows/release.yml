@@ -38,7 +38,7 @@ jobs:
       pull-requests: read
       checks: write
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      token: ${{ secrets.GITHUB_TOKEN }}
 
   release:
     name: Create Release
