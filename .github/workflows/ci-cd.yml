@@ -180,7 +180,9 @@ jobs:
           poetry run coverage xml            # Generate coverage XML for artifact
 
       - name: Update Changelog
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: |
+          github.event_name == 'pull_request' ||
+          (github.event_name == 'push' && github.ref != 'refs/heads/main')
         env:
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
@@ -188,18 +190,24 @@ jobs:
           pip install python-semantic-release==9.15.0
 
           # Configure git with token
-          git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
           # Generate changelog
           semantic-release changelog
 
+          # For push events, we need to determine the branch name differently
+          if [ "${{ github.event_name }}" == "push" ]; then
+            BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          else
+            BRANCH_NAME=${{ github.head_ref }}
+          fi
+
           # Commit and push if there are changes
           if [[ -n $(git status --porcelain CHANGELOG.md) ]]; then
             git add CHANGELOG.md
             git commit -m "docs: update CHANGELOG.md [skip ci]"
-            git push origin HEAD:${{ github.ref }}
+            git push origin HEAD:${BRANCH_NAME}
           fi
 
       - name: Upload coverage report
