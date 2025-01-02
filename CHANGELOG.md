@@ -3,6 +3,27 @@
 
 ## Unreleased
 
+### Bug Fixes
+
+- **ci**: Add required permissions for reusable workflows
+  ([`e73134a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e73134a255070a433f79f7a84b456738c8dc78fc))
+
+- Add pull-requests read permission for lint workflow - Add checks write permission for test
+  workflow - Fix workflow permission inheritance
+
+- **ci**: Add workflow dependencies and commitlint configuration
+  ([#40](https://github.com/gsinghjay/fast-api-ci-cd/pull/40),
+  [`5c46bb8`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5c46bb873c549cb97c6f3e105f8096143fc6d0b4))
+
+- Add workflow_call triggers to lint and test workflows - Configure proper job dependencies in
+  release workflow - Ensure sequential execution: lint -> test -> release - Update commitlint rules
+  for consistent line lengths - Fix workflow reusability issues
+
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`a55cde7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a55cde7a639fd56fc5c5aef522ae317d0b1bbd1b))
+
 
 ## v1.6.2 (2025-01-02)
 
