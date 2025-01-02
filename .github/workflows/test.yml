@@ -37,6 +37,7 @@ jobs:
         with:
           name: ${{ inputs.venv-name }}
           path: artifact
+          merge-multiple: true
 
       - name: Debug downloaded artifact
         run: |

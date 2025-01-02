@@ -98,6 +98,7 @@ jobs:
         with:
           name: ${{ needs.ci.outputs.venv-name }}
           path: artifact
+          merge-multiple: true
 
       - name: Debug downloaded artifact
         run: |
