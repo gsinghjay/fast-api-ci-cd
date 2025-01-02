@@ -32,7 +32,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.python_semantic_release]
 version_variable = ["app/__init__.py:__version__"]
 version_toml = ["pyproject.toml:tool.poetry.version"]
-version_source = "commit"
+version_source = "tag"
 commit_version_number = true
 upload_to_repository = false
 build_command = "poetry build"
@@ -40,10 +40,31 @@ changelog_file = "CHANGELOG.md"
 commit_parser = "conventional_commits"
 major_on_zero = false
 tag_format = "v{version}"
+tag_type = "annotated"
 allow_zero_version = true
 commit_author = "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
 commit_message = "chore(release): {version} [skip ci]"
-changelog_sections = [
+
+[tool.python_semantic_release.remote]
+token = "env:GH_TOKEN"
+
+[tool.python_semantic_release.branches.main]
+match = ["main", "master"]
+prerelease = false
+prerelease_token = ""
+
+[tool.python_semantic_release.branches.develop]
+match = ["develop", "dev"]
+prerelease = true
+prerelease_token = "beta"
+
+[tool.python_semantic_release.branches.release]
+match = ["release/*", "releases/*"]
+prerelease = true
+prerelease_token = "rc"
+
+[tool.python_semantic_release.changelog]
+sections = [
     "feature",
     "fix",
     "breaking",
@@ -51,23 +72,18 @@ changelog_sections = [
     "performance",
     "refactor"
 ]
-changelog_components = [
+components = [
     "semantic_release.changelog.changelog_headers",
     "semantic_release.changelog.compare_url",
     "semantic_release.changelog.commit_list"
 ]
-changelog_include_prereleases = false
-changelog_exclude_commit_patterns = [
+include_prereleases = true
+exclude_commit_patterns = [
     "^chore\\(release\\):",
     "^docs\\(changelog\\):",
     "\\[skip ci\\]",
     "\\[ci skip\\]",
-    "\\[no changelog\\]",
-    "^author: github-actions\\[bot\\]",
-    "41898282\\+github-actions\\[bot\\]@users\\.noreply\\.github\\.com"
+    "\\[no changelog\\]"
 ]
-changelog_render_title = true
-changelog_render_commit_links = true
-
-[tool.python_semantic_release.remote]
-token = "env: GH_TOKEN"
+render_title = true
+render_commit_links = true

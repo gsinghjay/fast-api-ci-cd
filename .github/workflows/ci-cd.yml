@@ -28,14 +28,10 @@ on:
         type: string
         required: false
       force:
-        description: 'Force version bump (patch, minor, major)'
-        type: choice
-        options:
-          - 'none'
-          - patch
-          - minor
-          - major
+        description: 'Force version bump (patch, minor, major, or none)'
+        type: string
         required: false
+        default: 'none'
       build_metadata:
         description: 'Build metadata to append to version'
         type: string
@@ -43,14 +39,17 @@ on:
 
 # Define permissions for the entire workflow
 permissions:
-  contents: write
-  pull-requests: write
-  checks: write
+  contents: write      # Required for creating releases and pushing tags
+  pull-requests: write # Required for creating pull requests
+  checks: write       # Required for status checks
+  issues: write       # Required for creating issues
+  statuses: write     # Required for commit statuses
+  discussions: write  # Required for discussions (if used)
 
 # Control concurrency to ensure only the latest run for a branch/tag is active
 concurrency:
   group: ${{ github.ref }}
-  cancel-in-progress: true  # Cancels any in-progress runs for the same ref
+  cancel-in-progress: true
 
 # Define all jobs within the workflow
 jobs:
@@ -166,12 +165,13 @@ jobs:
       - name: Update Changelog
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           # Install semantic release
           pip install python-semantic-release==9.15.0
 
-          # Configure git
+          # Configure git with token
+          git config --global url."https://x-access-token:${GH_TOKEN}@github.com/".insteadOf "https://github.com/"
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
@@ -199,21 +199,23 @@ jobs:
     if: |
       (github.ref == 'refs/heads/main' && github.event_name == 'push') ||
       (github.ref == 'refs/heads/develop' && github.event_name == 'push') ||
-      (startsWith(github.ref, 'refs/heads/release/') && github.event_name == 'push')
+      (startsWith(github.ref, 'refs/heads/release/') && github.event_name == 'push') ||
+      (startsWith(github.ref, 'refs/tags/v') && github.event_name == 'push')
     needs: test
     runs-on: ubuntu-latest
     env:
       # Add environment variables for semantic release configuration
-      PRERELEASE: ${{ github.ref == 'refs/heads/develop' && 'true' || startsWith(github.ref, 'refs/heads/release/') && 'true' || github.event.inputs.prerelease || 'false' }}
-      PRERELEASE_TOKEN: ${{ github.ref == 'refs/heads/develop' && 'beta' || startsWith(github.ref, 'refs/heads/release/') && 'rc' || github.event.inputs.prerelease_token || '' }}
-      BUILD_METADATA: ${{ github.event.inputs.build_metadata || '' }}
-      FORCE_LEVEL: ${{ github.event.inputs.force || '' }}
+      PSR_PRERELEASE: ${{ ((github.ref == 'refs/heads/develop') || (startsWith(github.ref, 'refs/heads/release/'))) && 'true' || github.event.inputs.prerelease || 'false' }}
+      PSR_PRERELEASE_TOKEN: ${{ github.ref == 'refs/heads/develop' && 'beta' || startsWith(github.ref, 'refs/heads/release/') && 'rc' || github.event.inputs.prerelease_token || '' }}
+      PSR_BUILD_METADATA: ${{ github.event.inputs.build_metadata || '' }}
+      PSR_FORCE_LEVEL: ${{ github.event.inputs.force || '' }}
     steps:
       - name: Check out code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0  # Important for correct version calculation
-          token: ${{ secrets.GITHUB_TOKEN }}  # Explicit token for authentication
+          token: ${{ secrets.PAT_TOKEN }}  # Use PAT instead of GITHUB_TOKEN
+          ref: ${{ github.ref }}  # Explicitly checkout the triggering ref
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -226,83 +228,86 @@ jobs:
           poetry install --no-root
           pip install python-semantic-release==9.15.0
 
-      - name: Install GitHub CLI
+      - name: Configure Git for Semantic Release
         run: |
-          type -p curl >/dev/null || (sudo apt update && sudo apt install curl -y)
-          curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-          && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
-          && sudo apt update \
-          && sudo apt install gh -y
-
-      - name: Configure Git
-        run: |
+          # Set up Git user identity
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Set up commit signing if keys are provided
-          if [ -n "${{ secrets.SSH_PRIVATE_SIGNING_KEY }}" ] && [ -n "${{ secrets.SSH_PUBLIC_SIGNING_KEY }}" ]; then
-            mkdir -p ~/.ssh
-            echo "${{ secrets.SSH_PRIVATE_SIGNING_KEY }}" > ~/.ssh/id_ed25519
-            echo "${{ secrets.SSH_PUBLIC_SIGNING_KEY }}" > ~/.ssh/id_ed25519.pub
-            chmod 600 ~/.ssh/id_ed25519
-            git config --global commit.gpgsign true
-            git config --global user.signingkey ~/.ssh/id_ed25519
+          # Ensure we're on the correct branch
+          git checkout "${GITHUB_REF#refs/heads/}" || git checkout -b "${GITHUB_REF#refs/heads/}"
+          git status
+
+      - name: Sync with Remote Repository
+        run: |
+          echo "=== Syncing with Remote Repository ==="
+          # Fetch all history and tags
+          git fetch --prune --tags --force origin || {
+            echo "Failed to fetch from remote"
+            exit 1
+          }
+          echo "Successfully fetched from remote"
+
+          # Set up tracking branch
+          if ! git branch --set-upstream-to=origin/${GITHUB_REF#refs/heads/} ${GITHUB_REF#refs/heads/}; then
+            echo "Warning: Could not set upstream branch (this is normal for new branches)"
           fi
 
-      - name: Sync with remote
-        run: |
-          git pull origin main --rebase
-          git fetch --tags
+          # Attempt to sync with remote
+          if ! git pull --rebase --autostash; then
+            echo "Warning: Could not sync with remote (this is normal for new branches or if local is ahead)"
+            # Reset any failed rebase
+            git rebase --abort || true
+          else
+            echo "Successfully synced with remote"
+          fi
 
       - name: Release
+        id: release
+        uses: python-semantic-release/python-semantic-release@v9.15.0
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Build semantic release command with dynamic options
-          RELEASE_CMD="semantic-release version"
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          PYTHONVERBOSE: 1
+          GIT_PYTHON_TRACE: 1
+          GIT_TRACE: 1
+          GIT_CURL_VERBOSE: 1
+        with:
+          github_token: ${{ secrets.PAT_TOKEN }}
+          git_committer_name: "github-actions[bot]"
+          git_committer_email: "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Add prerelease configuration if specified
-          if [ "$PRERELEASE" = "true" ]; then
-            RELEASE_CMD="$RELEASE_CMD --prerelease"
-            if [ -n "$PRERELEASE_TOKEN" ]; then
-              RELEASE_CMD="$RELEASE_CMD --prerelease-token $PRERELEASE_TOKEN"
-            fi
-          fi
-
-          # Add force level if specified
-          if [ -n "$FORCE_LEVEL" ]; then
-            RELEASE_CMD="$RELEASE_CMD --force-level $FORCE_LEVEL"
-          fi
-
-          # Add build metadata if specified
-          if [ -n "$BUILD_METADATA" ]; then
-            RELEASE_CMD="$RELEASE_CMD --build-metadata $BUILD_METADATA"
-          fi
-
-          # Execute the release command
-          eval $RELEASE_CMD
-
-          # Generate changelog and publish
-          semantic-release changelog
-          semantic-release publish
+      - name: Publish to GitHub Release Assets
+        uses: python-semantic-release/publish-action@v9.15.0
+        if: steps.release.outputs.released == 'true'
+        with:
+          github_token: ${{ secrets.PAT_TOKEN }}
+          tag: ${{ steps.release.outputs.tag }}
 
       - name: Verify Release
         if: success()
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
+          echo "=== Verifying Release ==="
           # Get the latest version from git tags
           VERSION=$(git describe --tags --abbrev=0)
           VERSION=${VERSION#v}  # Remove 'v' prefix
+          echo "Latest version tag: v${VERSION}"
 
           # Check if release exists
           if ! gh release view "v${VERSION}" &>/dev/null; then
-            echo "Release v${VERSION} was not created successfully"
+            echo "Error: Release v${VERSION} was not created successfully"
             exit 1
           fi
 
-          echo "Release v${VERSION} verified successfully"
+          # Get release type
+          if [[ "${VERSION}" == *"-beta."* ]]; then
+            echo "Successfully verified beta release v${VERSION}"
+          elif [[ "${VERSION}" == *"-rc."* ]]; then
+            echo "Successfully verified release candidate v${VERSION}"
+          else
+            echo "Successfully verified stable release v${VERSION}"
+          fi
 
   ##########################################################################
   # 4. Tag Validation Job
@@ -311,22 +316,32 @@ jobs:
     name: Tag Validation
     if: startsWith(github.ref, 'refs/tags/v')  # Only run on tag pushes matching 'v*'
     needs: release  # Ensure the 'release' job completes before starting 'tag-validation'
-    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.PAT_TOKEN }}
     steps:
       - name: Check out code
-        uses: actions/checkout@v3  # Checks out the repository code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Get full history for tags
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Get Tag Details
-        id: tag_details  # Assign an ID to reference outputs in subsequent steps
+        id: tag_details
         run: |
-          TAG_NAME=${GITHUB_REF#refs/tags/}  # Extract the tag name from the ref
-          echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT  # Set the tag_name output
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
 
           # Get tagger information using git for-each-ref
           TAGGER_NAME=$(git for-each-ref refs/tags/$TAG_NAME --format='%(taggername)')
           TAGGER_EMAIL=$(git for-each-ref refs/tags/$TAG_NAME --format='%(taggeremail)')
-          echo "tagger_name=${TAGGER_NAME}" >> $GITHUB_OUTPUT  # Set the tagger_name output
-          echo "tagger_email=${TAGGER_EMAIL}" >> $GITHUB_OUTPUT  # Set the tagger_email output
+          echo "tagger_name=${TAGGER_NAME}" >> $GITHUB_OUTPUT
+          echo "tagger_email=${TAGGER_EMAIL}" >> $GITHUB_OUTPUT
 
       - name: Validate Tagger
         run: |
@@ -343,7 +358,7 @@ jobs:
           fi
 
       - name: Approve Tag
-        run: echo "Tag ${{ steps.tag_details.outputs.tag_name }} is valid and created by GitHub Actions."  # Confirmation message
+        run: echo "Tag ${{ steps.tag_details.outputs.tag_name }} is valid and created by GitHub Actions."
 
   ##########################################################################
   # Jobs end after release

@@ -1,7 +1,93 @@
 # CHANGELOG
 
 
-## Unreleased
+## v1.3.0-beta.1 (2025-01-01)
+
+### Bug Fixes
+
+- **ci**: Configure git remote with authentication token
+  ([`70a4049`](https://github.com/gsinghjay/fast-api-ci-cd/commit/70a4049760f283f39b701ff14c5fc1011ff29129))
+
+- Add proper HTTPS authentication for Git operations - Use GITHUB_TOKEN for remote URL
+  authentication
+
+- **ci**: Correct git authentication for semantic-release
+  ([`98fe3b8`](https://github.com/gsinghjay/fast-api-ci-cd/commit/98fe3b8d95525d822555484b1dc40878f1d9295b))
+
+- Replace Git URL rewriting with direct remote URL configuration - Use correct GitHub URL format
+  with authentication token
+
+- **ci**: Correct Git URL configuration for semantic release
+  ([`022c87d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/022c87d029e46aa4405eb7daf4231107dea52f44))
+
+- **ci**: Enhance Git authentication and build configuration
+  ([`56efc69`](https://github.com/gsinghjay/fast-api-ci-cd/commit/56efc694d46569a29ef4c9aecc7423b46b25a9d6))
+
+- **ci**: Enhance Git authentication with PAT and add debugging steps
+  ([`03bff11`](https://github.com/gsinghjay/fast-api-ci-cd/commit/03bff118f1f441829e576665876b80d4cc604cf9))
+
+- **ci**: Enhance GitHub token configuration and permissions
+  ([`7af467c`](https://github.com/gsinghjay/fast-api-ci-cd/commit/7af467cb561a08b5b7160bce5271b09a9637670d))
+
+- **ci**: Handle both shallow and complete repositories in git fetch
+  ([`642e335`](https://github.com/gsinghjay/fast-api-ci-cd/commit/642e33591146ad14e9d42b6f9e68eb8eb76851d3))
+
+- Remove --unshallow flag to support complete repositories - Add explicit origin remote
+  specification
+
+- **ci**: Improve Git authentication across all workflow steps
+  ([`20b495b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/20b495b5c042f012068d4bda4756fc44828785fe))
+
+- **ci**: Improve Git authentication for semantic-release
+  ([`009aec2`](https://github.com/gsinghjay/fast-api-ci-cd/commit/009aec27b68cf3f589617c1929916c44542a03cd))
+
+- Use Git URL rewriting for authentication - Remove credential helper in favor of insteadOf
+  configuration
+
+- **ci**: Improve Git authentication for semantic-release
+  ([`e9d8b0c`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e9d8b0c7b80b7ed04f36e1b3685c8347861f8289))
+
+- Add Git credential helper configuration - Pass GitHub token through environment variables -
+  Simplify Git configuration
+
+- **ci**: Improve git authentication for semantic-release
+  ([`fb41011`](https://github.com/gsinghjay/fast-api-ci-cd/commit/fb41011e72160926d651c8b547315a212b44a904))
+
+- Use Git URL rewriting for authentication - Ensure complete repository history - Remove redundant
+  credentials configuration
+
+- **ci**: Improve git authentication for semantic-release
+  ([`72eb609`](https://github.com/gsinghjay/fast-api-ci-cd/commit/72eb6092fe163cf001f8ce44e5a1b1a565832e83))
+
+- Update Git remote configuration for better token handling - Add explicit GITHUB_TOKEN environment
+  variable - Fix branch reference in git pull command
+
+- **ci**: Improve Git authentication verification and sync
+  ([`a072b64`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a072b6458c901b718c4a11e01b0c2ee9113dd581))
+
+- **ci**: Simplify Git authentication and use consistent token handling
+  ([`ad23d07`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ad23d072332ce033e20429370ae3df4ea13d3d50))
+
+- **ci**: Update git authentication method
+  ([`f2f3287`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f2f32878dcd8b5755bc51e0f4c6d09f588590dcb))
+
+- Use Git credential store for authentication - Add GIT_CREDENTIALS environment variable - Improve
+  branch tracking configuration
+
+- **ci**: Use official Python Semantic Release GitHub Action
+  ([`78789f1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/78789f162697ff73ac1edf3a17888b9230febefd))
+
+- Replace custom release script with official action - Update environment variables to use PSR_
+  prefix - Add GitHub Release Assets publishing
+
+### Continuous Integration
+
+- Improve ci/cd workflow reliability and tag handling
+  ([`bbfa061`](https://github.com/gsinghjay/fast-api-ci-cd/commit/bbfa061ccd817600bca70d0f56eec7b80870427b))
+
+- fix: correct dependency between tag-validation and release jobs - feat: add annotated tag support
+  for better validation - fix: standardize python-semantic-release version to 9.15.0 - fix: improve
+  GitHub CLI authentication - chore: enhance workflow_dispatch input handling
 
 ### Documentation
 
@@ -13,6 +99,21 @@
 
 - Update mermaid diagram to show complete release flow
   ([`ce2ecad`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ce2ecadbd28dd9a7258197026cb64af1c34b58dc))
+
+### Features
+
+- **ci**: Enhance release workflow with semantic options
+  ([`0d0fb10`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0d0fb1017a72d763d34af1dbda4a53071ba32f20))
+
+- Add manual workflow trigger with configurable parameters - Support prerelease versions with custom
+  tokens - Add build metadata support - Enable commit signing with SSH keys - Improve version
+  control with force level options
+
+- **release**: Add branch-specific release configurations
+  ([`b8ec310`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b8ec310ee2643add5d24e69c8c68c40f9364c22d))
+
+- Configure main branch for regular releases - Configure develop branch for beta releases -
+  Configure release/* branches for RC releases
 
 
 ## v1.2.0 (2025-01-01)
