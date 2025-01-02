@@ -1,7 +1,12 @@
 # CHANGELOG
 
 
-## Unreleased
+## v1.4.0 (2025-01-02)
+
+### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`90db080`](https://github.com/gsinghjay/fast-api-ci-cd/commit/90db08060a0f7325ab489215f2f3676b0cadbf48))
 
 ### Features
 
