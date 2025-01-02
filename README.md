@@ -246,6 +246,155 @@ gh run view --web
    - Ensure PAT_TOKEN has required scopes
    - Check workflow permissions in yml files
 
+## 🔄 Semantic Versioning
+
+This project follows [Semantic Versioning 2.0.0](https://semver.org/) principles. Version numbers are structured as MAJOR.MINOR.PATCH:
+
+1. **MAJOR** version - Incremented for incompatible API changes
+2. **MINOR** version - Incremented for backward-compatible new functionality
+3. **PATCH** version - Incremented for backward-compatible bug fixes
+
+Additional labels for pre-release and build metadata are available as extensions to the MAJOR.MINOR.PATCH format.
+
+### Version Bumping Rules
+
+- Breaking changes (MAJOR): `BREAKING CHANGE:` in commit footer or `!` after type/scope
+- New features (MINOR): `feat:` commit type
+- Bug fixes (PATCH): `fix:` commit type
+- No version bump: `chore:`, `docs:`, `style:`, `refactor:`, `perf:`, `test:`
+
+## 🚀 Python Semantic Release
+
+We use [Python Semantic Release](https://python-semantic-release.readthedocs.io/en/latest/) for automated versioning and changelog generation. Key features:
+
+- Automatic version bumping based on commit messages
+- Changelog generation following Keep a Changelog format
+- GitHub release creation and asset publishing
+- Support for pre-releases and build metadata
+
+### Configuration
+
+Configuration in `pyproject.toml` integrates our versioning and changelog standards:
+
+```toml
+[tool.python_semantic_release]
+# Version Management
+version_variables = ["app/__init__.py:__version__"]  # Update version in code
+version_toml = ["pyproject.toml:tool.poetry.version"]  # Update version in pyproject.toml
+version_source = ["tag", "commit"]  # Determine version from tags and commits
+major_on_zero = false  # Follow SemVer for 0.x versions
+tag_format = "v{version}"  # Git tag format (e.g., v1.0.0)
+
+# Commit Parsing
+commit_parser = "conventional_commits"  # Use Conventional Commits standard
+commit_author = "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+
+# Changelog Management
+changelog_file = "CHANGELOG.md"  # Keep a Changelog file
+changelog_sections = [  # Keep a Changelog categories
+    "feature",    # Maps to Added
+    "fix",        # Maps to Fixed
+    "breaking",   # Maps to Changed with breaking changes
+    "documentation",
+    "performance",
+    "refactor"
+]
+
+# Release Settings
+upload_to_repository = false
+build_command = "poetry build"
+tag_type = "annotated"  # Use annotated tags for better documentation
+```
+
+### Automatic Standards Compliance
+
+1. **Semantic Versioning**:
+   - Analyzes commit messages using Conventional Commits
+   - Automatically determines version bumps:
+     - `BREAKING CHANGE` → MAJOR
+     - `feat:` → MINOR
+     - `fix:` → PATCH
+   - Creates appropriate Git tags
+
+2. **Keep a Changelog**:
+   - Maintains CHANGELOG.md in the standard format
+   - Groups changes by type (Added, Changed, Fixed, etc.)
+   - Includes release dates and version links
+   - Keeps an Unreleased section for upcoming changes
+   - Links to Git comparisons between versions
+
+### Manual Release Commands
+
+```bash
+# Check what the next version would be
+poetry run semantic-release version --noop
+
+# Create a new version (local only)
+poetry run semantic-release version
+
+# Create and publish a new release
+poetry run semantic-release publish
+```
+
+### Environment Setup
+
+Required environment variables:
+- `GH_TOKEN`: GitHub Personal Access Token with `repo` scope
+- For fine-grained tokens: `contents` permission required
+
+## 🔄 Changelog Guidelines
+
+We follow the [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) principles for maintaining our CHANGELOG.md. This ensures our changelog is:
+
+### Guiding Principles
+
+- Written for humans, not machines
+- Easy to link to any section
+- One sub-section per version
+- List releases in reverse-chronological order
+- Include release date for each version
+- Group changes by type
+- Mention whether we follow Semantic Versioning
+
+### Types of Changes
+
+- `Added` - New features
+- `Changed` - Changes in existing functionality
+- `Deprecated` - Soon-to-be removed features
+- `Removed` - Now removed features
+- `Fixed` - Any bug fixes
+- `Security` - In case of vulnerabilities
+
+### Good Practices
+
+- Keep an `Unreleased` section at the top for tracking upcoming changes
+- Never use commit log diffs as changelog entries
+- Always write clear, human-friendly descriptions
+- Use ISO 8601 format for dates (YYYY-MM-DD)
+- Make it clear when breaking changes occur
+- Keep entries consistent and well-organized
+- Link to issues, PRs, and other relevant information
+
+### Example Entry
+
+```markdown
+## [1.0.0] - 2024-01-02
+
+### Added
+- New API endpoint for QR code generation
+- Support for custom QR code colors
+
+### Changed
+- Improved error handling in API responses
+- Updated dependencies to latest versions
+
+### Fixed
+- Issue with QR code size calculation
+- Memory leak in image processing
+
+[1.0.0]: https://github.com/username/project/compare/v0.9.0...v1.0.0
+```
+
 ## 🔄 Workflow Architecture
 
 ```mermaid
@@ -266,13 +415,14 @@ flowchart TD
         H --> I[Semantic Release]
         I --> J{Released?}
 
-        J -->|Yes| K[Tag Validation]
+        J -->|Yes| K[Create GitHub Release]
         J -->|No| L[Skip Publish]
 
         subgraph "Skip Conditions"
             P[Skip if:] --> P1[github-actions bot]
-            P --> P2[skip ci tag]
-            P --> P3[chore release]
+            P --> P2[semantic-release user]
+            P --> P3[skip ci tag]
+            P --> P4[chore release]
         end
     end
 
@@ -311,12 +461,10 @@ flowchart TD
      - Prereleases
      - Force version bumps
      - Custom prerelease tokens
-
-4. **Tag Validation** (.github/workflows/tag-validation.yml)
-   - Validates tag authenticity
-   - Ensures tags are created by GitHub Actions
-   - Removes unauthorized tags
-   - Verifies semantic versioning format
+   - Skips when commit is from:
+     - github-actions[bot]
+     - semantic-release user
+     - Contains [skip ci] tag
 
 ### Workflow Execution
 
@@ -329,7 +477,7 @@ flowchart TD
    - Full pipeline executes
    - Changelog is updated
    - New release is created if needed
-   - Tags are validated
+   - Release is published to GitHub
 
 3. **Manual Dispatch:**
    - Available for release workflow
@@ -339,7 +487,9 @@ flowchart TD
 ### Skip Conditions
 
 Workflows are skipped when:
-- Commit is from github-actions[bot]
+- Commit is from:
+  - github-actions[bot]
+  - semantic-release user
 - Commit message contains:
   - [skip ci]
   - chore(release)
