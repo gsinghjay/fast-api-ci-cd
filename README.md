@@ -487,9 +487,9 @@ flowchart TD
 ### Skip Conditions
 
 Workflows are skipped when:
-- Commit is from:
+- Commit is from users:
   - github-actions[bot]
-  - semantic-release user
+  - semantic-release
 - Commit message contains:
   - [skip ci]
   - chore(release)
