@@ -49,7 +49,7 @@ jobs:
 
   release:
     name: Create Release
-    needs: [lint, test, setup]
+    needs: [lint, test]
     if: |
       github.ref == 'refs/heads/main' &&
       !contains(github.event.head_commit.message, '[skip ci]') &&
@@ -57,53 +57,38 @@ jobs:
       github.actor != 'github-actions[bot]' &&
       github.event_name != 'pull_request'
     runs-on: ubuntu-latest
+    concurrency: release
     permissions:
-      contents: write
       id-token: write
+      contents: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.sha }}
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - name: Download virtual environment
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ needs.setup.outputs.venv-name }}
-          path: artifact
-          merge-multiple: true
-
-      - name: Restore virtual environment
+      - name: Force correct release branch
         run: |
-          if [ ! -f "artifact/venv.tar.gz" ]; then
-            echo "ERROR: venv.tar.gz not found in artifact"
-            exit 1
-          fi
-          tar xzf artifact/venv.tar.gz
-          cp artifact/poetry.lock .
-          cp artifact/pyproject.toml .
-          chmod -R +x .venv/bin/
+          git checkout -B ${{ github.ref_name }} ${{ github.sha }}
 
       - name: Python Semantic Release
-        uses: python-semantic-release/python-semantic-release@v8.7.2
+        id: release
+        uses: python-semantic-release/python-semantic-release@v9.12.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          git_committer_name: "github-actions"
+          git_committer_email: "actions@users.noreply.github.com"
 
-      - name: Validate Version Files
+      - name: Display Release Information
+        if: steps.release.outputs.released == 'true'
         run: |
-          source .venv/bin/activate
-          .venv/bin/semantic-release --noop version
-          .venv/bin/semantic-release check-build
+          echo "Version released: ${{ steps.release.outputs.version }}"
+          echo "Tag created: ${{ steps.release.outputs.tag }}"
 
-      - name: Verify Release
-        if: success()
-        run: |
-          source .venv/bin/activate
-          .venv/bin/semantic-release version --print
-          git describe --tags --abbrev=0
+      - name: Publish to GitHub Release Assets
+        uses: python-semantic-release/publish-action@v9.8.9
+        if: steps.release.outputs.released == 'true'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.release.outputs.tag }}
