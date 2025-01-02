@@ -82,6 +82,9 @@ jobs:
         uses: python-semantic-release/python-semantic-release@v9.15.0
         with:
           github_token: ${{ secrets.PAT_TOKEN }}
+          prerelease: ${{ inputs.prerelease || false }}
+          prerelease_token: ${{ inputs.prerelease_token }}
+          force: ${{ inputs.force != 'none' && inputs.force || '' }}
           changelog: true
           commit: true
           push: true
