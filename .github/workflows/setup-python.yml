@@ -8,17 +8,11 @@ on:
         type: string
         default: "3.11"
         description: "Python version to use"
-    outputs:
-      poetry-venv:
-        description: "Path to Poetry's virtual environment"
-        value: ${{ jobs.setup.outputs.venv-path }}
 
 jobs:
   setup:
     name: Setup Python
     runs-on: ubuntu-latest
-    outputs:
-      venv-path: ${{ steps.poetry-venv.outputs.path }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -50,8 +44,3 @@ jobs:
 
       - name: Install dependencies
         run: poetry install
-
-      - name: Get Poetry environment path
-        id: poetry-venv
-        run: |
-          echo "path=$(poetry env info --path)" >> $GITHUB_OUTPUT
