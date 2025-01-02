@@ -199,7 +199,12 @@ jobs:
           git status
 
           # Generate changelog with debug verbosity (-vv for DEBUG level)
-          semantic-release -vv changelog
+          # Add --prerelease for feature/fix branches
+          if [[ "${{ github.head_ref || github.ref_name }}" =~ ^(feature|fix)/ ]]; then
+            semantic-release -vv changelog --prerelease
+          else
+            semantic-release -vv changelog
+          fi
 
           # Show if changelog was modified
           echo "Changelog status:"
