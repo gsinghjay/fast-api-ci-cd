@@ -32,22 +32,21 @@ build-backend = "poetry.core.masonry.api"
 [tool.python_semantic_release]
 version_variable = ["app/__init__.py:__version__"]
 version_toml = ["pyproject.toml:tool.poetry.version"]
-version_source = "commit"
+version_source = "tag"
 commit_version_number = true
 upload_to_repository = false
-build_command = "poetry build"  # Changed to use poetry build for consistency
+build_command = "poetry build"
 changelog_file = "CHANGELOG.md"
 commit_parser = "conventional_commits"
 major_on_zero = false
 tag_format = "v{version}"
-tag_type = "annotated"  # Ensures tags are annotated for validation
+tag_type = "annotated"
 allow_zero_version = true
 commit_author = "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
 commit_message = "chore(release): {version} [skip ci]"
-branch = "main"  # Default branch for releases
 
 [tool.python_semantic_release.remote]
-token = "env:GH_TOKEN"  # Corrected token reference without space
+token = "env:GH_TOKEN"
 
 [tool.python_semantic_release.branches.main]
 match = ["main", "master"]
@@ -78,15 +77,13 @@ components = [
     "semantic_release.changelog.compare_url",
     "semantic_release.changelog.commit_list"
 ]
-include_prereleases = false
+include_prereleases = true
 exclude_commit_patterns = [
     "^chore\\(release\\):",
     "^docs\\(changelog\\):",
     "\\[skip ci\\]",
     "\\[ci skip\\]",
-    "\\[no changelog\\]",
-    "^author: github-actions\\[bot\\]",
-    "41898282\\+github-actions\\[bot\\]@users\\.noreply\\.github\\.com"
+    "\\[no changelog\\]"
 ]
 render_title = true
 render_commit_links = true
