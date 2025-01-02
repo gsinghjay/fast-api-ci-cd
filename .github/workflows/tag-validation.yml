@@ -41,6 +41,8 @@ jobs:
           if [ "${{ steps.tag_details.outputs.tagger_name }}" != "$EXPECTED_TAGGER_NAME" ] || \
              [ "${{ steps.tag_details.outputs.tagger_email }}" != "$EXPECTED_TAGGER_EMAIL" ]; then
             echo "Error: Tag ${{ steps.tag_details.outputs.tag_name }} was not created by GitHub Actions"
+            echo "Expected: $EXPECTED_TAGGER_NAME <$EXPECTED_TAGGER_EMAIL>"
+            echo "Got: ${{ steps.tag_details.outputs.tagger_name }} <${{ steps.tag_details.outputs.tagger_email }}>"
             git push origin :refs/tags/${{ steps.tag_details.outputs.tag_name }}
             exit 1
           fi
