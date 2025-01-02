@@ -15,11 +15,6 @@ on:
     secrets:
       GITHUB_TOKEN:
         required: true
-  pull_request:
-    branches: [ main ]
-  push:
-    branches: [ main ]
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -29,15 +24,6 @@ jobs:
   lint:
     name: Run Linters
     runs-on: ubuntu-latest
-    # Skip on release commits
-    if: |
-      (github.event_name == 'pull_request') ||
-      (github.actor != 'github-actions[bot]' &&
-       !contains(github.event.head_commit.message, '[skip ci]') &&
-       !contains(github.event.head_commit.message, '[ci skip]') &&
-       !contains(github.event.head_commit.message, '[no ci]') &&
-       !contains(github.event.head_commit.message, 'chore(release)'))
-
     steps:
       - name: Check out code
         uses: actions/checkout@v4

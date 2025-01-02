@@ -30,39 +30,19 @@ permissions:
   id-token: write
 
 jobs:
-  setup:
-    name: Setup Environment
-    uses: ./.github/workflows/setup-python.yml
-    with:
-      python-version: "3.11"
-
-  lint:
-    name: Lint Check
-    needs: [setup]
-    uses: ./.github/workflows/lint.yml
-    with:
-      venv-name: ${{ needs.setup.outputs.venv-name }}
-      python-version: "3.11"
+  ci:
+    name: Run CI Checks
+    uses: ./.github/workflows/ci.yml
     permissions:
       contents: read
       pull-requests: read
+      checks: write
     secrets:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  test:
-    name: Run Tests
-    needs: [setup]
-    uses: ./.github/workflows/test.yml
-    with:
-      venv-name: ${{ needs.setup.outputs.venv-name }}
-      python-version: "3.11"
-    permissions:
-      contents: read
-      checks: write
-
   release:
     name: Create Release
-    needs: [lint, test, setup]
+    needs: [ci]
     runs-on: ubuntu-latest
     if: |
       github.ref == 'refs/heads/main' &&
@@ -98,7 +78,7 @@ jobs:
       - name: Download virtual environment
         uses: actions/download-artifact@v4
         with:
-          name: ${{ needs.setup.outputs.venv-name }}
+          name: ${{ needs.ci.outputs.venv-name }}
           path: .
 
       - name: Python Semantic Release
