@@ -1,6 +1,33 @@
 # CHANGELOG
 
 
+## v3.0.0 (2025-01-02)
+
+### Chores
+
+- Merge changes
+  ([`a28a970`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a28a970061ef744647ab4a2666b6eb43cb1e42b8))
+
+- **config**: Update author information
+  ([`a4e364a`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a4e364a7c995d0714334ff4e9c4c6fb2be31865c))
+
+### Documentation
+
+- Add semantic versioning, changelog, and release automation documentation
+  ([`fb31c4d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/fb31c4d53d16cc4d300052e395cb91232d80a611))
+
+### Features
+
+- Major changes needed
+  ([`b4b8909`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b4b8909cb8970a11ea055c5082d731c2bcafb1de))
+
+BREAKING CHANGE: description of breaking changes
+
+### BREAKING CHANGES
+
+- Description of breaking changes
+
+
 ## v2.0.1 (2025-01-02)
 
 ### Bug Fixes
@@ -18,6 +45,9 @@
   handling
 
 [skip ci]
+
+- **release**: Exclude semantic-release user from triggers
+  ([`1f3ee46`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1f3ee468e34159405f0562da0ca455b40da4994e))
 
 
 ## v2.0.0 (2025-01-02)
