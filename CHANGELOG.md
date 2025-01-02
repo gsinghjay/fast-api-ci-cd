@@ -1,6 +1,45 @@
 # CHANGELOG
 
 
+## v4.1.1 (2025-01-02)
+
+### Bug Fixes
+
+- Improve poetry environment handling in workflows
+  ([`9cba052`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9cba05294df046e1e972405b15b22fd074c10c89))
+
+- Use poetry run instead of activating venv - Ensure proper caching of poetry environment - Simplify
+  setup workflow
+
+- **ci**: Improve environment handling across workflows
+  ([`7c8a1fd`](https://github.com/gsinghjay/fast-api-ci-cd/commit/7c8a1fdaff530bec53bdbad1f7fd172680a5d4f2))
+
+- Use environment variables from setup-python - Consistent Poetry setup across all jobs - Simplify
+  environment activation
+
+### Continuous Integration
+
+- Enhance dependency caching strategy
+  ([`a38abb9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a38abb90bf1cd5edd454c97bc0b84d276be5fcc0))
+
+- Configure in-project virtualenvs for better caching
+
+- Add comprehensive caching for pip and poetry
+
+- Update documentation with caching details
+
+- Implement reusable workflow for Python and Poetry setup
+  ([`64c2fc4`](https://github.com/gsinghjay/fast-api-ci-cd/commit/64c2fc4880a48d96fa1387a3b4c911d1aed37318))
+
+- Create reusable setup-python workflow - Share Poetry virtual environment between jobs - Update all
+  workflows to use the reusable workflow
+
+### Documentation
+
+- Update README to use GITHUB_TOKEN instead of PAT_TOKEN
+  ([`97268b0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/97268b0a4f443d7988571803e0be055f554dc6f3))
+
+
 ## v4.1.0 (2025-01-02)
 
 ### Continuous Integration
