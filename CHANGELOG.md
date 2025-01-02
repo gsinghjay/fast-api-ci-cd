@@ -2,6 +2,23 @@
 
 
 
+## v5.0.5 (2025-01-02)
+
+### Fix
+
+* fix(ci): remove redundant poetry installation in release job
+
+- Use Poetry from the shared virtual environment
+- Remove duplicate Poetry installation step
+- Keep consistent with test and lint workflows ([`1cb11d3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1cb11d3e4f013e19749c762846874d45ac862458))
+
+### Unknown
+
+* Merge pull request #75 from gsinghjay/ci/venv-and-restore
+
+fix(ci): remove redundant poetry installation in release job ([`5c87d41`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5c87d41f6d970759f41895ead77bdf271c911568))
+
+
 ## v5.0.4 (2025-01-02)
 
 ### Fix
