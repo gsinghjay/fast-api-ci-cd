@@ -1,6 +1,38 @@
 # CHANGELOG
 
 
+## v6.1.0 (2025-01-02)
+
+### Documentation
+
+* docs(readme): update workflow documentation and mermaid diagram
+
+  - Remove references to PAT tokens in favor of GITHUB_TOKEN
+  - Fix Mermaid diagram syntax and improve visualization
+  - Update workflow documentation to reflect current implementation
+  - Add detailed security and permissions section
+  - Improve environment optimization documentation ([`9a63997`](https://github.com/gsinghjay/fast-api-ci-cd/commit/9a639970bfd7100eede59228ec1aae19b16690f0))
+
+### Features
+
+* feat(docs): add comprehensive CI/CD workflow visualization
+
+- Implement detailed mermaid flowchart for CI/CD pipeline
+- Add color-coded workflow stages for better readability
+- Introduce skip release conditions documentation
+- Detail each workflow stage with specific responsibilities ([`3da837b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/3da837bd159bacb48785a0ba11fa4fdf0729d3e4))
+
+### Unknown
+
+* Merge pull request #82 from gsinghjay/docs/update-workflow-documentation
+
+feat(docs): add comprehensive CI/CD workflow visualization ([`37b80a3`](https://github.com/gsinghjay/fast-api-ci-cd/commit/37b80a359fa83921e4ad1a2aef45c3a292230774))
+
+* Merge pull request #81 from gsinghjay/docs/update-workflow-documentation
+
+docs(readme): update workflow documentation and mermaid diagram ([`4127910`](https://github.com/gsinghjay/fast-api-ci-cd/commit/41279107fa0a8fe014e19fc85d1db02b2600c6f3))
+
+
 ## v6.0.0 (2025-01-02)
 
 ### Breaking
