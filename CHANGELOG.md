@@ -1,6 +1,31 @@
 # CHANGELOG
 
 
+## Unreleased
+
+### Bug Fixes
+
+- **ci**: Ensure changelog updates on every push
+  ([`57ec646`](https://github.com/gsinghjay/fast-api-ci-cd/commit/57ec6466145f198d89c38b2b2f0f1a81cc8ca3c7))
+
+- Add explicit changelog generation step - Update changelog regardless of release status - Configure
+  semantic-release to include all commits - Separate changelog generation from release process
+
+### Documentation
+
+- **readme**: Add workflow diagram and explanation
+  ([`5e986cb`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5e986cb4c4cc7b8972570141237b91ff0132343a))
+
+- Add mermaid flowchart of CI/CD pipeline - Include detailed workflow steps explanation - Show job
+  dependencies and conditions - Add color coding for different stages - Document skip conditions
+
+- **readme**: Fix mermaid diagram syntax
+  ([`41cd6e0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/41cd6e0a1071aa268d7f4573b54ef56b44d92ade))
+
+- Fix skip conditions node formatting - Update style definitions to use classDef - Remove special
+  characters causing parse errors - Improve diagram readability
+
+
 ## v1.6.1 (2025-01-02)
 
 ### Bug Fixes
