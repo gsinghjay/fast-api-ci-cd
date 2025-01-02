@@ -3,6 +3,10 @@ name: Release
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'pyproject.toml'
+      - '.github/workflows/release.yml'
+      - 'app/**'
   workflow_dispatch:
     inputs:
       prerelease:
