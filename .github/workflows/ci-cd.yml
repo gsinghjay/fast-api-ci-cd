@@ -178,7 +178,6 @@ jobs:
         run: |
           poetry run coverage run -m pytest  # Run tests with coverage
           poetry run coverage report -m      # Generate coverage report
-          poetry run coverage xml            # Generate coverage XML for artifact
 
       - name: Update Changelog
         if: |
@@ -199,8 +198,8 @@ jobs:
           echo "Git status:"
           git status
 
-          # Generate changelog with verbose output
-          semantic-release changelog --verbose
+          # Generate changelog with debug verbosity (-vv for DEBUG level)
+          semantic-release -vv changelog
 
           # Show if changelog was modified
           echo "Changelog status:"
@@ -221,12 +220,6 @@ jobs:
           else
             echo "No changes to CHANGELOG.md detected"
           fi
-
-      - name: Upload coverage report
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-report-py${{ matrix.python-version }}  # Name of the artifact
-          path: coverage.xml  # Path to the coverage report
 
   ##########################################################################
   # 3. Release Job (Runs only on tags that match v*)
