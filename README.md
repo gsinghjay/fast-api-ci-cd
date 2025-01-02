@@ -350,6 +350,7 @@ async def custom_exception_handler(request: Request, exc: CustomException):
 
 - Generate QR codes from URLs
 - Custom QR code colors (fill and background)
+- Customizable QR code size and border
 - Base64 encoded output
 - Error handling with descriptive messages
 - API documentation with Swagger UI
@@ -365,7 +366,13 @@ async def custom_exception_handler(request: Request, exc: CustomException):
 ```bash
 curl -X POST "http://localhost:8000/api/v1/qr-code/generate" \
      -H "Content-Type: application/json" \
-     -d '{"url": "https://example.com", "fill_color": "#000000", "background_color": "#FFFFFF"}'
+     -d '{
+       "url": "https://example.com",
+       "fill_color": "#000000",
+       "background_color": "#FFFFFF",
+       "box_size": 10,
+       "border": 4
+     }'
 ```
 
 The response will contain a base64 encoded QR code image:
@@ -379,3 +386,5 @@ The response will contain a base64 encoded QR code image:
 You can customize the QR code appearance:
 - `fill_color`: The color of the QR code pattern (default: "#000000" - black)
 - `background_color`: The color of the QR code background (default: "#FFFFFF" - white)
+- `box_size`: Size of each QR code box in pixels (default: 10, range: 1-100)
+- `border`: Size of the QR code border in boxes (default: 4, range: 0-20)
