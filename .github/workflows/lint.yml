@@ -13,8 +13,9 @@ on:
         default: "3.11"
         description: "Python version to use"
     secrets:
-      GITHUB_TOKEN:
+      token:
         required: true
+        description: "GitHub token for authentication"
 
 permissions:
   contents: read
@@ -52,4 +53,4 @@ jobs:
         with:
           configFile: commitlint.config.js
           failOnWarnings: true
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.token }}

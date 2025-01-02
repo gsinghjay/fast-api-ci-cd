@@ -30,7 +30,7 @@ jobs:
       contents: read
       pull-requests: read
     secrets:
-      GITHUB_TOKEN: ${{ secrets.token }}
+      token: ${{ secrets.token }}
 
   test:
     name: Run Tests
