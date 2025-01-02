@@ -1,6 +1,7 @@
 name: Lint
 
 on:
+  workflow_call: {}  # Allow this workflow to be called by other workflows
   pull_request:
     branches: [ main ]
   push:
