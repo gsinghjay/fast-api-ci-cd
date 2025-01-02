@@ -81,7 +81,11 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.11"
-          cache: "pip"
+
+      - name: Install Poetry
+        run: |
+          pip install poetry==1.8.5
+          poetry config virtualenvs.in-project true
 
       - name: Cache dependencies
         uses: actions/cache@v3
@@ -95,19 +99,16 @@ jobs:
             ${{ runner.os }}-python-3.11-
             ${{ runner.os }}-python-
 
-      - name: Install Poetry
-        run: |
-          pip install poetry==1.8.5
-          poetry config virtualenvs.in-project true
-
-      - name: Activate Poetry environment
-        run: source ${{ needs.setup.outputs.poetry-venv }}/bin/activate
+      - name: Install dependencies
+        run: poetry install
 
       - name: Python Semantic Release
         id: release
         uses: python-semantic-release/python-semantic-release@v9.15.0
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VIRTUAL_ENV: ${{ env.VIRTUAL_ENV }}
+          PATH: ${{ env.PATH }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           directory: .

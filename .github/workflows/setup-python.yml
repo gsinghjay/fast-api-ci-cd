@@ -8,11 +8,17 @@ on:
         type: string
         default: "3.11"
         description: "Python version to use"
+    outputs:
+      cache-hit:
+        description: "Whether there was a cache hit for dependencies"
+        value: ${{ jobs.setup.outputs.cache-hit }}
 
 jobs:
   setup:
     name: Setup Python
     runs-on: ubuntu-latest
+    outputs:
+      cache-hit: ${{ steps.cache-deps.outputs.cache-hit }}
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -26,6 +32,7 @@ jobs:
           cache: "pip"
 
       - name: Cache dependencies
+        id: cache-deps
         uses: actions/cache@v3
         with:
           path: |
@@ -44,3 +51,8 @@ jobs:
 
       - name: Install dependencies
         run: poetry install
+
+      - name: Set environment variables
+        run: |
+          echo "VIRTUAL_ENV=$PWD/.venv" >> $GITHUB_ENV
+          echo "$PWD/.venv/bin" >> $GITHUB_PATH
