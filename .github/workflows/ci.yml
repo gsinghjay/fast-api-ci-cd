@@ -34,7 +34,7 @@ jobs:
       contents: read
       pull-requests: read
     secrets:
-      token: ${{ secrets.token }}
+      token: ${{ secrets.GITHUB_TOKEN }}
 
   test:
     name: Run Tests
