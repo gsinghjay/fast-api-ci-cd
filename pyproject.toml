@@ -51,10 +51,12 @@ token = "env:GH_TOKEN"
 # Simplified branch configuration - only main branch
 [tool.python_semantic_release.branches]
 main = [
-    { name = "(main|master)" }
+    { name = "main" }
 ]
 development = [
-    { name = "(develop|fix/*|feature/*)" }
+    { name = "fix/.*" },
+    { name = "feature/.*" },
+    { name = "develop" }
 ]
 
 [tool.python_semantic_release.changelog]
