@@ -1,6 +1,6 @@
 # FastAPI CI/CD Template
 
-[![CI/CD Pipeline](https://github.com/gsinghjay/fast-api-ci-cd/actions/workflows/release.yml/badge.svg)](https://github.com/gsinghjay/fast-api-ci-cd/actions/workflows/release.yml)
+[![CI/CD Pipeline](https://github.com/gsinghjay/fast-api-ci-cd/actions/workflows/ci.yml/badge.svg)](https://github.com/gsinghjay/fast-api-ci-cd/actions/workflows/ci.yml)
 [![Latest Release](https://img.shields.io/github/v/release/gsinghjay/fast-api-ci-cd)](https://github.com/gsinghjay/fast-api-ci-cd/releases)
 [![Python Version](https://img.shields.io/badge/python-3.11-blue)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -404,21 +404,24 @@ flowchart TD
     subgraph "CI/CD Pipeline"
         A[Push/PR] --> B{Event Type?}
 
-        B -->|PR or Push| C[Lint Workflow]
-        B -->|PR or Push| D[Test Workflow]
+        B --> C[Setup Job]
+        C --> D{Branch Type?}
 
-        C --> E{All Checks Pass?}
-        D --> E
+        D -->|Any| E[Lint Job]
+        D -->|Any| F[Test Job]
 
-        E -->|Yes & Main Branch| F[Release Workflow]
-        E -->|Yes & Feature Branch| G[Skip Release]
+        E --> G{Checks Pass?}
+        F --> G
 
-        F --> H[Generate Changelog]
-        H --> I[Semantic Release]
-        I --> J{Released?}
+        G -->|Yes & Main| H[Release Job]
+        G -->|Yes & Feature| I[Skip Release]
 
-        J -->|Yes| K[Create GitHub Release]
-        J -->|No| L[Skip Publish]
+        H --> J[Generate Changelog]
+        J --> K[Semantic Release]
+        K --> L{Released?}
+
+        L -->|Yes| M[Create GitHub Release]
+        L -->|No| N[Skip Publish]
 
         subgraph "Skip Conditions"
             P[Skip if:] --> P1[github-actions bot]
@@ -429,62 +432,57 @@ flowchart TD
     end
 
     classDef trigger fill:#90EE90
+    classDef setup fill:#FFE4B5
     classDef check fill:#FFB6C1
     classDef release fill:#ADD8E6
     classDef publish fill:#98FB98
 
     class A trigger
-    class E check
-    class I release
-    class K publish
+    class C setup
+    class G check
+    class K release
+    class M publish
 ```
 
 ### Workflow Files Structure
 
-1. **Lint Workflow** (.github/workflows/lint.yml)
+1. **CI Workflow** (.github/workflows/ci.yml)
+   - Main orchestrator workflow
+   - Manages job dependencies and sequencing
+   - Handles environment and artifact sharing
+   - Integrates setup, lint, test, and release jobs
+
+2. **Lint Workflow** (.github/workflows/lint.yml)
+   - Reusable workflow for code quality checks
    - Runs Black code formatter
    - Validates commit messages with Commitlint
    - Uses Poetry for dependency management
-   - Skips on automated commits and releases
 
-2. **Test Workflow** (.github/workflows/test.yml)
+3. **Test Workflow** (.github/workflows/test.yml)
+   - Reusable workflow for testing
    - Runs pytest with coverage
    - Uses Poetry for dependency management
    - Matrix testing with Python 3.11
-   - Skips on automated commits
-
-3. **Release Workflow** (.github/workflows/release.yml)
-   - Triggers on main branch pushes
-   - Generates changelog
-   - Creates semantic releases
-   - Publishes GitHub releases
-   - Uses Poetry for consistent dependency management
-   - Includes manual dispatch options for:
-     - Prereleases
-     - Force version bumps
-     - Custom prerelease tokens
-   - Skips when commit is from:
-     - github-actions[bot]
-     - semantic-release user
-     - Contains [skip ci] tag
 
 ### Workflow Execution
 
-1. **On Pull Request:**
-   - Lint and Test workflows run
-   - Release workflow is skipped
-   - All checks must pass for merge
+1. **Setup Phase:**
+   - Initializes Python environment
+   - Sets up Poetry and dependencies
+   - Creates and caches virtual environment
+   - Shares environment across jobs via artifacts
 
-2. **On Push to Main:**
-   - Full pipeline executes
-   - Changelog is updated
-   - New release is created if needed
-   - Release is published to GitHub
+2. **Parallel Checks:**
+   - Lint and Test jobs run simultaneously
+   - Both use the shared environment from Setup
+   - All checks must pass to proceed
 
-3. **Manual Dispatch:**
-   - Available for release workflow
-   - Supports prerelease creation
-   - Allows force version bumps
+3. **Release Phase (Main Branch Only):**
+   - Runs after all checks pass
+   - Updates changelog
+   - Creates semantic release
+   - Publishes to GitHub
+   - Uses shared environment from Setup
 
 ### Skip Conditions
 
@@ -496,3 +494,10 @@ Workflows are skipped when:
   - [skip ci]
   - chore(release)
 - Changes are automated release updates
+
+### Environment Optimization
+
+- Virtual environment shared via artifacts
+- Poetry for consistent dependency management
+- Cached dependencies to speed up builds
+- Preserved directory structure across jobs
