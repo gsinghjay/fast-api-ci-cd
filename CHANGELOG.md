@@ -2,6 +2,19 @@
 
 
 
+## v5.0.1 (2025-01-02)
+
+### Fix
+
+* fix: revert back before metadata ([`1851163`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1851163fb278d6e6ece245fd968ee051acb29d78))
+
+### Unknown
+
+* Merge pull request #71 from gsinghjay/ci/add-build-metadata
+
+fix: revert back before metadata ([`d8a80f0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d8a80f0d3561d5ef5a7627941b1171e594ab4b3c))
+
+
 ## v5.0.0+build.27 (2025-01-02)
 
 ### Ci
