@@ -1,6 +1,14 @@
 # CHANGELOG
 
 
+## Unreleased
+
+### Features
+
+- Add color code validation
+  ([`32c497f`](https://github.com/gsinghjay/fast-api-ci-cd/commit/32c497f726986a057fc314b5867e6676023fc915))
+
+
 ## v1.3.0 (2025-01-02)
 
 ### Bug Fixes
@@ -11,7 +19,15 @@
 - **ci**: Update semantic-release config to handle beta versions correctly
   ([`0205e1b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/0205e1bd2dac59dc1e3c0de4a978e7ab942503c8))
 
+### Chores
+
+- Merge develop and resolve conflicts
+  ([`b48b4cc`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b48b4cc84ee315cadbe78fe8a445f7f29ecfa402))
+
 ### Documentation
+
+- Add documentation for custom QR code colors
+  ([`5c9b512`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5c9b5127d0d6085b44d6320ef05c756a33d73d0a))
 
 - Add documentation for custom QR code colors
   ([#27](https://github.com/gsinghjay/fast-api-ci-cd/pull/27),
@@ -21,13 +37,22 @@
   ([#28](https://github.com/gsinghjay/fast-api-ci-cd/pull/28),
   [`2f037d0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2f037d046a616df30031d2864ba340e378192ed2))
 
+- Add workflow debugging commands
+  ([`34b6f6d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/34b6f6dbfee768c1e091bdd395a36da89a2f80c9))
+
 - Enhance README with detailed workflow and debugging instructions
   ([`f6987fe`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f6987febb2112a3e1ce7119dc44d8d9887b0aad8))
 
 - Update CHANGELOG.md [skip ci]
   ([`f6e1604`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f6e1604cdf37ead8e326f4ebd6167f3ee724c069))
 
+- Update CHANGELOG.md [skip ci]
+  ([`5dc58d0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5dc58d0157f1d0d47904a698592dd7caffcba151))
+
 ### Features
+
+- Add QR code size customization options
+  ([`e1ba631`](https://github.com/gsinghjay/fast-api-ci-cd/commit/e1ba631b99cf3eff3fc9f5c98d3678e3960fe37c))
 
 - Add support for custom QR code colors
   ([`8697ea0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/8697ea0234c945406f949d386f3a975fe9b00a37))
@@ -128,9 +153,6 @@
 
 - Add branch protection rules and naming conventions
   ([`851e65b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/851e65b1ab265321f13fa727aff77e9d43997d64))
-
-- Update CHANGELOG.md [skip ci]
-  ([`5dc58d0`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5dc58d0157f1d0d47904a698592dd7caffcba151))
 
 - Update CHANGELOG.md [skip ci]
   ([`ff10ee8`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ff10ee80d64129025b50e18286368f96d7a2a262))
