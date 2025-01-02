@@ -193,8 +193,8 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-          # Generate changelog with development branch support
-          semantic-release changelog --prerelease
+          # Generate changelog (removed --prerelease flag)
+          semantic-release changelog
 
           # For push events, we need to determine the branch name differently
           if [ "${{ github.event_name }}" == "push" ]; then
