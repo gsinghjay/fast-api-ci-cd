@@ -1,5 +1,8 @@
 # CHANGELOG
 
+All notable changes to this project will be documented in this file.
+
+## [Unreleased]
 
 ## v4.0.0 (2025-01-02)
 
