@@ -223,11 +223,11 @@ jobs:
     if: |
       github.ref == 'refs/heads/main' &&
       github.event_name == 'push' &&
-      (github.actor != 'github-actions[bot]' ||
-       (!contains(github.event.head_commit.message, '[skip ci]') &&
-        !contains(github.event.head_commit.message, '[ci skip]') &&
-        !contains(github.event.head_commit.message, '[no ci]') &&
-        !contains(github.event.head_commit.message, 'chore(release)')))
+      (github.actor != 'github-actions[bot]' &&
+       !contains(github.event.head_commit.message, '[skip ci]') &&
+       !contains(github.event.head_commit.message, '[ci skip]') &&
+       !contains(github.event.head_commit.message, '[no ci]') &&
+       !contains(github.event.head_commit.message, 'chore(release)'))
     name: Release
     needs: test
     runs-on: ubuntu-latest
