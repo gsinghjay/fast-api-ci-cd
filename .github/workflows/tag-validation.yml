@@ -28,8 +28,9 @@ jobs:
           TAG_NAME=${GITHUB_REF#refs/tags/}
           echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
 
-          TAGGER_NAME=$(git for-each-ref refs/tags/$TAG_NAME --format='%(taggername)')
-          TAGGER_EMAIL=$(git for-each-ref refs/tags/$TAG_NAME --format='%(taggeremail)')
+          # Use git log to get the tagger information from the most recent tag
+          TAGGER_NAME=$(git log -1 --format="%an" $TAG_NAME)
+          TAGGER_EMAIL=$(git log -1 --format="%ae" $TAG_NAME)
           echo "tagger_name=${TAGGER_NAME}" >> $GITHUB_OUTPUT
           echo "tagger_email=${TAGGER_EMAIL}" >> $GITHUB_OUTPUT
 
