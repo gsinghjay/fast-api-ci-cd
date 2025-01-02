@@ -1,7 +1,7 @@
 # CHANGELOG
 
 
-## Unreleased
+## v1.6.3 (2025-01-02)
 
 ### Bug Fixes
 
@@ -35,6 +35,9 @@
   Maintain security checks - Fix false positive validation failures
 
 ### Documentation
+
+- Update CHANGELOG.md [skip ci]
+  ([`61e3e84`](https://github.com/gsinghjay/fast-api-ci-cd/commit/61e3e84734b9944fcf5e3c305aa3c95b6aad0539))
 
 - Update CHANGELOG.md [skip ci]
   ([`d30beb5`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d30beb511b53c15e5b080dbad3113ad94662625f))
