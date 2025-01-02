@@ -76,9 +76,23 @@ jobs:
           name: ${{ needs.ci.outputs.venv-name }}
           path: artifact
 
+      - name: Debug downloaded artifact
+        run: |
+          echo "Artifact directory contents:"
+          ls -la artifact/
+          echo "Current directory contents:"
+          ls -la
+
       - name: Restore virtual environment
         run: |
-          cp -r artifact/.venv .
+          if [ -d "artifact/.venv" ]; then
+            cp -r artifact/.venv .
+          else
+            echo "Contents of artifact directory:"
+            ls -la artifact/
+            echo "ERROR: No .venv directory found in artifact"
+            exit 1
+          fi
           cp artifact/poetry.lock .
           cp artifact/pyproject.toml .
           chmod -R +x .venv/bin/

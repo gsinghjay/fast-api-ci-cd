@@ -39,12 +39,27 @@ jobs:
       - name: Install dependencies
         run: poetry install
 
+      - name: Debug before copy
+        run: |
+          echo "Current directory contents:"
+          ls -la
+          echo "Virtual environment contents:"
+          ls -la .venv || echo "No .venv directory"
+
       - name: Create artifact directory
         run: |
           mkdir -p artifact
           cp poetry.lock artifact/
           cp pyproject.toml artifact/
-          cp -r .venv artifact/
+          cp -r .venv artifact/ || echo "Failed to copy .venv"
+          echo "Artifact directory contents:"
+          ls -la artifact/
+          if [ -d "artifact/.venv" ]; then
+            echo "Virtual env in artifact:"
+            ls -la artifact/.venv/
+          else
+            echo "No .venv in artifact directory"
+          fi
 
       - name: Upload virtual environment
         uses: actions/upload-artifact@v4
