@@ -10,6 +10,10 @@ on:
       token:
         required: true
         description: "GitHub token for authentication"
+    outputs:
+      venv-name:
+        description: "Name of the virtual environment artifact"
+        value: ${{ jobs.setup.outputs.venv-name }}
   workflow_dispatch:
 
 jobs:
