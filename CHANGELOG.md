@@ -1,6 +1,31 @@
 # CHANGELOG
 
 
+## v1.6.0 (2025-01-02)
+
+### Bug Fixes
+
+- **ci**: Correct changelog generation in PRs
+  ([`5c4c1b1`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5c4c1b17834a6e71ad47b5397465355153a57797))
+
+- Remove invalid --unreleased flag - Use pyproject.toml configuration for unreleased changes -
+  Simplify changelog generation command
+
+- **release**: Use both tags and commits for versioning
+  ([`6418e07`](https://github.com/gsinghjay/fast-api-ci-cd/commit/6418e07827443547d90db6555a32100b98e3eaab))
+
+- Update semantic-release to use both tags and commits - Tags for released versions - Commits for
+  unreleased changes tracking
+
+### Features
+
+- **ci**: Add changelog updates for pull requests
+  ([`ed12395`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ed12395784275436148d659f3a925a1b9ef8653c))
+
+- Add unreleased section to changelog generation - Update changelog during PR development -
+  Configure semantic-release for unreleased changes
+
+
 ## v1.5.1 (2025-01-02)
 
 ### Bug Fixes
