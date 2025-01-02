@@ -273,18 +273,22 @@ flowchart TD
         M -->|Yes| N[Publish Assets]
         M -->|No| O[Skip Publish]
 
-        subgraph "Conditions"
-            P[Skip if:]
-            P --> P1[github-actions bot]
-            P --> P2[[skip ci] tag]
-            P --> P3[chore(release)]
+        subgraph "Skip Conditions"
+            P[Skip if:] --> P1[github-actions bot]
+            P --> P2[skip ci tag]
+            P --> P3[chore release]
         end
     end
 
-    style A fill:#90EE90
-    style I fill:#FFB6C1
-    style L fill:#ADD8E6
-    style N fill:#98FB98
+    classDef trigger fill:#90EE90
+    classDef release fill:#FFB6C1
+    classDef semantic fill:#ADD8E6
+    classDef publish fill:#98FB98
+
+    class A trigger
+    class I release
+    class L semantic
+    class N publish
 ```
 
 ### Workflow Steps Explained
