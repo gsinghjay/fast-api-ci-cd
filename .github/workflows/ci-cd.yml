@@ -178,15 +178,13 @@ jobs:
   # 3. Release Job (Runs only on tags that match v*)
   ##########################################################################
   release:
+    name: Release
+    needs: [lint, test]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest  # Add this back
-    concurrency: release    # Keep this to prevent race conditions
-    needs: test            # Keep this to ensure tests pass first
-
+    runs-on: ubuntu-latest
     permissions:
-      id-token: write
       contents: write
-
+    concurrency: release
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -198,13 +196,28 @@ jobs:
         run: |
           git checkout -B ${{ github.ref_name }} ${{ github.sha }}
 
+      # Add explicit changelog generation step
+      - name: Generate Changelog
+        run: |
+          pip install python-semantic-release==9.15.0
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          # Generate changelog regardless of release
+          semantic-release changelog
+
+          # Commit changelog if changed
+          if [[ -n $(git status --porcelain CHANGELOG.md) ]]; then
+            git add CHANGELOG.md
+            git commit -m "docs: update CHANGELOG.md [skip ci]"
+            git push origin HEAD:${{ github.ref_name }}
+          fi
+
       - name: Python Semantic Release
         id: release
         uses: python-semantic-release/python-semantic-release@v9.15.0
         with:
           github_token: ${{ secrets.PAT_TOKEN }}
-          git_committer_name: "github-actions[bot]"
-          git_committer_email: "41898282+github-actions[bot]@users.noreply.github.com"
 
       - name: Publish to GitHub Release Assets
         uses: python-semantic-release/publish-action@v9.15.0

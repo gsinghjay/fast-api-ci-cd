@@ -253,25 +253,20 @@ flowchart TD
     subgraph "CI/CD Pipeline"
         A[Push/PR] --> B{Event Type?}
 
-        B -->|PR or Push to feature| C[Lint Job]
-        B -->|Push to main| D[Lint Job]
+        B -->|PR or Push| C[Lint Job]
+        B -->|PR or Push| D[Test Job]
 
-        C --> E[Test Job]
-        D --> F[Test Job]
+        C --> E{All Checks Pass?}
+        D --> E
 
-        E --> G{Is main branch?}
-        F --> G
+        E -->|Yes & Main Branch| F[Release Job]
+        E -->|Yes & Feature Branch| G[Skip Release]
 
-        G -->|No| H[Update Changelog]
-        G -->|Yes| I[Release Job]
+        F --> H[Semantic Release]
+        H --> I{Released?}
 
-        I --> J[Checkout Code]
-        J --> K[Force Branch]
-        K --> L[Semantic Release]
-        L --> M{Released?}
-
-        M -->|Yes| N[Publish Assets]
-        M -->|No| O[Skip Publish]
+        I -->|Yes| J[Publish Assets]
+        I -->|No| K[Skip Publish]
 
         subgraph "Skip Conditions"
             P[Skip if:] --> P1[github-actions bot]
@@ -281,14 +276,14 @@ flowchart TD
     end
 
     classDef trigger fill:#90EE90
-    classDef release fill:#FFB6C1
-    classDef semantic fill:#ADD8E6
+    classDef check fill:#FFB6C1
+    classDef release fill:#ADD8E6
     classDef publish fill:#98FB98
 
     class A trigger
-    class I release
-    class L semantic
-    class N publish
+    class E check
+    class H release
+    class J publish
 ```
 
 ### Workflow Steps Explained
