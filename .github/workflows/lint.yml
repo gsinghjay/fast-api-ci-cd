@@ -1,71 +1,69 @@
 name: Lint
 
 on:
-  workflow_call: {}  # Allow this workflow to be called by other workflows
-  pull_request:
-    branches: [ main ]
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      venv-name:
+        required: true
+        type: string
+        description: "Name of the virtual environment artifact"
+      python-version:
+        required: false
+        type: string
+        default: "3.11"
+        description: "Python version to use"
+    secrets:
+      token:
+        required: true
+        description: "GitHub token for authentication"
 
 permissions:
   contents: read
   pull-requests: read
 
 jobs:
-  setup:
-    name: Setup Environment
-    uses: ./.github/workflows/setup-python.yml
-    with:
-      python-version: "3.11"
-
   lint:
     name: Run Linters
-    needs: [setup]
     runs-on: ubuntu-latest
-    # Skip on release commits
-    if: |
-      (github.event_name == 'pull_request') ||
-      (github.actor != 'github-actions[bot]' &&
-       !contains(github.event.head_commit.message, '[skip ci]') &&
-       !contains(github.event.head_commit.message, '[ci skip]') &&
-       !contains(github.event.head_commit.message, '[no ci]') &&
-       !contains(github.event.head_commit.message, 'chore(release)'))
-
     steps:
       - name: Check out code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.11"
+          python-version: ${{ inputs.python-version }}
 
-      - name: Install Poetry
-        run: |
-          pip install poetry==1.8.5
-          poetry config virtualenvs.in-project true
-
-      - name: Cache dependencies
-        uses: actions/cache@v3
+      - name: Download virtual environment
+        uses: actions/download-artifact@v4
         with:
-          path: |
-            ~/.cache/pip
-            ~/.cache/pypoetry
-            .venv
-          key: ${{ runner.os }}-python-3.11-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-python-3.11-
-            ${{ runner.os }}-python-
+          name: ${{ inputs.venv-name }}
+          path: artifact
 
-      - name: Install dependencies
-        run: poetry install
+      - name: Debug downloaded artifact
+        run: |
+          echo "Artifact directory contents:"
+          ls -la artifact/
+          echo "Current directory contents:"
+          ls -la
+
+      - name: Restore virtual environment
+        run: |
+          if [ ! -f "artifact/venv.tar.gz" ]; then
+            echo "ERROR: venv.tar.gz not found in artifact"
+            exit 1
+          fi
+          tar xzf artifact/venv.tar.gz
+          cp artifact/poetry.lock .
+          cp artifact/pyproject.toml .
+          chmod -R +x .venv/bin/
 
       - name: Run Black
-        run: poetry run black --check .
+        run: .venv/bin/black --check .
 
       - name: Check commit messages
         uses: wagoid/commitlint-github-action@v5
-        with:
-          configFile: commitlint.config.js
-          failOnWarnings: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.token }}

@@ -30,31 +30,19 @@ permissions:
   id-token: write
 
 jobs:
-  lint:
-    name: Lint Check
-    uses: ./.github/workflows/lint.yml
+  ci:
+    name: Run CI Checks
+    uses: ./.github/workflows/ci.yml
     permissions:
       contents: read
       pull-requests: read
-
-  test:
-    name: Run Tests
-    needs: [lint]
-    uses: ./.github/workflows/test.yml
-    permissions:
-      contents: read
       checks: write
-
-  setup:
-    name: Setup Environment
-    needs: [test]
-    uses: ./.github/workflows/setup-python.yml
-    with:
-      python-version: "3.11"
+    secrets:
+      token: ${{ secrets.GITHUB_TOKEN }}
 
   release:
     name: Create Release
-    needs: [setup]
+    needs: [ci]
     runs-on: ubuntu-latest
     if: |
       github.ref == 'refs/heads/main' &&
@@ -82,33 +70,35 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install Poetry
-        run: |
-          pip install poetry==1.8.5
-          poetry config virtualenvs.in-project true
-
-      - name: Cache dependencies
-        uses: actions/cache@v3
+      - name: Download virtual environment
+        uses: actions/download-artifact@v4
         with:
-          path: |
-            ~/.cache/pip
-            ~/.cache/pypoetry
-            .venv
-          key: ${{ runner.os }}-python-3.11-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-python-3.11-
-            ${{ runner.os }}-python-
+          name: ${{ needs.ci.outputs.venv-name }}
+          path: artifact
 
-      - name: Install dependencies
-        run: poetry install
+      - name: Debug downloaded artifact
+        run: |
+          echo "Artifact directory contents:"
+          ls -la artifact/
+          echo "Current directory contents:"
+          ls -la
+
+      - name: Restore virtual environment
+        run: |
+          if [ ! -f "artifact/venv.tar.gz" ]; then
+            echo "ERROR: venv.tar.gz not found in artifact"
+            exit 1
+          fi
+          tar xzf artifact/venv.tar.gz
+          cp artifact/poetry.lock .
+          cp artifact/pyproject.toml .
+          chmod -R +x .venv/bin/
 
       - name: Python Semantic Release
         id: release
         uses: python-semantic-release/python-semantic-release@v9.15.0
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VIRTUAL_ENV: ${{ env.VIRTUAL_ENV }}
-          PATH: ${{ env.PATH }}
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           directory: .
