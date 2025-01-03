@@ -33,4 +33,9 @@ def register_user(
     Raises:
         HTTPException: If registration fails
     """
-    return UserService.create_user(db, user)
+    db_user = UserService.create_user(db, user)
+    return UserResponse(
+        id=db_user.id,
+        email=db_user.email,
+        full_name=db_user.full_name,
+    )
