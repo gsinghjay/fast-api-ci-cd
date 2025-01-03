@@ -1,6 +1,94 @@
 # CHANGELOG
 
 
+## v6.3.0 (2025-01-03)
+
+### Build System
+
+* build(deps): add user registration dependencies
+
+- Add SQLAlchemy for database operations
+- Add passlib[bcrypt] for password hashing
+- Add bcrypt for password hashing backend
+- Add pydantic[email] for email validation ([`7fbc075`](https://github.com/gsinghjay/fast-api-ci-cd/commit/7fbc07529e7b5e80b96b8874c52ab6bb0c614cc8))
+
+### Chores
+
+* chore(docs): fixed linting ([`a0edff2`](https://github.com/gsinghjay/fast-api-ci-cd/commit/a0edff230f15fd0565c71914965a6ec81ae0656e))
+
+* chore(git): ignore SQLite database files
+
+- Add *.db, *.sqlite, and *.sqlite3 to .gitignore
+- Prevent accidental commit of database files ([`2fc48c9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2fc48c90fe8309ba2b863e9eed4cc93fbc96d5b7))
+
+### Documentation
+
+* docs(contributing): add testing and database workflow documentation
+
+Add test coverage details and database setup guides for development and testing ([`ad5fab7`](https://github.com/gsinghjay/fast-api-ci-cd/commit/ad5fab7e80aa3b91c61ef9571a716a151807a8e8))
+
+* docs(readme): add user registration documentation
+
+- Add user registration API endpoint documentation
+- Update Features section with auth capabilities
+- Add password requirements and response format ([`7ac4b7d`](https://github.com/gsinghjay/fast-api-ci-cd/commit/7ac4b7da462f443ee6397561dd07b34c73fe7678))
+
+### Features
+
+* feat(app): integrate user registration
+
+- Add user router to FastAPI app
+- Initialize database tables on startup
+- Import required database models ([`1e51d74`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1e51d7445e40c82360bf76df77e377dc5ddf85f7))
+
+* feat(db): add database configuration
+
+- Add SQLAlchemy engine and session setup
+- Add database dependency for FastAPI
+- Configure SQLite for development ([`c06a8f9`](https://github.com/gsinghjay/fast-api-ci-cd/commit/c06a8f998a12d8922424b686fe635f9e27e2bf1d))
+
+* feat(api): add user registration endpoint
+
+- Add POST /api/v1/users/register endpoint
+- Add input validation and error handling
+- Add proper response model and status codes ([`1727144`](https://github.com/gsinghjay/fast-api-ci-cd/commit/17271442ffb4687c1d76a4d9b5071b8ac233c8ec))
+
+* feat(services): add user registration service
+
+- Add password hashing with bcrypt
+- Add user creation with database integration
+- Handle duplicate email errors ([`816ec8b`](https://github.com/gsinghjay/fast-api-ci-cd/commit/816ec8bb04a7a2110ed0437b05d0271ba2b62d95))
+
+* feat(schemas): add user registration schemas
+
+- Add UserBase schema with email and name validation
+- Add UserCreate schema with password validation
+- Add UserResponse schema for API responses
+- Use Pydantic v2 style validators ([`2bf0d71`](https://github.com/gsinghjay/fast-api-ci-cd/commit/2bf0d716340ed614e96b9244b23b4ecf12b1c867))
+
+* feat(models): add user and base SQLAlchemy models
+
+- Add Base model with SQLAlchemy 2.0 style
+- Add User model with email, password, and timestamps
+- Use proper column types and constraints ([`b91aa39`](https://github.com/gsinghjay/fast-api-ci-cd/commit/b91aa39a1dfaa62622e6d49a43882da7c8f7f621))
+
+### Testing
+
+* test(users): add user registration tests
+
+- Add test for successful registration
+- Add test for duplicate email handling
+- Add test for invalid email format
+- Add test for weak password validation
+- Add in-memory SQLite test database setup ([`f7d5d76`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f7d5d765f6f6dd52993fa521a17ff0a96a22059b))
+
+### Unknown
+
+* Merge pull request #84 from gsinghjay/feature/user-registration
+
+feat(auth): implement user registration system ([`1066685`](https://github.com/gsinghjay/fast-api-ci-cd/commit/1066685bacda82bc94fc11595705919f6fc34c15))
+
+
 ## v6.2.0 (2025-01-03)
 
 ### Documentation
@@ -701,7 +789,9 @@ ci!(workflows): split monolithic CI/CD pipeline into focused workflows
   - Simplify coverage reporting
   - Update gitignore patterns
 
-BREAKING CHANGE: CI/CD pipeline has been completely restructured into separate workflows for better maintainability and clarity. This improves pipeline reliability, resource utilization, and development experience. ([`5c259c5`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5c259c58f9a0d93aa606b9192ef08184fca32836))
+BREAKING CHANGE: CI/CD pipeline has been completely restructured into separate 
+workflows for better maintainability and clarity. This improves pipeline 
+reliability, resource utilization, and development experience. ([`5c259c5`](https://github.com/gsinghjay/fast-api-ci-cd/commit/5c259c58f9a0d93aa606b9192ef08184fca32836))
 
 
 ## v1.6.2 (2025-01-02)
