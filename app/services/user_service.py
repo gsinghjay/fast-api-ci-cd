@@ -1,7 +1,7 @@
 """User service module."""
 
 from datetime import datetime, timedelta
-from typing import Optional, Protocol
+from typing import Optional, Protocol, cast
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -165,7 +165,7 @@ class UserService:
         user = self.get_by_email(email)
         if not user:
             return None
-        if not verify_password(password, user.password):
+        if not verify_password(password, cast(str, user.password)):
             return None
         return user
 
