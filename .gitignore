@@ -30,6 +30,7 @@ htmlcov/
 coverage.xml
 .coverage.*
 coverage/
+test-results/
 
 # Logs
 *.log
@@ -55,3 +56,8 @@ __pycache__/
 *.db
 *.sqlite
 *.sqlite3
+
+# Environment variables
+.env
+.env.*
+!.env.example
