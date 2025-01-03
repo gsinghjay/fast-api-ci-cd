@@ -9,7 +9,11 @@ A production-ready FastAPI template with robust CI/CD pipeline, semantic version
 
 ## 📑 Features
 
-- FastAPI-based RESTful API with QR code generation
+- FastAPI-based RESTful API with:
+  - QR code generation
+  - User registration with email validation
+  - Secure password hashing using bcrypt
+  - SQLite database (configurable for production)
 - Poetry for dependency management
 - Comprehensive CI/CD pipeline with GitHub Actions
   - Optimized caching strategy for dependencies
@@ -178,6 +182,33 @@ poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
 
 ## 📝 API Documentation
+
+### User Registration
+```bash
+curl -X POST "http://localhost:8000/api/v1/users/register" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "email": "user@example.com",
+       "password": "StrongPass123!",
+       "full_name": "John Doe"
+     }'
+```
+
+Password requirements:
+- Minimum 8 characters
+- At least one uppercase letter
+- At least one lowercase letter
+- At least one number
+- At least one special character
+
+Response (201 Created):
+```json
+{
+  "id": 1,
+  "email": "user@example.com",
+  "full_name": "John Doe"
+}
+```
 
 ### Generate QR Code
 ```bash
