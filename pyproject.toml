@@ -19,6 +19,8 @@ pydantic = {extras = ["email"], version = "^2.6.0"}
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 sqlalchemy = "^2.0.25"
 bcrypt = "^4.1.2"
+psycopg2-binary = "^2.9.9"
+slowapi = "^0.1.8"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.0"
@@ -28,6 +30,21 @@ python-semantic-release = "^9.15.0"
 httpx = "^0.26.0"
 flake8 = "^7.0.0"
 mypy = "^1.8.0"
+pytest-asyncio = "^0.23.5"
+pytest-postgresql = "^5.0.0"
+psycopg = "^3.1.17"
+psycopg-binary = "^3.1.17"
+
+[tool.pytest.ini_options]
+# PostgreSQL test database configuration
+postgresql_port = 5432
+postgresql_host = "127.0.0.1"
+postgresql_user = "postgres"
+postgresql_password = "postgres"
+postgresql_dbname = "test_db"
+
+# Test settings
+asyncio_mode = "strict"
 
 [build-system]
 requires = ["poetry-core"]
