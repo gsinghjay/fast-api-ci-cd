@@ -1,50 +1,40 @@
 """Main FastAPI application module."""
 
-from contextlib import asynccontextmanager
 from fastapi import FastAPI
-import structlog
-from app import __version__
-from app.routers import qr_code_router, user_router
-from app.utils.logging_config import configure_logging
-from app.models.base import Base
-from app.utils.db import engine
+from fastapi.middleware.cors import CORSMiddleware
 
-# Configure logging
-configure_logging()
-logger = structlog.get_logger()
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Handle startup and shutdown events for the FastAPI application."""
-    # Startup
-    logger.info("application.startup", version=__version__)
-    # Create database tables
-    Base.metadata.create_all(bind=engine)
-    yield
-    # Shutdown
-    logger.info("application.shutdown")
-
+from app.routers import user_router, qr_code_router
+from app.middleware.rate_limiter import RateLimiter
 
 app = FastAPI(
-    title="QR Code Generator",
-    description="A robust and scalable QR Code Generator application",
-    version=__version__,
-    lifespan=lifespan,
+    title="FastAPI CI/CD Example",
+    description="A FastAPI example with CI/CD, authentication, and more",
+    version="0.1.0",
 )
 
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, replace with specific origins
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Add rate limiter middleware
+app.add_middleware(RateLimiter)
+
 # Include routers
-app.include_router(qr_code_router.router)
 app.include_router(user_router.router)
+app.include_router(qr_code_router.router)
 
 
-@app.get("/health")
-async def health_check():
+@app.get("/")
+async def root() -> dict[str, str]:
     """
-    Health check endpoint to verify the service is running.
+    Root endpoint.
 
     Returns:
-        dict: Status information including version and status
+        dict: Welcome message
     """
-    logger.info("health_check.called")
-    return {"status": "healthy", "version": __version__}
+    return {"message": "Welcome to FastAPI CI/CD Example"}
