@@ -1,6 +1,4 @@
-"""
-Router for QR code related endpoints.
-"""
+"""Router for QR code related endpoints."""
 
 from fastapi import APIRouter
 from app.schemas.qr_code_schemas import QRCodeRequest

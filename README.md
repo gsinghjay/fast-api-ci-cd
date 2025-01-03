@@ -18,9 +18,18 @@ A production-ready FastAPI template with robust CI/CD pipeline, semantic version
     - Pip cache for Poetry installation
   - Matrix testing with Python 3.11
   - Automated dependency updates
+- Robust code quality checks
+  - Black for code formatting
+  - Flake8 with advanced plugins:
+    - flake8-docstrings for docstring validation
+    - flake8-bugbear for bug detection
+    - flake8-comprehensions for optimization
+    - flake8-simplify for code simplification
+  - MyPy for static type checking
+  - Commitlint for commit message validation
+  - Pre-commit hooks for automated validation
 - Semantic versioning with automated releases
 - Automated changelog generation on main branch
-- Code quality checks (Black, Commitlint)
 - Structured logging with structlog
 - Prometheus metrics integration
 - Conventional Commits standard

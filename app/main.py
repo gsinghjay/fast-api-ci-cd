@@ -1,6 +1,4 @@
-"""
-Main FastAPI application module.
-"""
+"""Main FastAPI application module."""
 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
@@ -16,9 +14,7 @@ logger = structlog.get_logger()
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """
-    Handle startup and shutdown events for the FastAPI application.
-    """
+    """Handle startup and shutdown events for the FastAPI application."""
     # Startup
     logger.info("application.startup", version=__version__)
     yield

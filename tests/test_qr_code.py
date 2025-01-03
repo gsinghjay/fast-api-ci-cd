@@ -1,6 +1,4 @@
-"""
-Tests for QR code generation functionality.
-"""
+"""Tests for QR code generation functionality."""
 
 from fastapi.testclient import TestClient
 from app.main import app
@@ -23,7 +21,7 @@ def test_generate_qr_code():
         decoded = base64.b64decode(qr_code)
         assert decoded.startswith(b"\x89PNG")  # PNG magic number
     except Exception:
-        assert False, "Invalid base64 encoded PNG image"
+        raise AssertionError("Invalid base64 encoded PNG image")
 
 
 def test_generate_qr_code_with_colors():
@@ -46,4 +44,4 @@ def test_generate_qr_code_with_colors():
         decoded = base64.b64decode(qr_code)
         assert decoded.startswith(b"\x89PNG")  # PNG magic number
     except Exception:
-        assert False, "Invalid base64 encoded PNG image"
+        raise AssertionError("Invalid base64 encoded PNG image")
