@@ -1,91 +1,84 @@
-"""Router for user-related endpoints."""
+"""User router module."""
 
-from datetime import datetime
-from typing import Annotated
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-
-from app.schemas.user_schema import (
-    UserCreate,
-    UserResponse,
-    Token,
-    PasswordReset,
-    PasswordResetConfirm,
-)
-from app.services.user_service import UserService
-from app.utils.db import get_db
-from app.utils.dependencies import get_current_active_user
 from app.models.user import User
+from app.schemas.user import UserCreate, UserResponse, TokenResponse
+from app.services.user_service import UserService, UserServiceProtocol
+from app.core.database import get_db
+from app.core.security import create_access_token
 
 router = APIRouter(prefix="/api/v1/users", tags=["users"])
 
-# Create dependency instances
-db_dependency = Depends(get_db)
-oauth_form_dependency = Depends(OAuth2PasswordRequestForm)
-current_user_dependency = Depends(get_current_active_user)
 
-
-@router.post("/register", response_model=UserResponse, status_code=201)
-def register_user(user: UserCreate, db: Session = db_dependency) -> UserResponse:
-    """Register a new user.
+@router.post(
+    "/register", response_model=UserResponse, status_code=status.HTTP_201_CREATED
+)
+def register_user(user: UserCreate, db: Session = Depends(get_db)) -> User:
+    """
+    Register a new user.
 
     Args:
         user: User registration data
         db: Database session
 
     Returns:
-        UserResponse: Created user data
+        User: Created user instance
 
     Raises:
-        HTTPException: If registration fails
+        HTTPException: If user with email already exists
     """
-    db_user = UserService.create_user(db, user)
-    return UserResponse.model_validate(db_user)
+    service: UserServiceProtocol = UserService()(db)
+    existing_user = service.get_by_email(user.email)
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered",
+        )
+    return service.create(user)
 
 
-@router.post("/login", response_model=Token)
-async def login(
-    form_data: Annotated[OAuth2PasswordRequestForm, oauth_form_dependency],
-    db: Session = db_dependency,
-) -> Token:
-    """Authenticate user and create access token.
+@router.post("/login", response_model=TokenResponse)
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db),
+) -> dict[str, str]:
+    """
+    Authenticate user and create access token.
 
     Args:
         form_data: OAuth2 password request form
         db: Database session
 
     Returns:
-        Token: JWT access token
+        dict: Access token and token type
 
     Raises:
         HTTPException: If authentication fails
     """
-    user = UserService.authenticate_user(db, form_data.username, form_data.password)
-    access_token = UserService.create_login_token(user)
-    user.last_login = datetime.utcnow()
-    db.commit()
-    return Token(access_token=access_token)
+    service: UserServiceProtocol = UserService()(db)
+    user = service.authenticate(form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    if not user.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Please verify your email first",
+        )
 
-
-@router.get("/me", response_model=UserResponse)
-async def read_users_me(
-    current_user: Annotated[User, current_user_dependency]
-) -> UserResponse:
-    """Get current user information.
-
-    Args:
-        current_user: Current authenticated user
-
-    Returns:
-        UserResponse: Current user data
-    """
-    return UserResponse.model_validate(current_user)
+    access_token = create_access_token(data={"sub": user.email, "role": user.role})
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.get("/verify/{token}")
-async def verify_email(token: str, db: Session = db_dependency) -> dict[str, str]:
-    """Verify user email.
+def verify_email(token: str, db: Session = Depends(get_db)) -> dict[str, str]:
+    """
+    Verify user's email with token.
 
     Args:
         token: Verification token
@@ -97,37 +90,44 @@ async def verify_email(token: str, db: Session = db_dependency) -> dict[str, str
     Raises:
         HTTPException: If verification fails
     """
-    UserService.verify_email(db, token)
+    service: UserServiceProtocol = UserService()(db)
+    user = service.verify_user(token)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid verification token",
+        )
     return {"message": "Email verified successfully"}
 
 
 @router.post("/password-reset", status_code=status.HTTP_202_ACCEPTED)
-async def request_password_reset(
-    reset_request: PasswordReset, db: Session = db_dependency
-) -> dict[str, str]:
-    """Request password reset.
+def request_password_reset(email: str, db: Session = Depends(get_db)) -> dict[str, str]:
+    """
+    Request password reset token.
 
     Args:
-        reset_request: Password reset request
+        email: User's email
         db: Database session
 
     Returns:
         dict: Success message
     """
-    UserService.create_password_reset_token(db, reset_request.email)
-    return {
-        "message": "If your email is registered, you will receive a password reset link"
-    }
+    service: UserServiceProtocol = UserService()(db)
+    if service.create_password_reset(email):
+        return {"message": "If your email is registered, you will receive a reset link"}
+    return {"message": "If your email is registered, you will receive a reset link"}
 
 
 @router.post("/password-reset/confirm")
-async def confirm_password_reset(
-    reset_confirm: PasswordResetConfirm, db: Session = db_dependency
+def reset_password(
+    token: str, new_password: str, db: Session = Depends(get_db)
 ) -> dict[str, str]:
-    """Confirm password reset.
+    """
+    Reset user's password with token.
 
     Args:
-        reset_confirm: Password reset confirmation
+        token: Reset token
+        new_password: New password
         db: Database session
 
     Returns:
@@ -136,5 +136,11 @@ async def confirm_password_reset(
     Raises:
         HTTPException: If reset fails
     """
-    UserService.reset_password(db, reset_confirm.token, reset_confirm.new_password)
+    service: UserServiceProtocol = UserService()(db)
+    user = service.reset_password(token, new_password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid or expired reset token",
+        )
     return {"message": "Password reset successfully"}

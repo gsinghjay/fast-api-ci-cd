@@ -1,10 +1,10 @@
 """Main FastAPI application module."""
 
 import os
-from typing import Any, Callable
+from typing import Callable, Awaitable
 from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
-from slowapi import _rate_limit_exceeded_handler
+from fastapi.responses import JSONResponse
 from slowapi.errors import RateLimitExceeded
 
 from app import __version__
@@ -25,14 +25,47 @@ app.add_middleware(
 
 # Add rate limiter
 app.state.limiter = limiter
-app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+
+
+async def rate_limit_handler(request: Request, exc: Exception) -> Response:
+    """Handle rate limit exceeded exceptions.
+
+    Args:
+        request: The incoming request
+        exc: The exception that was raised
+
+    Returns:
+        Response: JSON response with rate limit error details
+    """
+    if isinstance(exc, RateLimitExceeded):
+        return JSONResponse(
+            status_code=429,
+            content={
+                "detail": "Rate limit exceeded. Please try again later.",
+                "type": "rate_limit_exceeded",
+            },
+            headers={"Retry-After": "60"},
+        )
+    raise exc
+
+
+# Register the rate limit handler
+app.add_exception_handler(RateLimitExceeded, rate_limit_handler)
 
 
 @app.middleware("http")
 async def rate_limit_middleware(
-    request: Request, call_next: Callable[[Request], Any]
+    request: Request, call_next: Callable[[Request], Awaitable[Response]]
 ) -> Response:
-    """Apply rate limiting to all requests."""
+    """Apply rate limiting to all requests.
+
+    Args:
+        request: The incoming request
+        call_next: The next middleware in the chain
+
+    Returns:
+        Response: The response from the next middleware
+    """
     if os.getenv("TESTING") != "1":
         await rate_limit_requests(request)
     response = await call_next(request)
@@ -46,5 +79,9 @@ app.include_router(qr_router)
 
 @app.get("/health")
 async def health_check() -> dict[str, str]:
-    """Health check endpoint."""
+    """Health check endpoint.
+
+    Returns:
+        dict[str, str]: Health status and version information
+    """
     return {"status": "healthy", "version": __version__}
