@@ -37,6 +37,35 @@ Thank you for your interest in contributing to our project! This document provid
    poetry run pre-commit install --hook-type commit-msg
    ```
 
+### Code Quality Tools
+
+We use several tools to maintain code quality:
+
+1. **Black** - Code Formatting
+   - Line length: 88 characters
+   - Python target version: 3.11
+   - Run with: `poetry run black .`
+
+2. **Flake8** - Code Style and Quality Checks
+   - Configuration in `.flake8`
+   - Additional plugins:
+     - `flake8-docstrings`: Docstring style checking
+     - `flake8-bugbear`: Bug and design problem detection
+     - `flake8-comprehensions`: List/dict/set comprehension checks
+     - `flake8-simplify`: Code simplification suggestions
+   - Run with: `poetry run flake8`
+
+3. **MyPy** - Static Type Checking
+   - Configuration in `pyproject.toml`
+   - Type stub dependencies included
+   - Pydantic plugin enabled
+   - Run with: `poetry run mypy`
+
+4. **Pre-commit** - Automated Quality Checks
+   - Runs all linters before commit
+   - Validates commit messages
+   - Run manually: `poetry run pre-commit run --all-files`
+
 ### Development Process
 
 1. **Create a Feature Branch**
@@ -47,12 +76,19 @@ Thank you for your interest in contributing to our project! This document provid
    ```
 
 2. **Make Changes**
-   - Write your code
+   - Write your code following our style guides:
+     - Use type hints for function arguments and returns
+     - Write docstrings for all public functions/classes
+     - Keep docstrings concise and on one line when possible
+     - Use descriptive variable names
    - Add tests
    - Update documentation
    - Run local checks:
      ```bash
-     poetry run black .
+     # Run all quality checks
+     poetry run pre-commit run --all-files
+
+     # Run tests
      poetry run pytest
      ```
 
