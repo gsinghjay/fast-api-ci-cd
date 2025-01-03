@@ -1,6 +1,46 @@
 # CHANGELOG
 
 
+## v6.2.0 (2025-01-03)
+
+### Documentation
+
+* docs(quality): update documentation for code quality tools
+
+- Add detailed code quality tools section to CONTRIBUTING.md
+- Update Features section in README.md to include all linting tools
+- Maintain Commitlint in the tooling list
+- Include configuration details and usage instructions ([`d92e223`](https://github.com/gsinghjay/fast-api-ci-cd/commit/d92e2231250e38f4b1359421c7e93776a216586b))
+
+### Features
+
+* feat(lint): enhance code quality with flake8 and mypy
+
+- Add flake8 with additional plugins:
+ - flake8-docstrings for docstring checks
+ - flake8-bugbear for additional bug checks
+ - flake8-comprehensions for list/dict/set comprehension checks
+ - flake8-simplify for code simplification suggestions
+
+ - Add mypy for static type checking with:
+  - Essential type stubs (PyYAML, python-jose, requests, setuptools)
+
+  - Pydantic plugin support
+  - Configurable type checking settings
+
+  - Fix code quality issues:
+    - Convert multi-line docstrings to single-line format
+    - Replace assert False with raise AssertionError()
+    - Add flake8 configuration file
+    - Update pre-commit hooks configuration ([`f9927df`](https://github.com/gsinghjay/fast-api-ci-cd/commit/f9927df68539b8ac4e82a79ddb699068e6397846))
+
+### Unknown
+
+* Merge pull request #83 from gsinghjay/feat/add-linting-improvements
+
+feat(lint): enhance code quality with flake8 and mypy ([`fa1fc68`](https://github.com/gsinghjay/fast-api-ci-cd/commit/fa1fc68c737eaf43706e8386faf6ed9e61fbe99b))
+
+
 ## v6.1.0 (2025-01-02)
 
 ### Documentation
