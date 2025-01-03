@@ -50,3 +50,8 @@ yarn-error.log*
 .cache/
 __pycache__/
 *.pyc
+
+# SQLite database files
+*.db
+*.sqlite
+*.sqlite3
