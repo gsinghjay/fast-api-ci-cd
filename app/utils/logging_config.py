@@ -1,6 +1,4 @@
-"""
-Logging configuration using structlog.
-"""
+"""Logging configuration using structlog."""
 
 import structlog
 import logging

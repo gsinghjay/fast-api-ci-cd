@@ -1,6 +1,4 @@
-"""
-Service module for QR code generation.
-"""
+"""Service module for QR code generation."""
 
 import qrcode
 from io import BytesIO

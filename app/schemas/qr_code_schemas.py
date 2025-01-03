@@ -1,6 +1,4 @@
-"""
-Pydantic schemas for QR code related operations.
-"""
+"""Pydantic schemas for QR code related operations."""
 
 from pydantic import BaseModel, Field
 

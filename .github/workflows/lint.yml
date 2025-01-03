@@ -64,6 +64,12 @@ jobs:
       - name: Run Black
         run: .venv/bin/black --check .
 
+      - name: Run Flake8
+        run: .venv/bin/flake8 .
+
+      - name: Run MyPy
+        run: .venv/bin/mypy .
+
       - name: Check commit messages
         uses: wagoid/commitlint-github-action@v5
         env:
