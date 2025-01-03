@@ -13,7 +13,8 @@ A production-ready FastAPI template with robust CI/CD pipeline, semantic version
   - QR code generation
   - User registration with email validation
   - Secure password hashing using bcrypt
-  - SQLite database (configurable for production)
+  - PostgreSQL database with pytest-postgresql for testing
+  - Rate limiting with slowapi
 - Poetry for dependency management
 - Comprehensive CI/CD pipeline with GitHub Actions
   - Optimized caching strategy for dependencies
@@ -22,6 +23,7 @@ A production-ready FastAPI template with robust CI/CD pipeline, semantic version
     - Pip cache for Poetry installation
   - Matrix testing with Python 3.11
   - Automated dependency updates
+  - PostgreSQL integration testing
 - Robust code quality checks
   - Black for code formatting
   - Flake8 with advanced plugins:
@@ -29,7 +31,7 @@ A production-ready FastAPI template with robust CI/CD pipeline, semantic version
     - flake8-bugbear for bug detection
     - flake8-comprehensions for optimization
     - flake8-simplify for code simplification
-  - MyPy for static type checking
+  - MyPy for static type checking with strict type enforcement
   - Commitlint for commit message validation
   - Pre-commit hooks for automated validation
 - Semantic versioning with automated releases
@@ -157,6 +159,14 @@ Footer:
 
    # Install commitlint
    npm install -g @commitlint/cli @commitlint/config-conventional
+
+   # Install PostgreSQL (required for tests)
+   # For Ubuntu/Debian:
+   sudo apt-get update && sudo apt-get install -y postgresql-14 postgresql-server-dev-14
+   # For macOS:
+   brew install postgresql@14
+   # For Windows:
+   # Download and install from https://www.postgresql.org/download/windows/
    ```
 
 2. **Set up Pre-commit Hooks**
@@ -171,11 +181,39 @@ Footer:
    export GH_TOKEN=your_github_pat_token
    ```
 
+4. **Configure GitHub Actions**
+   - Go to repository Settings → Secrets and variables → Actions
+   - Add the following secrets:
+     - `GH_TOKEN`: GitHub Personal Access Token with repo scope
+     - `POSTGRES_USER`: PostgreSQL user for tests (default: postgres)
+     - `POSTGRES_PASSWORD`: PostgreSQL password for tests
+     - `POSTGRES_DB`: PostgreSQL database name for tests
+   - Add the following variables:
+     - `PYTHON_VERSION`: 3.11
+     - `POETRY_VERSION`: Latest version (e.g., 1.7.1)
+
+5. **Configure Branch Protection**
+   - Go to Settings → Branches → Add rule
+   - Branch name pattern: `main`
+   - Enable:
+     - Require pull request reviews
+     - Dismiss stale pull request approvals
+     - Require status checks to pass
+     - Require branches to be up to date
+     - Include administrators
+   - Add required status checks:
+     - `test`
+     - `lint`
+     - `type-check`
+
 ## 🚀 Running the Application
 
 ```bash
-# Development server
+# Development server with hot reload
 poetry run uvicorn app.main:app --reload --log-level debug
+
+# Run tests
+poetry run pytest -v
 
 # Production server
 poetry run uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
@@ -231,6 +269,12 @@ Required environment variables:
 - `PORT`: Application port (default: 8000)
 - `WORKERS`: Number of worker processes (default: 1)
 - `METRICS_ENABLED`: Enable/disable Prometheus metrics
+- `POSTGRES_USER`: PostgreSQL user
+- `POSTGRES_PASSWORD`: PostgreSQL password
+- `POSTGRES_DB`: PostgreSQL database name
+- `POSTGRES_HOST`: PostgreSQL host (default: localhost)
+- `POSTGRES_PORT`: PostgreSQL port (default: 5432)
+- `RATE_LIMIT_PER_MINUTE`: Rate limit per minute per IP (default: 5)
 
 ## 🤝 Contributing
 
@@ -494,12 +538,12 @@ flowchart TD
     subgraph "CI/CD Pipeline"
         A[Push/PR] --> B{Event Type?}
 
-        B --> |PR/Push| C[Setup Python]
+        B --> |PR/Push| C[Setup Python & PostgreSQL]
         C --> D[Install Dependencies]
         D --> E[Cache Environment]
 
-        E --> F[Lint Check]
-        E --> G[Test]
+        E --> F[Lint & Type Check]
+        E --> G[Test with PostgreSQL]
 
         F & G --> H{All Checks Pass?}
 
@@ -536,26 +580,103 @@ flowchart TD
 ### Workflow Files Structure
 
 1. **CI Workflow** (.github/workflows/ci.yml)
-   - Main orchestrator workflow
-   - Triggers on push to main and pull requests
-   - Controls the release process
-   - Uses reusable workflows for setup, lint, and test
+   ```yaml
+   name: CI
+   on:
+     push:
+       branches: [ main ]
+     pull_request:
+       branches: [ main ]
 
-2. **Setup Workflow** (.github/workflows/setup-python.yml)
-   - Sets up Python environment
-   - Installs and configures Poetry
-   - Creates and caches virtual environment
-   - Shares environment via artifacts
+   jobs:
+     test:
+       runs-on: ubuntu-latest
+       services:
+         postgres:
+           image: postgres:14
+           env:
+             POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+             POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+             POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+           ports:
+             - 5432:5432
+           options: >-
+             --health-cmd pg_isready
+             --health-interval 10s
+             --health-timeout 5s
+             --health-retries 5
+       steps:
+         - uses: actions/checkout@v4
+         - name: Set up Python
+           uses: actions/setup-python@v4
+           with:
+             python-version: ${{ vars.PYTHON_VERSION }}
+         - name: Install Poetry
+           run: |
+             curl -sSL https://install.python-poetry.org | python3 -
+             poetry config virtualenvs.in-project true
+         - name: Cache Poetry environment
+           uses: actions/cache@v3
+           with:
+             path: .venv
+             key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+         - name: Install dependencies
+           run: poetry install
+         - name: Run tests
+           run: poetry run pytest -v
+           env:
+             POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+             POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+             POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+             POSTGRES_HOST: localhost
+             POSTGRES_PORT: 5432
 
-3. **Lint Workflow** (.github/workflows/lint.yml)
-   - Runs Black code formatter
-   - Validates commit messages with Commitlint
-   - Uses shared virtual environment
+     lint:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@v4
+         - name: Set up Python
+           uses: actions/setup-python@v4
+           with:
+             python-version: ${{ vars.PYTHON_VERSION }}
+         - name: Install Poetry
+           run: |
+             curl -sSL https://install.python-poetry.org | python3 -
+             poetry config virtualenvs.in-project true
+         - name: Cache Poetry environment
+           uses: actions/cache@v3
+           with:
+             path: .venv
+             key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+         - name: Install dependencies
+           run: poetry install
+         - name: Run linters
+           run: |
+             poetry run black . --check
+             poetry run flake8
+             poetry run mypy .
+   ```
 
-4. **Test Workflow** (.github/workflows/test.yml)
-   - Runs pytest with coverage
-   - Uses shared virtual environment
-   - Reports test results
+2. **Release Workflow** (.github/workflows/release.yml)
+   ```yaml
+   name: Release
+   on:
+     push:
+       branches: [ main ]
+
+   jobs:
+     release:
+       runs-on: ubuntu-latest
+       if: "!contains(github.event.head_commit.message, 'chore(release)')"
+       steps:
+         - uses: actions/checkout@v4
+           with:
+             fetch-depth: 0
+         - name: Python Semantic Release
+           uses: python-semantic-release/python-semantic-release@v8.3.0
+           with:
+             github_token: ${{ secrets.GH_TOKEN }}
+   ```
 
 ### Workflow Execution
 

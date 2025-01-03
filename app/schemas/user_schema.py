@@ -1,8 +1,11 @@
 """Schema definitions for user-related operations."""
 
 import re
-from typing import Annotated
+from typing import Annotated, Optional
+from datetime import datetime
 from pydantic import BaseModel, EmailStr, constr, field_validator, ConfigDict
+
+from app.models.user import UserRole
 
 
 class UserBase(BaseModel):
@@ -45,8 +48,45 @@ class UserCreate(UserBase):
         return v
 
 
+class UserLogin(BaseModel):
+    """Schema for user login request."""
+
+    email: EmailStr
+    password: str
+
+
+class Token(BaseModel):
+    """Schema for token response."""
+
+    access_token: str
+    token_type: str = "bearer"
+
+
 class UserResponse(UserBase):
     """Schema for user response."""
 
     id: int
+    is_verified: bool
+    role: UserRole
+    last_login: Optional[datetime] = None
+    created_at: datetime
     model_config = ConfigDict(from_attributes=True)
+
+
+class PasswordReset(BaseModel):
+    """Schema for password reset request."""
+
+    email: EmailStr
+
+
+class PasswordResetConfirm(BaseModel):
+    """Schema for password reset confirmation."""
+
+    token: str
+    new_password: str
+
+    @field_validator("new_password")
+    @classmethod
+    def validate_password(cls, v: str) -> str:
+        """Validate password strength."""
+        return UserCreate.validate_password(v)

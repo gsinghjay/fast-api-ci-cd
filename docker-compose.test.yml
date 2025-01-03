@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  test-db:
+    image: postgres:15-alpine
+    env_file: .env
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data
+
+  test-app:
+    build:
+      context: .
+      target: test
+    env_file: .env
+    depends_on:
+      test-db:
+        condition: service_healthy
+    volumes:
+      - ./tests:/app/tests:ro
+      - ./coverage:/app/coverage
+
+volumes:
+  postgres_test_data:
+    driver: local

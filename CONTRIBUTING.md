@@ -10,6 +10,7 @@ Thank you for your interest in contributing to our project! This document provid
 2. Poetry (for dependency management)
 3. Node.js (for commit linting)
 4. Git
+5. PostgreSQL 14
 
 ### Initial Setup
 
@@ -22,13 +23,21 @@ Thank you for your interest in contributing to our project! This document provid
 2. **Install Dependencies**
    ```bash
    # Install Poetry
-   pip install poetry==1.8.5
+   curl -sSL https://install.python-poetry.org | python3 -
 
    # Install project dependencies
    poetry install
 
    # Install commit linting tools
    npm install
+
+   # Install PostgreSQL (required for tests)
+   # For Ubuntu/Debian:
+   sudo apt-get update && sudo apt-get install -y postgresql-14 postgresql-server-dev-14
+   # For macOS:
+   brew install postgresql@14
+   # For Windows:
+   # Download and install from https://www.postgresql.org/download/windows/
    ```
 
 3. **Set up Pre-commit Hooks**
@@ -57,6 +66,7 @@ We use several tools to maintain code quality:
 
 3. **MyPy** - Static Type Checking
    - Configuration in `pyproject.toml`
+   - Strict type checking enabled
    - Type stub dependencies included
    - Pydantic plugin enabled
    - Run with: `poetry run mypy`
@@ -89,7 +99,7 @@ We use several tools to maintain code quality:
      poetry run pre-commit run --all-files
 
      # Run tests
-     poetry run pytest
+     poetry run pytest -v
      ```
 
 3. **Commit Changes**
@@ -134,94 +144,38 @@ We use several tools to maintain code quality:
 
 ## 🔍 CI/CD Pipeline
 
-Our CI/CD pipeline automates testing, linting, and release processes. Here's a visual representation of our workflow:
+Our CI/CD pipeline automates testing, linting, and release processes. Here's what happens when you create a PR:
 
-```mermaid
-flowchart TD
-    subgraph "CI/CD Pipeline"
-        A[Push/PR] --> B{Event Type?}
+1. **Setup Environment**
+   - Python 3.11 environment is created
+   - Poetry and dependencies are installed
+   - PostgreSQL service is started
+   - Virtual environment is cached
 
-        B --> |PR/Push| C[Setup Python]
-        C --> D[Install Dependencies]
-        D --> E[Cache Environment]
+2. **Quality Checks**
+   - Black code formatting
+   - Flake8 style checks
+   - MyPy type checking
+   - Pre-commit hooks validation
 
-        E --> F[Lint Check]
-        E --> G[Test]
+3. **Testing**
+   - PostgreSQL database is initialized
+   - Pytest runs all tests
+   - Coverage report is generated
+   - Test results are reported
 
-        F & G --> H{All Checks Pass?}
-
-        H -->|No| I[Report Failure]
-        H -->|Yes & PR| J[Ready for Review]
-        H -->|Yes & Push to Main| K[Semantic Release]
-
-        K --> L[Generate Changelog]
-        L --> M[Create Release]
-        M --> N[Publish Assets]
-
-        subgraph "Skip Release Conditions"
-            S1[Skip if]
-            S2[Commit by github-actions]
-            S3["Message contains 'skip ci'"]
-            S4["Message has 'chore(release)'"]
-            S1 --> S2 & S3 & S4
-        end
-    end
-
-    classDef trigger fill:#90EE90
-    classDef setup fill:#FFE4B5
-    classDef check fill:#FFB6C1
-    classDef release fill:#ADD8E6
-    classDef skip fill:#D3D3D3
-
-    class A trigger
-    class C,D,E setup
-    class F,G,H check
-    class K,L,M,N release
-    class S1,S2,S3,S4 skip
-```
-
-### Workflow Details
-
-1. **CI Pipeline** (`ci.yml`)
-   - Orchestrates the entire CI/CD process
-   - Triggers on pull requests and pushes to main branch
-   - Coordinates setup, lint, test, and release jobs
-   - Handles release automation when all checks pass on main branch
-   - Uses semantic versioning for releases
-
-2. **Setup Environment** (`setup-python.yml`)
-   - Sets up Python 3.11 environment
-   - Installs and configures Poetry
-   - Installs project dependencies
-   - Creates and caches virtual environment
-   - Produces a reusable artifact for other workflows
-
-3. **Lint Check** (`lint.yml`)
-   - Downloads virtual environment artifact
-   - Runs Black code formatter in check mode
-   - Validates commit messages using commitlint
-   - Ensures code style consistency
-   - Requires GitHub token for PR access
-
-4. **Test Suite** (`test.yml`)
-   - Downloads virtual environment artifact
-   - Executes pytest test suite
-   - Generates code coverage report
-   - Reports test results
-   - Writes test results to GitHub Checks
-
-5. **Release Process** (part of `ci.yml`)
-   - Only runs on main branch after successful checks
-   - Uses Python Semantic Release
-   - Creates new version based on commit messages
-   - Updates CHANGELOG.md
-   - Creates GitHub release with assets
+4. **Release Process** (on main branch)
+   - Semantic version is determined
+   - Changelog is updated
+   - Release is created
+   - Assets are published
 
 ## 📝 Code Style Guidelines
 
 1. **Python Code**
    - Follow PEP 8 guidelines
    - Use Black for formatting
+   - Include type hints for all functions
    - Include docstrings for public functions/classes
    - Maximum line length: 88 characters (Black default)
 
@@ -243,10 +197,11 @@ When filing a bug report, please include:
 
 1. Python version
 2. Operating system
-3. Steps to reproduce
-4. Expected vs actual behavior
-5. Relevant logs/screenshots
-6. Possible fixes (if any)
+3. PostgreSQL version
+4. Steps to reproduce
+5. Expected vs actual behavior
+6. Relevant logs/screenshots
+7. Possible fixes (if any)
 
 ## 🚀 Feature Requests
 
@@ -264,6 +219,7 @@ When proposing new features:
 - [Poetry Documentation](https://python-poetry.org/docs/)
 - [Conventional Commits](https://www.conventionalcommits.org/)
 - [Keep a Changelog](https://keepachangelog.com/)
+- [pytest-postgresql Documentation](https://pytest-postgresql.readthedocs.io/)
 
 ## ⚖️ License
 
@@ -274,9 +230,9 @@ By contributing, you agree that your contributions will be licensed under the MI
 1. **Unit Tests**
    - API endpoint tests
    - Database integration tests
-   - In-memory SQLite for test isolation
+   - PostgreSQL for test isolation
    ```bash
-   poetry run pytest
+   poetry run pytest -v
    ```
 
 2. **Test Coverage**
@@ -286,10 +242,11 @@ By contributing, you agree that your contributions will be licensed under the MI
      - Password validation
      - Email format validation
    - QR code generation tests
+   - Rate limiting tests
    - Health check endpoint tests
 
 3. **Database Testing**
-   - Tests use in-memory SQLite
+   - Tests use pytest-postgresql
    - Each test gets fresh database
    - Automatic cleanup after tests
    - Transaction rollback support
@@ -299,26 +256,31 @@ By contributing, you agree that your contributions will be licensed under the MI
    - Request validation testing
    - Response schema validation
    - Error handling verification
+   - Rate limit verification
 
 ### Database Workflow
 
 1. **Development Database**
    ```bash
-   # SQLite database is created automatically at:
-   ./test.db
+   # PostgreSQL connection settings
+   POSTGRES_USER=postgres
+   POSTGRES_PASSWORD=postgres
+   POSTGRES_DB=app
+   POSTGRES_HOST=localhost
+   POSTGRES_PORT=5432
    ```
 
 2. **Test Database**
    ```bash
-   # In-memory SQLite is used for tests
-   # No setup required - handled automatically by pytest
+   # pytest-postgresql handles test database automatically
+   # Configuration in pyproject.toml
    ```
 
 3. **Database Migrations**
    - Models defined in `app/models/`
    - Tables created automatically on startup
-   - Development uses SQLite
-   - Production should use PostgreSQL
+   - Development uses PostgreSQL
+   - Tests use pytest-postgresql
 
 4. **Best Practices**
    - Use SQLAlchemy 2.0 style
