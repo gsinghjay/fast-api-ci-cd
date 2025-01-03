@@ -4,8 +4,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 import structlog
 from app import __version__
-from app.routers import qr_code_router
+from app.routers import qr_code_router, user_router
 from app.utils.logging_config import configure_logging
+from app.models.base import Base
+from app.utils.db import engine
 
 # Configure logging
 configure_logging()
@@ -17,6 +19,8 @@ async def lifespan(app: FastAPI):
     """Handle startup and shutdown events for the FastAPI application."""
     # Startup
     logger.info("application.startup", version=__version__)
+    # Create database tables
+    Base.metadata.create_all(bind=engine)
     yield
     # Shutdown
     logger.info("application.shutdown")
@@ -31,6 +35,7 @@ app = FastAPI(
 
 # Include routers
 app.include_router(qr_code_router.router)
+app.include_router(user_router.router)
 
 
 @app.get("/health")

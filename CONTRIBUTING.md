@@ -268,3 +268,61 @@ When proposing new features:
 ## ⚖️ License
 
 By contributing, you agree that your contributions will be licensed under the MIT License.
+
+### Testing Process
+
+1. **Unit Tests**
+   - API endpoint tests
+   - Database integration tests
+   - In-memory SQLite for test isolation
+   ```bash
+   poetry run pytest
+   ```
+
+2. **Test Coverage**
+   - User registration tests:
+     - Successful registration
+     - Duplicate email handling
+     - Password validation
+     - Email format validation
+   - QR code generation tests
+   - Health check endpoint tests
+
+3. **Database Testing**
+   - Tests use in-memory SQLite
+   - Each test gets fresh database
+   - Automatic cleanup after tests
+   - Transaction rollback support
+
+4. **API Testing**
+   - FastAPI TestClient for endpoint testing
+   - Request validation testing
+   - Response schema validation
+   - Error handling verification
+
+### Database Workflow
+
+1. **Development Database**
+   ```bash
+   # SQLite database is created automatically at:
+   ./test.db
+   ```
+
+2. **Test Database**
+   ```bash
+   # In-memory SQLite is used for tests
+   # No setup required - handled automatically by pytest
+   ```
+
+3. **Database Migrations**
+   - Models defined in `app/models/`
+   - Tables created automatically on startup
+   - Development uses SQLite
+   - Production should use PostgreSQL
+
+4. **Best Practices**
+   - Use SQLAlchemy 2.0 style
+   - Follow model-per-file pattern
+   - Include proper indexes
+   - Add type hints for models
+   - Document model relationships
