@@ -8,7 +8,7 @@ router = APIRouter(prefix="/qr", tags=["QR Codes"])
 
 
 @router.post("/generate")
-async def create_qr_code(request: QRCodeRequest):
+async def create_qr_code(request: QRCodeRequest) -> dict[str, str]:
     """
     Generate a QR code from the provided data.
 

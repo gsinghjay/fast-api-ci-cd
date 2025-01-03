@@ -1,11 +1,12 @@
 """Test configuration and fixtures."""
 
 import os
+from typing import Any, Generator, Iterator
 import pytest
-from typing import Generator
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import Session, sessionmaker
 from pytest_postgresql import factories
 
 from app.main import app
@@ -13,7 +14,7 @@ from app.models.base import Base
 from app.utils.db import get_db
 
 
-def load_database(**kwargs):
+def load_database(**kwargs: dict[str, Any]) -> None:
     """Load initial database schema."""
     user = kwargs["user"]
     host = kwargs["host"]
@@ -37,7 +38,7 @@ postgresql = factories.postgresql("postgresql_my")
 
 
 @pytest.fixture
-def db_engine(postgresql):
+def db_engine(postgresql: Any) -> Generator[Engine, None, None]:
     """Create database engine for testing."""
     dsn = (
         f"postgresql+psycopg2://{postgresql.info.user}:{postgresql.info.password}"
@@ -50,7 +51,7 @@ def db_engine(postgresql):
 
 
 @pytest.fixture
-def database_session(db_engine):
+def database_session(db_engine: Engine) -> Generator[Session, None, None]:
     """Create database session for testing."""
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=db_engine)
     session = SessionLocal()
@@ -66,10 +67,10 @@ def database_session(db_engine):
 
 
 @pytest.fixture
-def test_client(database_session: Generator) -> TestClient:
+def test_client(database_session: Session) -> TestClient:
     """Create test client with database session."""
 
-    def override_get_db():
+    def override_get_db() -> Iterator[Session]:
         try:
             yield database_session
         finally:
@@ -80,7 +81,7 @@ def test_client(database_session: Generator) -> TestClient:
 
 
 @pytest.fixture(autouse=True)
-def setup_test_env():
+def setup_test_env() -> Generator[None, None, None]:
     """Set up test environment variables."""
     os.environ["TESTING"] = "1"
     yield

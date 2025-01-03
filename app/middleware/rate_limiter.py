@@ -16,5 +16,5 @@ async def rate_limit_requests(request: Request) -> None:
         return
 
     # Check if rate limit is exceeded
-    if await limiter.hit(request):
+    if await limiter.hit(request):  # type: ignore[attr-defined]
         raise HTTPException(status_code=429, detail="Rate limit exceeded")

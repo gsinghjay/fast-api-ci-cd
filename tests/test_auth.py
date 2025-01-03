@@ -1,10 +1,11 @@
 """Test cases for authentication endpoints."""
 
+from sqlalchemy.orm import Session
 from fastapi.testclient import TestClient
 from app.models.base import Base
 
 
-def test_login_success(test_client: TestClient, database_session):
+def test_login_success(test_client: TestClient, database_session: Session) -> None:
     """
     Test successful login.
 
@@ -41,7 +42,7 @@ def test_login_success(test_client: TestClient, database_session):
     assert response.json()["token_type"] == "bearer"
 
 
-def test_login_unverified_user(test_client: TestClient):
+def test_login_unverified_user(test_client: TestClient) -> None:
     """
     Test login with unverified user.
 
@@ -67,7 +68,9 @@ def test_login_unverified_user(test_client: TestClient):
     assert "verify" in response.json()["detail"].lower()
 
 
-def test_password_reset_flow(test_client: TestClient, database_session):
+def test_password_reset_flow(
+    test_client: TestClient, database_session: Session
+) -> None:
     """
     Test password reset flow.
 

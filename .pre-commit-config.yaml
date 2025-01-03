@@ -11,6 +11,19 @@ repos:
       - id: flake8
         additional_dependencies: [flake8-docstrings]
 
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.8.0
+    hooks:
+      - id: mypy
+        additional_dependencies:
+          - types-PyYAML
+          - types-python-jose
+          - types-requests
+          - types-setuptools
+          - pydantic
+          - slowapi
+        args: [--config-file=.mypy.ini]
+
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.5.0
     hooks:
