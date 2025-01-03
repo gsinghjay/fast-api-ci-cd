@@ -1,190 +1,204 @@
-"""Service layer for user-related operations."""
+"""User service module."""
 
-import secrets
 from datetime import datetime, timedelta
+from typing import Optional, Protocol
+
+from sqlalchemy import select
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
-from fastapi import HTTPException, status
-from passlib.context import CryptContext
 
+from app.core.security import get_password_hash, verify_password
 from app.models.user import User
-from app.schemas.user_schema import UserCreate
-from app.utils.jwt import create_access_token
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+from app.schemas.user import UserCreate
 
 
-class UserService:
-    """Service class for handling user operations."""
+class UserServiceProtocol(Protocol):
+    """Protocol defining the interface for UserService."""
 
-    @staticmethod
-    def get_password_hash(password: str) -> str:
-        """
-        Hash a password for storing.
+    def get_by_email(self, email: str) -> Optional[User]:
+        """Get user by email.
 
         Args:
-            password: Plain text password
+            email: User's email address
 
         Returns:
-            str: Hashed password
+            Optional[User]: User object if found, None otherwise
         """
-        return pwd_context.hash(password)
+        ...
 
-    @staticmethod
-    def verify_password(plain_password: str, hashed_password: str) -> bool:
-        """
-        Verify a password against a hash.
+    def create(self, user: UserCreate) -> User:
+        """Create a new user.
 
         Args:
-            plain_password: Password to verify
-            hashed_password: Hash to verify against
+            user: UserCreate schema containing user data
 
         Returns:
-            bool: True if password matches hash
+            User: Created user object
         """
-        return pwd_context.verify(plain_password, hashed_password)
+        ...
 
-    @staticmethod
-    def create_user(db: Session, user: UserCreate) -> User:
-        """
-        Create a new user.
+    def verify_user(self, token: str) -> Optional[User]:
+        """Verify user's email with token.
 
         Args:
-            db: Database session
-            user: User creation data
-
-        Returns:
-            User: Created user instance
-
-        Raises:
-            HTTPException: If user with email already exists
-        """
-        try:
-            verification_token = secrets.token_urlsafe(32)
-            db_user = User(
-                email=user.email,
-                full_name=user.full_name,
-                hashed_password=UserService.get_password_hash(user.password),
-                verification_token=verification_token,
-            )
-            db.add(db_user)
-            db.commit()
-            db.refresh(db_user)
-            return db_user
-        except IntegrityError:
-            db.rollback()
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Email already registered",
-            )
-
-    @staticmethod
-    def authenticate_user(db: Session, email: str, password: str) -> User:
-        """
-        Authenticate a user.
-
-        Args:
-            db: Database session
-            email: User email
-            password: User password
-
-        Returns:
-            User: Authenticated user
-
-        Raises:
-            HTTPException: If authentication fails
-        """
-        user = db.query(User).filter(User.email == email).first()
-        if not user or not UserService.verify_password(password, user.hashed_password):
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Incorrect email or password",
-                headers={"WWW-Authenticate": "Bearer"},
-            )
-        if not user.is_verified:
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Please verify your email first",
-            )
-        return user
-
-    @staticmethod
-    def create_login_token(user: User) -> str:
-        """
-        Create a login token for a user.
-
-        Args:
-            user: User to create token for
-
-        Returns:
-            str: JWT access token
-        """
-        access_token = create_access_token(data={"sub": user.email, "role": user.role})
-        return access_token
-
-    @staticmethod
-    def verify_email(db: Session, token: str) -> User:
-        """
-        Verify a user's email.
-
-        Args:
-            db: Database session
             token: Verification token
 
         Returns:
-            User: Verified user
-
-        Raises:
-            HTTPException: If verification fails
+            Optional[User]: Verified user object if successful, None otherwise
         """
-        user = db.query(User).filter(User.verification_token == token).first()
+        ...
+
+    def authenticate(self, email: str, password: str) -> Optional[User]:
+        """Authenticate user.
+
+        Args:
+            email: User's email address
+            password: User's password
+
+        Returns:
+            Optional[User]: Authenticated user object if successful, None otherwise
+        """
+        ...
+
+    def create_password_reset(self, email: str) -> bool:
+        """Create password reset token.
+
+        Args:
+            email: User's email address
+
+        Returns:
+            bool: True if reset token was created, False otherwise
+        """
+        ...
+
+    def reset_password(self, token: str, new_password: str) -> Optional[User]:
+        """Reset user's password.
+
+        Args:
+            token: Password reset token
+            new_password: New password to set
+
+        Returns:
+            Optional[User]: Updated user object if successful, None otherwise
+        """
+        ...
+
+
+class UserService:
+    """User service class for handling user-related operations."""
+
+    def __init__(self) -> None:
+        """Initialize UserService."""
+        self.db: Session
+
+    def __call__(self, db: Session) -> "UserService":
+        """Make the service callable with a database session.
+
+        Args:
+            db: SQLAlchemy database session
+
+        Returns:
+            UserService: Service instance with database session
+        """
+        self.db = db
+        return self
+
+    def get_by_email(self, email: str) -> Optional[User]:
+        """Get user by email.
+
+        Args:
+            email: User's email address
+
+        Returns:
+            Optional[User]: User object if found, None otherwise
+        """
+        stmt = select(User).where(User.email == email)
+        return self.db.execute(stmt).scalar_one_or_none()
+
+    def create(self, user: UserCreate) -> User:
+        """Create a new user.
+
+        Args:
+            user: UserCreate schema containing user data
+
+        Returns:
+            User: Created user object
+        """
+        db_user = User(
+            email=user.email,
+            full_name=user.full_name,
+            password=get_password_hash(user.password),
+            verification_token=self._generate_token(),
+        )
+        self.db.add(db_user)
+        self.db.commit()
+        self.db.refresh(db_user)
+        return db_user
+
+    def verify_user(self, token: str) -> Optional[User]:
+        """Verify user's email with token.
+
+        Args:
+            token: Verification token
+
+        Returns:
+            Optional[User]: Verified user object if successful, None otherwise
+        """
+        user = self.db.query(User).filter(User.verification_token == token).first()
+        if user:
+            setattr(user, "is_verified", True)
+            setattr(user, "verification_token", None)
+            self.db.commit()
+            self.db.refresh(user)
+            return user
+        return None
+
+    def authenticate(self, email: str, password: str) -> Optional[User]:
+        """Authenticate user.
+
+        Args:
+            email: User's email address
+            password: User's password
+
+        Returns:
+            Optional[User]: Authenticated user object if successful, None otherwise
+        """
+        user = self.get_by_email(email)
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid verification token",
-            )
-        user.is_verified = True
-        user.verification_token = None
-        db.commit()
+            return None
+        if not verify_password(password, user.password):
+            return None
         return user
 
-    @staticmethod
-    def create_password_reset_token(db: Session, email: str) -> None:
-        """
-        Create a password reset token.
+    def create_password_reset(self, email: str) -> bool:
+        """Create password reset token.
 
         Args:
-            db: Database session
-            email: User email
+            email: User's email address
 
-        Raises:
-            HTTPException: If user not found
+        Returns:
+            bool: True if reset token was created, False otherwise
         """
-        user = db.query(User).filter(User.email == email).first()
+        user = self.get_by_email(email)
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="User not found",
-            )
-        user.password_reset_token = secrets.token_urlsafe(32)
-        user.password_reset_expires = datetime.utcnow() + timedelta(hours=1)
-        db.commit()
+            return False
 
-    @staticmethod
-    def reset_password(db: Session, token: str, new_password: str) -> None:
-        """
-        Reset a user's password.
+        setattr(user, "password_reset_token", self._generate_token())
+        setattr(user, "password_reset_expires", datetime.utcnow() + timedelta(hours=1))
+        self.db.commit()
+        return True
+
+    def reset_password(self, token: str, new_password: str) -> Optional[User]:
+        """Reset user's password.
 
         Args:
-            db: Database session
-            token: Reset token
-            new_password: New password
+            token: Password reset token
+            new_password: New password to set
 
-        Raises:
-            HTTPException: If reset fails
+        Returns:
+            Optional[User]: Updated user object if successful, None otherwise
         """
         user = (
-            db.query(User)
+            self.db.query(User)
             .filter(
                 User.password_reset_token == token,
                 User.password_reset_expires > datetime.utcnow(),
@@ -192,11 +206,21 @@ class UserService:
             .first()
         )
         if not user:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Invalid or expired reset token",
-            )
-        user.hashed_password = UserService.get_password_hash(new_password)
-        user.password_reset_token = None
-        user.password_reset_expires = None
-        db.commit()
+            return None
+
+        setattr(user, "password", get_password_hash(new_password))
+        setattr(user, "password_reset_token", None)
+        setattr(user, "password_reset_expires", None)
+        self.db.commit()
+        self.db.refresh(user)
+        return user
+
+    def _generate_token(self) -> str:
+        """Generate a random token.
+
+        Returns:
+            str: Generated token
+        """
+        import secrets
+
+        return secrets.token_urlsafe(32)
